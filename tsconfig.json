@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"target": "es6",
+		"module": "commonjs",
+		"esModuleInterop": true,
+		"lib": ["es2017", "es7", "es6", "dom"],
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"jsx": "react",
+		"skipLibCheck": true,
+		"declaration": true,
+		"outDir": "build"
+	},
+	"exclude": ["node_modules", "build", "examples"]
+}
