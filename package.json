@@ -1,4 +1,5 @@
 {
+	"name": "tacotranslate",
 	"main": "build/index.js",
 	"types": "build/index.d.ts",
 	"scripts": {
