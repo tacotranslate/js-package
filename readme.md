@@ -1,6 +1,6 @@
 # TacoTranslate
 
-Automatically translate your React application in minutes
+Automatically translate your React application in minutes.
 
 ## Install [from npm](https://www.npmjs.com/package/tacotranslate)
 
