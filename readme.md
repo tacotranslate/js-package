@@ -21,7 +21,7 @@ import createTacoTranslateClient, {
 	TranslationProvider,
 } from 'tacotranslate';
 
-const tacoTranslate = createTacoTranslateClient({apiKey: '23423489729834792'});
+const tacoTranslate = createTacoTranslateClient({apiKey: '1234567890'});
 
 const Component = () => {
 	const Translate = useTranslate();

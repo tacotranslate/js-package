@@ -22,14 +22,14 @@ const Page = ({url, inputLocale, outputLocale, translations}) => (
 	</TranslationProvider>
 );
 
-export async function getServerSideProps(context) {
-	const path = context.resolvedUrl ?? context.url;
+export async function getStaticProps(context) {
+	const path = '';
 	let url = `localhost:3000/${path}`;
 
 	if (process.env.VERCEL_URL) {
 		url = `${process.env.VERCEL_URL}/${path}`;
-	} else if (context.req?.headers?.host) {
-		url = `${context.req.headers.host}/${path}`;
+	} else if (process.env.WEBSITE_URL) {
+		url = `${process.env.WEBSITE_URL}/${path}`;
 	}
 
 	const inputLocale = context.defaultLocale;
@@ -39,6 +39,7 @@ export async function getServerSideProps(context) {
 
 	return {
 		props: {inputLocale, outputLocale, translations, url},
+		revalidate: 10,
 	};
 }
 
