@@ -22,20 +22,20 @@ import createTacoTranslateClient, {
 
 const tacoTranslate = createTacoTranslateClient({apiKey: '1234567890'});
 
-const Component = () => {
+const Page = () => {
 	const Translate = useTranslate();
 	return <Translate string="Hello, world!" />;
 };
 
-const Page = () => (
+const App = () => (
 	<TranslationProvider
 		client={tacoTranslate}
 		inputLocale="en"
 		outputLocale="no"
 	>
-		<Component />
+		<Page />
 	</TranslationProvider>
 );
 
-export default Page;
+export default App;
 ```
