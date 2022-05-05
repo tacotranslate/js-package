@@ -2,7 +2,7 @@
 
 Automatically translate your React application in minutes
 
-## Install
+## Install [from npm](https://www.npmjs.com/package/tacotranslate)
 
 ```
 npm install tacotranslate
