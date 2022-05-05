@@ -10,7 +10,7 @@ npm install tacotranslate
 
 ## Usage
 
-Check out [our examples folder on GitHub](https://github.com/tacotranslate/npm-package/examples).
+Check out [our examples folder on GitHub](https://github.com/tacotranslate/npm-package/tree/master/examples/).
 
 ### Default
 
