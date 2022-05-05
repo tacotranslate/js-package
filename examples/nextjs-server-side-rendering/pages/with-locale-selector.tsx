@@ -40,7 +40,9 @@ const MyPage = ({url, inputLocale, outputLocale, translations}) => {
 		>
 			<select value={currentInput} onChange={handleChange}>
 				{locales.map(([locale, name]) => (
-					<option value={locale}>{name}</option>
+					<option key={locale} value={locale}>
+						{name}
+					</option>
 				))}
 			</select>
 
