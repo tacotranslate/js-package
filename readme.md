@@ -15,7 +15,6 @@ Check out [our examples folder on GitHub](https://github.com/tacotranslate/npm-p
 ### Default
 
 ```jsx
-import React from 'react';
 import createTacoTranslateClient, {
 	useTranslate,
 	TranslationProvider,
