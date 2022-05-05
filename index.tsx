@@ -92,7 +92,7 @@ export default function translate({
 
 export type TranslateProperties = {
 	id?: string;
-	children: string;
+	string: string;
 };
 
 export type TranslationContextProperties = {
@@ -152,12 +152,12 @@ export const TranslationProvider = (
 	});
 
 	const Translate = useCallback(
-		({id, children}: TranslateProperties) => {
-			if (typeof children !== 'string') {
-				throw new TypeError('<Translate> `children` must be a string');
+		({id, string}: TranslateProperties) => {
+			if (typeof string !== 'string') {
+				throw new TypeError('<Translate> `string` must be a string');
 			}
 
-			const currentString = useMemo(() => children.trim(), [children]);
+			const currentString = useMemo(() => string.trim(), [string]);
 			const key = useMemo(() => (id ? id : currentString), [id, currentString]);
 
 			const entry: Entry = useMemo(
@@ -181,8 +181,7 @@ export const TranslationProvider = (
 				}
 			}, [entry]);
 
-			const output = currentTranslation || oldTranslation || children;
-
+			const output = currentTranslation || oldTranslation || string;
 			return <span dangerouslySetInnerHTML={{__html: output}} />;
 		},
 		[translations, localePair, currentLocalePair]

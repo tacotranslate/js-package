@@ -1,4 +1,3 @@
-import React from 'react';
 import createTacoTranslateClient, {
 	useTranslate,
 	TranslationProvider,
@@ -6,24 +5,22 @@ import createTacoTranslateClient, {
 
 const tacoTranslate = createTacoTranslateClient({apiKey: '23423489729834792'});
 
-const MyComponent = () => {
+const Component = () => {
 	const Translate = useTranslate();
-	return <Translate>{'Hello, world!'}</Translate>;
+	return <Translate string="Hello, world!" />;
 };
 
-const MyPage = ({url, inputLocale, outputLocale, translations}) => {
-	return (
-		<TranslationProvider
-			url={url}
-			client={tacoTranslate}
-			inputLocale={inputLocale}
-			outputLocale={outputLocale}
-			translations={translations}
-		>
-			<MyComponent />
-		</TranslationProvider>
-	);
-};
+const Page = ({url, inputLocale, outputLocale, translations}) => (
+	<TranslationProvider
+		url={url}
+		client={tacoTranslate}
+		inputLocale={inputLocale}
+		outputLocale={outputLocale}
+		translations={translations}
+	>
+		<Component />
+	</TranslationProvider>
+);
 
 export async function getServerSideProps(context) {
 	const path = context.resolvedUrl ?? context.url;
@@ -31,8 +28,8 @@ export async function getServerSideProps(context) {
 
 	if (process.env.VERCEL_URL) {
 		url = `${process.env.VERCEL_URL}/${path}`;
-	} else if (context.request?.headers?.host) {
-		url = `${context.request.headers.host}/${path}`;
+	} else if (context.req?.headers?.host) {
+		url = `${context.req.headers.host}/${path}`;
 	}
 
 	const inputLocale = context.defaultLocale;
@@ -45,4 +42,4 @@ export async function getServerSideProps(context) {
 	};
 }
 
-export default MyPage;
+export default Page;

@@ -1,5 +1,5 @@
-import {useRouter} from 'next/router';
-import React, {ChangeEvent, useCallback, useState} from 'react';
+import {useCallback, useState} from 'react';
+import {useRouter} from 'next/router.js';
 import createTacoTranslateClient, {
 	useTranslate,
 	TranslationProvider,
@@ -8,17 +8,17 @@ import locales from '../locales.json';
 
 const tacoTranslate = createTacoTranslateClient({apiKey: '23423489729834792'});
 
-const MyComponent = () => {
+const Component = () => {
 	const Translate = useTranslate();
-	return <Translate>{'Hello, world!'}</Translate>;
+	return <Translate string="Hello, world!" />;
 };
 
-const MyPage = ({url, inputLocale, outputLocale, translations}) => {
+const Page = ({url, inputLocale, outputLocale, translations}) => {
 	const router = useRouter();
 	const [currentInput, setCurrentInput] = useState(outputLocale);
 
 	const handleChange = useCallback(
-		(event: ChangeEvent<HTMLSelectElement>) => {
+		(event) => {
 			const locale = event.target.value;
 			setCurrentInput(locale);
 			document.cookie = `NEXT_LOCALE=${locale.toLowerCase()}; Max-Age=31560000; SameSite=Lax; Path=/;`;
@@ -46,7 +46,7 @@ const MyPage = ({url, inputLocale, outputLocale, translations}) => {
 				))}
 			</select>
 
-			<MyComponent />
+			<Component />
 		</TranslationProvider>
 	);
 };
@@ -71,4 +71,4 @@ export async function getServerSideProps(context) {
 	};
 }
 
-export default MyPage;
+export default Page;
