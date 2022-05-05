@@ -10,9 +10,7 @@ npm install tacotranslate
 
 ## Usage
 
-Check out [our examples folder on GitHub](https://github.com/tacotranslate/npm-package/tree/master/examples/).
-
-### Default
+Check out [our examples folder on GitHub](https://github.com/tacotranslate/npm-package/tree/master/examples/) to learn more.
 
 ```jsx
 import createTacoTranslateClient, {
@@ -39,3 +37,7 @@ const App = () => (
 
 export default App;
 ```
+
+## Documentation
+
+### Setting up your project

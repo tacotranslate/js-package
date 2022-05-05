@@ -16,3 +16,7 @@ Bare-bones setup that showcases how to create a React application that can trans
 ### `pages/with-locale-selector.jsx`
 
 The same example as above, however this example includes a locale selector, enabling users to override the default `outputLocale` by setting the `NEXT_LOCALE` cookie.
+
+## What languages are supported?
+
+Any language inside `locales.json` is supported. To stop supporting a language, simply remove it from `locales.json`, and it will be disallowed.
