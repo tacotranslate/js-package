@@ -19,4 +19,4 @@ The same example as above, however this example includes a locale selector, enab
 
 ## What languages are supported?
 
-Any language inside `locales.json` is supported. To stop supporting a language, simply remove it from `locales.json`, and it will be disallowed.
+Any language inside the `locales` array is supported. To stop supporting a language, simply remove it from `locales` in `next.config.js`, and it will be disallowed inside your app.

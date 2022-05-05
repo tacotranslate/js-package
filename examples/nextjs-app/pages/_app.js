@@ -1,5 +1,5 @@
 import {TranslationProvider} from 'tacotranslate';
-import tacoTranslate from '../utilities/tacotranslate';
+import tacoTranslate from '../utilities/tacotranslate.js';
 import '../global.css';
 
 const App = ({Component, pageProps}) => {

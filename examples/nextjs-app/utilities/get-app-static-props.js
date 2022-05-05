@@ -1,4 +1,4 @@
-import tacoTranslate from './tacotranslate';
+import tacoTranslate from './tacotranslate.js';
 
 export default async function getAppStaticProps(path, context) {
 	let url = `localhost:3000${path}`;

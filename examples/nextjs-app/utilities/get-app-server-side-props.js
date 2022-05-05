@@ -1,4 +1,4 @@
-import tacoTranslate from './tacotranslate';
+import tacoTranslate from './tacotranslate.js';
 
 export default async function getServerSideProps(context) {
 	const path = context.resolvedUrl ?? context.url;

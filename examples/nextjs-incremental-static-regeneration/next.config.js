@@ -1,4 +1,4 @@
-const locales = require('./locales.json');
+const {locales} = require('tacotranslate');
 
 module.exports = {
 	i18n: {

@@ -1,10 +1,10 @@
 import {useCallback, useState} from 'react';
 import {useRouter} from 'next/router.js';
 import createTacoTranslateClient, {
+	locales,
 	useTranslate,
 	TranslationProvider,
 } from 'tacotranslate';
-import locales from '../locales.json';
 
 const tacoTranslate = createTacoTranslateClient({apiKey: '1234567890'});
 

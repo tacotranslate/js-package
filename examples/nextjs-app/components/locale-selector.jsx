@@ -1,6 +1,6 @@
 import {useState, useCallback} from 'react';
-import {useRouter} from 'next/router';
-import locales from '../locales.json';
+import {useRouter} from 'next/router.js';
+import {locales} from 'tacotranslate';
 
 const LocaleSelector = ({initialLocale}) => {
 	const router = useRouter();
