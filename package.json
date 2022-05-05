@@ -4,6 +4,15 @@
 	"version": "0.0.3",
 	"main": "build/index.js",
 	"types": "build/index.d.ts",
+	"homepage": "https://tacotranslate.com",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tacotranslate/npm-package.git"
+	},
+	"bugs": {
+		"url": "https://github.com/tacotranslate/npm-package/issues",
+		"email": "hola@tacotranslate.com"
+	},
 	"scripts": {
 		"build": "tsc --p tsconfig.json",
 		"lint": "xo --prettier",
