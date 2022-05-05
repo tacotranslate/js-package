@@ -1,5 +1,6 @@
 {
 	"name": "tacotranslate",
+	"description": "Automatically translate your React application in minutes",
 	"version": "0.0.1",
 	"main": "build/index.js",
 	"types": "build/index.d.ts",
