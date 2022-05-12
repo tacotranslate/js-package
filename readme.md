@@ -112,7 +112,7 @@ In addition to those properties, `<TranslationProvider>` can also be fed the fol
 	- The text to translate. Needs to be written in the same language as your `inputLocale`. If you have segments like names or similar that you do not want to translate, you can wrap the segment in an HTML-element (like `span`) with the attribute `translate` set to `no`.
 	- For example:
 		```jsx
-		<Translate string={`Hey, world! <span translate="no">Apple</span> is the name of company.`}>
+		<Translate string={`Hey, world! <span translate="no">Apple</span> is the name of company.`}/>
 		```
 - **`id`** (optional)
 	- A translation ID. This is optional, but can be helpful for translating the same string into multiple, differing outputs. Then, later, [inside our web application](https://tacotranslate.com), you can edit the automatic translation.
