@@ -173,11 +173,11 @@ TacoTranslate currently supports translation between the following 75 languages:
 | Bulgarian | bg |
 | Catalan | ca |
 | Chinese (Simplified) | zh |
-| Chinese (Traditional) | zh-TW |
+| Chinese (Traditional) | zh-tw |
 | Croatian | hr |
 | Czech | cs |
 | Danish | da |
-| Dari | fa-AF |
+| Dari | fa-af |
 | Dutch | nl |
 | English | en |
 | Estonian | et |
@@ -185,7 +185,7 @@ TacoTranslate currently supports translation between the following 75 languages:
 | Filipino, Tagalog | tl |
 | Finnish | fi |
 | French | fr |
-| French (Canada) | fr-CA |
+| French (Canada) | fr-ca |
 | Georgian | ka |
 | German | de |
 | Greek | el |
@@ -215,7 +215,7 @@ TacoTranslate currently supports translation between the following 75 languages:
 | Pashto | ps |
 | Polish | pl |
 | Portuguese (Brazil) | pt |
-| Portuguese (Portugal) | pt-PT |
+| Portuguese (Portugal) | pt-pt |
 | Punjabi | pa |
 | Romanian | ro |
 | Russian | ru |
@@ -225,7 +225,7 @@ TacoTranslate currently supports translation between the following 75 languages:
 | Slovenian | sl |
 | Somali | so |
 | Spanish | es |
-| Spanish (Mexico) | es-MX |
+| Spanish (Mexico) | es-mx |
 | Swahili | sw |
 | Swedish | sv |
 | Tamil | ta |
