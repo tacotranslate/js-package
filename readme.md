@@ -51,7 +51,7 @@ For Next.js, we recommend doing this inside `_app.js`.
 ```jsx
 import createTacoTranslateClient, {TranslationProvider} from 'tacotranslate';
 
-const tacoTranslate = createTacoTranslateClient({apiKey: '23423489729834792'});
+const tacoTranslate = createTacoTranslateClient({apiKey: '1234567890'});
 
 const App = ({Component, pageProps}) => {
 	const {url, inputLocale, outputLocale, translations} = pageProps;
@@ -131,7 +131,7 @@ For Next.js, setting this up is really easy with `getServerSideProps`.
 ```jsx
 import createTacoTranslateClient from 'tacotranslate';
 
-const tacoTranslate = createTacoTranslateClient({apiKey: '23423489729834792'});
+const tacoTranslate = createTacoTranslateClient({apiKey: '1234567890'});
 
 export async function getServerSideProps(context) {
 	const path = context.resolvedUrl ?? context.url;
