@@ -35,7 +35,10 @@ export async function getStaticProps(context) {
 	const inputLocale = context.defaultLocale;
 	const outputLocale = context.locale;
 	const {getTranslations} = tacoTranslate({inputLocale, outputLocale});
-	const translations = await getTranslations({url});
+	const translations = await getTranslations({url}).catch((error) => {
+		console.error(error);
+		return {};
+	});
 
 	return {
 		props: {inputLocale, outputLocale, translations, url},
