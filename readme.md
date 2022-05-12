@@ -118,8 +118,10 @@ In addition to those properties, `<TranslationProvider>` can also be fed the fol
 	- A translation ID. This is optional, but can be helpful for translating the same string into multiple, differing outputs. Then, later, [inside our web application](https://tacotranslate.com), you can edit the automatic translation.
 	- For example:
 		```jsx
-		<Translate id="login-header" string="Login"/>
-		<Translate id="login-footer" string="Login"/>
+		<>
+			<Translate id="login-header" string="Login"/>
+			<Translate id="login-footer" string="Login"/>
+		</>
 		```
 
 ### `getTranslations`
@@ -135,10 +137,10 @@ const tacoTranslate = createTacoTranslateClient({apiKey: '1234567890'});
 
 export async function getServerSideProps(context) {
 	const path = context.resolvedUrl ?? context.url;
-	let url = `localhost:3000/${path}`;
+	let url = `localhost:3000${path}`;
 
 	if (context.req?.headers?.host) {
-		url = `${context.req.headers.host}/${path}`;
+		url = `${context.req.headers.host}${path}`;
 	}
 
 	const inputLocale = context.defaultLocale;

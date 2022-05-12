@@ -24,12 +24,12 @@ const Page = ({url, inputLocale, outputLocale, translations}) => (
 
 export async function getServerSideProps(context) {
 	const path = context.resolvedUrl ?? context.url;
-	let url = `localhost:3000/${path}`;
+	let url = `localhost:3000${path}`;
 
 	if (process.env.VERCEL_URL) {
-		url = `${process.env.VERCEL_URL}/${path}`;
+		url = `${process.env.VERCEL_URL}${path}`;
 	} else if (context.req?.headers?.host) {
-		url = `${context.req.headers.host}/${path}`;
+		url = `${context.req.headers.host}${path}`;
 	}
 
 	const inputLocale = context.defaultLocale;
