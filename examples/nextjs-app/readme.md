@@ -1,4 +1,4 @@
-# TacoTranslate on an incrementally statically regenerated page through Next.js
+# TacoTranslate in a Next.js app
 
 ## Running this example
 
