@@ -1,5 +1,7 @@
 # TacoTranslate in a Next.js app
 
+See this example live at [demo.tacotranslate.com](https://demo.tacotranslate.com).
+
 ## Running this example
 
 First, replace the `apiKey` in `createTacoTranslateClient` with your own. Then, ensure the `path` in `getStaticProps` corresponds with the path URL. Finally, run these commands:
