@@ -29,7 +29,7 @@ const App = () => (
 	<TranslationProvider
 		client={tacoTranslate}
 		inputLocale="en"
-		outputLocale="no"
+		outputLocale="es"
 	>
 		<Page />
 	</TranslationProvider>

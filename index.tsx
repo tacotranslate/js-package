@@ -9,11 +9,12 @@ import React, {
 } from 'react';
 
 type TacoTranslateError = Error & {code?: string; type?: string};
-export type Entry = {k: string; s: string};
+export type Entry = {k?: string; s: string};
 export type Translations = Record<string, string>;
 
 const defaultApiUrl =
 	process.env.TACOTRANSLATE_API_URL ?? 'https://api.tacotranslate.com';
+const maxUrlLength = 2048;
 
 async function getTranslations({
 	apiUrl = defaultApiUrl,
@@ -30,7 +31,12 @@ async function getTranslations({
 	entries?: Entry[];
 	url?: string;
 }): Promise<Translations> {
+	const requests = [];
 	let url = `${apiUrl}/api/t?a=${apiKey}&i=${inputLocale}&o=${outputLocale}`;
+
+	if (translationUrl) {
+		url += `&u=${encodeURIComponent(translationUrl)}`;
+	}
 
 	if (entries) {
 		const preparedEntries = entries
@@ -38,27 +44,61 @@ async function getTranslations({
 				(entry, index, self) =>
 					index === self.findIndex((thing) => thing.k === entry.k)
 			)
-			.map((entry) => ({k: entry.k, s: entry.s}));
+			.map((entry) => {
+				if (entry.k === entry.s) {
+					return {s: entry.s};
+				}
 
-		url += `&s=${encodeURIComponent(JSON.stringify(preparedEntries))}`;
-	}
+				return {k: entry.k, s: entry.s};
+			});
 
-	if (translationUrl) {
-		url += `&u=${encodeURIComponent(translationUrl)}`;
-	}
+		const includedEntries: Entry[] = [];
+		const excludedEntries: Entry[] = [];
 
-	return fetch(url)
-		.then(async (response) => response.json())
-		.then((data) => {
-			if (data.success) {
-				return data.translations as Translations;
+		for (const entry of preparedEntries) {
+			const attemptedUrl = `${url}&s=${encodeURIComponent(
+				JSON.stringify([...includedEntries, entry])
+			)}`;
+
+			if (attemptedUrl.length < maxUrlLength) {
+				includedEntries.push(entry);
+			} else {
+				excludedEntries.push(entry);
 			}
+		}
 
-			const error: TacoTranslateError = new Error(data.error.message);
-			error.code = data.error.code as string;
-			error.type = data.error.type as string;
-			throw error;
-		});
+		url += `&s=${encodeURIComponent(JSON.stringify(includedEntries))}`;
+
+		if (excludedEntries.length > 0) {
+			requests.push(
+				getTranslations({
+					apiUrl,
+					apiKey,
+					inputLocale,
+					outputLocale,
+					entries: excludedEntries,
+					url: translationUrl,
+				})
+			);
+		}
+	}
+
+	requests.push(
+		fetch(url)
+			.then(async (response) => response.json())
+			.then((data) => {
+				if (data.success) {
+					return data.translations as Translations;
+				}
+
+				const error: TacoTranslateError = new Error(data.error.message);
+				error.code = data.error.code as string;
+				error.type = data.error.type as string;
+				throw error;
+			})
+	);
+
+	return Promise.all(requests).then((data) => Object.assign({}, ...data));
 }
 
 export type CreateTacoTranslateClientParameters = {
@@ -155,6 +195,10 @@ export const TranslationProvider = (
 		({id, string}: TranslateProperties) => {
 			if (typeof string !== 'string') {
 				throw new TypeError('<Translate> `string` must be a string');
+			} else if (string.length > 1500) {
+				throw new TypeError(
+					`<Translate> \`string\` is too long at ${string.length}. Max length is 1500 characters. Please split the string across multiple <Translate> components.`
+				);
 			}
 
 			const currentString = useMemo(() => string.trim(), [string]);
