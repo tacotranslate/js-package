@@ -14,6 +14,17 @@ html {
 	-webkit-font-smoothing: subpixel-antialiased;
 }
 
+@media (prefers-color-scheme: dark) {
+	html {
+		background: #0e0e0e;
+		color: #eee;
+	}
+
+	a {
+		color: #8a8aff;
+	}
+}
+
 #__next {
 	height: auto;
 	min-height: 100%;
