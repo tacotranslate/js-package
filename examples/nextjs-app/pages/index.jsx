@@ -11,11 +11,11 @@ const Page = ({outputLocale}) => {
 			<LocaleSelector initialLocale={outputLocale} />
 
 			<h1>
-				<Translate string="<span translate='no'>Hola</span>, world! Welcome to <span translate='no'>TacoTranslate</span>." />
+				<Translate string="<span translate='no'>Hola</span>, world! Welcome to TacoTranslate." />
 			</h1>
 
 			<p style={{fontFamily: 'sans-serif', lineHeight: 1.6}}>
-				<Translate string="<span translate='no'>TacoTranslate</span> is a service that automatically translates your React application to any language in minutes. Join us in saying <span translate='no'>adiós</span> to JSON files, and <a href='https://tacotranslate.com'>set up your free <span translate='no'>TacoTranslate</span> account</a> today!<br><br>Out of the box, you’ll get to translate <strong>one language for free</strong>. In addition, we are collaborating with one the top translation providers in the world, should you need to get a more accurate translation than what machine learning can provide.<br><br><a href='https://tacotranslate.com'>Sign up now, <span translate='no'>amigo</span>!</a>" />
+				<Translate string="TacoTranslate is a service that automatically translates your React application to any language in minutes. Join us in saying <span translate='no'>adiós</span> to JSON files, and <a href='https://tacotranslate.com'>set up your free TacoTranslate account</a> today!<br><br>Out of the box, you’ll get to translate <strong>one language for free</strong>. In addition, we are collaborating with one the top translation providers in the world, should you need to get a more accurate translation than what machine learning can provide.<br><br><a href='https://tacotranslate.com'>Sign up now, <span translate='no'>amigo</span>!</a>" />
 			</p>
 		</Wrapper>
 	);
