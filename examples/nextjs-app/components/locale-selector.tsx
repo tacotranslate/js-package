@@ -1,18 +1,22 @@
-import {useState, useCallback} from 'react';
-import {useRouter} from 'next/router.js';
+import React, {useState, useCallback, type ChangeEvent} from 'react';
+import {useRouter} from 'next/router';
 import {locales} from 'tacotranslate';
 
-const LocaleSelector = ({initialLocale}) => {
+type LocaleSelectorProperties = {
+	initialLocale: string;
+};
+
+function LocaleSelector({initialLocale}: LocaleSelectorProperties) {
 	const router = useRouter();
 	const [currentInput, setCurrentInput] = useState(initialLocale);
 
 	const handleChange = useCallback(
-		(event) => {
+		(event: ChangeEvent<HTMLSelectElement>) => {
 			const locale = event.target.value;
 			setCurrentInput(locale);
 			document.cookie = `NEXT_LOCALE=${locale.toLowerCase()}; Max-Age=31560000; SameSite=Lax; Path=/;`;
 
-			router.push(router.pathname, router.pathname, {
+			void router.push(router.pathname, router.pathname, {
 				locale: locale.toLowerCase(),
 			});
 		},
@@ -28,6 +32,6 @@ const LocaleSelector = ({initialLocale}) => {
 			))}
 		</select>
 	);
-};
+}
 
 export default LocaleSelector;

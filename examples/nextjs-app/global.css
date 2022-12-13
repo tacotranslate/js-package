@@ -22,6 +22,14 @@ html {
 
 	a {
 		color: #8a8aff;
+		text-decoration: underline;
+	}
+
+	@media (hover: hover) {
+		a:hover {
+			text-decoration: none;
+			color: #a1a1ff;
+		}
 	}
 }
 
