@@ -42,6 +42,7 @@
 			"commonjs"
 		],
 		"rules": {
+			"n/prefer-global/process": 0,
 			"node/prefer-global/process": 0,
 			"import/extensions": 0
 		},

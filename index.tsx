@@ -183,6 +183,8 @@ async function getTranslations({
 	);
 
 	const translations: Translations[] = await Promise.all(requests);
+
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return Object.assign({}, ...translations);
 }
 
@@ -245,10 +247,11 @@ const template = (input = '', object: Record<string, string> = {}) =>
 		const identifier = templateIdentifier.slice(2, -2);
 
 		try {
-			// eslint-disable-next-line no-new-func
-			const value = new Function('object', `return object.${identifier};`)(
-				object
-			);
+			// eslint-disable-next-line no-new-func, @typescript-eslint/no-unsafe-assignment
+			const value: string = new Function(
+				'object',
+				`return object.${identifier};`
+			)(object);
 
 			if (typeof value === 'string') {
 				return value;
@@ -326,6 +329,7 @@ function Translate({
 
 	return createElement(as, {
 		...parameters,
+		// eslint-disable-next-line @typescript-eslint/naming-convention
 		dangerouslySetInnerHTML: {__html: output},
 	});
 }
@@ -434,3 +438,7 @@ export function TranslationProvider(
 }
 
 export const useTacoTranslate = () => useContext(TranslationContext);
+export const useLocale = () => {
+	const {locale} = useContext(TranslationContext);
+	return locale;
+};
