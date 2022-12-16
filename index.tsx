@@ -156,13 +156,14 @@ async function getTranslations({
 					apiUrl,
 					apiKey,
 					locale,
-					entries: excludedEntries,
+					entries: excludedEntries.map((entry) => ({
+						...entry,
+						k: entry.k ?? entry.s,
+					})),
 					origin,
 				})
 			);
 		}
-
-		console.log({includedEntries, excludedEntries})
 	}
 
 	requests.push(
