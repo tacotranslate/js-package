@@ -24,16 +24,17 @@
 		"typescript:check": "tsc --noEmit --p tsconfig.json"
 	},
 	"peerDependencies": {
-		"react": "^18.2.0"
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
 	},
 	"devDependencies": {
-		"@types/react": "^18.0.8",
+		"@types/react": "^18.0.26",
 		"eslint-config-xo": "^0.43.1",
 		"eslint-config-xo-react": "^0.27.0",
-		"eslint-plugin-react": "^7.29.4",
-		"eslint-plugin-react-hooks": "^4.5.0",
-		"prettier": "^2.6.2",
-		"typescript": "^4.6.4",
+		"eslint-plugin-react": "^7.31.11",
+		"eslint-plugin-react-hooks": "^4.6.0",
+		"prettier": "^2.8.1",
+		"typescript": "^4.9.4",
 		"xo": "^0.53.1"
 	},
 	"xo": {
@@ -42,6 +43,7 @@
 			"commonjs"
 		],
 		"rules": {
+			"no-unused-vars": 2,
 			"n/prefer-global/process": 0,
 			"node/prefer-global/process": 0,
 			"import/extensions": 0
