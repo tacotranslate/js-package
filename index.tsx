@@ -161,6 +161,8 @@ async function getTranslations({
 				})
 			);
 		}
+
+		console.log({includedEntries, excludedEntries})
 	}
 
 	requests.push(
