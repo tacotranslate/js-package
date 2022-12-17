@@ -8,10 +8,10 @@ export default async function getAppStaticProps(
 ) {
 	let url = `localhost:3000${path}`;
 
-	if (process.env.VERCEL_URL) {
-		url = `${process.env.VERCEL_URL}${path}`;
-	} else if (process.env.WEBSITE_URL) {
+	if (process.env.WEBSITE_URL) {
 		url = `${process.env.WEBSITE_URL}${path}`;
+	} else if (process.env.VERCEL_URL) {
+		url = `${process.env.VERCEL_URL}${path}`;
 	}
 
 	const {getTranslations} = tacoTranslate({locale});

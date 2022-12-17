@@ -8,10 +8,12 @@ export default async function getServerSideProps(
 	const {resolvedUrl: path, locale} = context;
 	let url = `localhost:3000${path}`;
 
-	if (process.env.VERCEL_URL) {
-		url = `${process.env.VERCEL_URL}${path}`;
-	} else if (context.req?.headers?.host) {
+	if (context.req?.headers?.host) {
 		url = `${context.req.headers.host}${path}`;
+	} else if (process.env.WEBSITE_URL) {
+		url = `${process.env.WEBSITE_URL}${path}`;
+	} else if (process.env.VERCEL_URL) {
+		url = `${process.env.VERCEL_URL}${path}`;
 	}
 
 	const {getTranslations} = tacoTranslate({locale});
