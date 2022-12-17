@@ -128,6 +128,17 @@ const Page = () => {
 export default Page;
 ```
 
+### Setting the project locale to avoid redundant network requests
+
+TacoTranslate will request translation of all the strings in your application, even when they are the same language as that of your project. To avoid this request, set `projectLocale` in `createTacoTranslateClient`, like this:
+
+```jsx
+const tacoTranslate = createTacoTranslateClient({
+	apiKey: '1234567890', 
+	projectLocale: 'es'
+});
+```
+
 ### `<TranslationProvider>`
 
 - **`client`**

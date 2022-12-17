@@ -107,15 +107,21 @@ async function getTranslations({
 	apiUrl = defaultApiUrl,
 	apiKey,
 	locale,
+	projectLocale,
 	entries,
 	origin,
 }: {
 	apiUrl: string;
 	apiKey: string;
 	locale: Locale;
+	projectLocale?: Locale;
 	entries?: Entry[];
 	origin?: string;
 }): Promise<Translations> {
+	if (locale === projectLocale) {
+		return {};
+	}
+
 	const requests = [];
 	let url = `${apiUrl}/api/v1/t?a=${apiKey}&l=${locale}`;
 
@@ -194,19 +200,25 @@ async function getTranslations({
 export type CreateTacoTranslateClientParameters = {
 	apiUrl?: string;
 	apiKey: string;
+	projectLocale?: Locale;
 };
 
 type TacoTranslateClientParameters = {locale: Locale};
 export type GetTranslationsParameters = {entries?: Entry[]; origin?: string};
 
 const createTacoTranslateClient =
-	({apiUrl = defaultApiUrl, apiKey}: CreateTacoTranslateClientParameters) =>
+	({
+		apiUrl = defaultApiUrl,
+		apiKey,
+		projectLocale,
+	}: CreateTacoTranslateClientParameters) =>
 	({locale}: TacoTranslateClientParameters) => ({
 		getTranslations: async ({entries, origin}: GetTranslationsParameters) =>
 			getTranslations({
 				apiUrl,
 				apiKey,
 				locale,
+				projectLocale,
 				entries,
 				origin,
 			}),
