@@ -1,6 +1,6 @@
 # TacoTranslate
 
-Automatically translate your React application in minutes. [Visit TacoTranslate.com](https://tacotranslate.com) for more information and to create an account for free!
+Automatically translate your React application in minutes with contextually aware AI. [Visit TacoTranslate.com](https://tacotranslate.com) for more information and to create an account for free!
 
 Zero additional dependencies!
 
@@ -22,10 +22,10 @@ import createTacoTranslateClient, {
 
 const tacoTranslate = createTacoTranslateClient({apiKey: '1234567890'});
 
-const Page = () => {
+function Page() {
 	const Translate = useTranslate();
 	return <Translate string="Hello, world!" />;
-};
+}
 
 const App = () => (
 	<TranslationProvider client={tacoTranslate} locale="es">
@@ -48,7 +48,8 @@ Your application needs to be wrapped inside a `<TranslationProvider>` that is fe
 import createTacoTranslateClient, {TranslationProvider} from 'tacotranslate';
 
 const tacoTranslate = createTacoTranslateClient({apiKey: '1234567890'});
-const App = ({Component, pageProps}) => {
+
+export default function App({Component, pageProps}) {
 	const {url, locale, translations} = pageProps;
 
 	return (
@@ -61,9 +62,7 @@ const App = ({Component, pageProps}) => {
 			<Component {...pageProps} />
 		</TranslationProvider>
 	);
-};
-
-export default App;
+}
 ```
 
 Now, inside a component, simply import the `useTranslate` hook. **And that’s it!**
@@ -71,12 +70,10 @@ Now, inside a component, simply import the `useTranslate` hook. **And that’s i
 ```jsx
 import {useTranslate} from 'tacotranslate';
 
-const Component = () => {
+export default function Component() {
 	const Translate = useTranslate();
 	return <Translate string="Hello, world!" />;
-};
-
-export default Component;
+}
 ```
 
 ### Opting out of translation
@@ -100,12 +97,12 @@ This will improve the user experience of people using screen readers or similar 
 Sometimes, your translations include variables, such as usernames, that we don’t want to translate. Nor to generate separate strings for every occurrence. With TacoTranslate, implementing support for that is simple:
 
 ```jsx
-const Component = () => {
+function Component() {
 	const Translate = useTranslate();
 	const name = 'Juan';
 
 	return <Translate string="Hello, {{name}}!" variables={{name}} />;
-};
+}
 ```
 
 On `<Translate>`, you can provide an object of values that will replace mustache-style template tags, like `{{name}}`.
@@ -117,15 +114,46 @@ To translate strings directly instead of through a React component, you can impo
 ```jsx
 import {useTranslateString} from 'tacotranslate';
 
-const Page = () => {
+export default function Page() {
 	const translate = useTranslateString();
 	
 	return (
 		<title>{translate({string: 'My page title'})}</title>
 	);
-};
+}
+```
 
-export default Page;
+#### Translation strings as a map (best practice)
+
+When working with multiple strings in your code where using components is not applicable, you could create a hook with a map to your translations.
+
+```jsx
+import {useTranslateString} from 'tacotranslate';
+
+function useTranslations() {
+	const translate = useTranslateString();
+
+	return {
+		itemCreated: translate({string: 'Item created!'}),
+		itemCreationError: translate({string: 'Error creating item. Please try again!'}),
+		itemDeleted: translate({string: 'Item deleted.'})
+	};
+}
+
+export default function Component() {
+	const translations = useTranslations();
+	const handleCreate = useCallback(() => {
+		if (Math.random() > 0.5) {
+			window.alert(translations.itemCreated);
+		} else {
+			window.alert(translations.itemCreationError);
+		}
+	}, [translations])
+
+	return (
+		<button type="button" onClick={handleCreate}>Create item</button>
+	)
+}
 ```
 
 ### Setting the project locale to avoid redundant network requests
@@ -212,6 +240,19 @@ export async function getServerSideProps(context) {
 ```
 
 Check out [our `nextjs-app` example](https://github.com/tacotranslate/npm-package/tree/master/examples/nextjs-app) to see it used in a server rendered application. 
+
+### Disabling TacoTranslate
+
+To prevent requests towards TacoTranslate APIs while still using the `Translate` component within your application, you can set `isEnabled` to `false` on `createTacoTranslateClient`, like this:
+
+```jsx
+const tacoTranslate = createTacoTranslateClient({
+	apiKey: '1234567890',
+	isEnabled: false
+});
+```
+
+Strings will then just be output as they come in.
 
 ### Supported languages
 

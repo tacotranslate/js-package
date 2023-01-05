@@ -201,6 +201,7 @@ export type CreateTacoTranslateClientParameters = {
 	apiUrl?: string;
 	apiKey: string;
 	projectLocale?: Locale;
+	isEnabled?: boolean;
 };
 
 type TacoTranslateClientParameters = {locale: Locale};
@@ -211,17 +212,18 @@ const createTacoTranslateClient =
 		apiUrl = defaultApiUrl,
 		apiKey,
 		projectLocale,
+		isEnabled = true
 	}: CreateTacoTranslateClientParameters) =>
 	({locale}: TacoTranslateClientParameters) => ({
 		getTranslations: async ({entries, origin}: GetTranslationsParameters) =>
-			getTranslations({
+			isEnabled ? getTranslations({
 				apiUrl,
 				apiKey,
 				locale,
 				projectLocale,
 				entries,
 				origin,
-			}),
+			}) : {},
 	});
 
 export default createTacoTranslateClient;
@@ -288,11 +290,15 @@ function useTranslateStringFunction({
 
 	if (process.env.NODE_ENV === 'development') {
 		if (typeof inputString !== 'string') {
-			throw new TypeError('<Translate> `string` must be a string');
+			throw new TypeError('<TacoTranslate> `string` must be a string!');
 		} else if (inputString.length > 1500) {
 			throw new TypeError(
-				`<Translate> \`string\` is too long at ${inputString.length}. Max length is 1500 characters. Please split the string across multiple <Translate> components.`
+				`<TacoTranslate> \`string\` is too long at ${inputString.length}. Max length is 1500 characters. Please split the string across multiple <TacoTranslate> components/functions.`
 			);
+		}
+
+		if (inputString.match(/  /)) {
+			console.warn(`<TacoTranslate> Detected a \`string\` with multiple spaces. This may lead to unintenional side-effects in the translation: \`${inputString}\``)
 		}
 	}
 
