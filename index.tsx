@@ -212,18 +212,20 @@ const createTacoTranslateClient =
 		apiUrl = defaultApiUrl,
 		apiKey,
 		projectLocale,
-		isEnabled = true
+		isEnabled = true,
 	}: CreateTacoTranslateClientParameters) =>
 	({locale}: TacoTranslateClientParameters) => ({
 		getTranslations: async ({entries, origin}: GetTranslationsParameters) =>
-			isEnabled ? getTranslations({
-				apiUrl,
-				apiKey,
-				locale,
-				projectLocale,
-				entries,
-				origin,
-			}) : {},
+			isEnabled
+				? getTranslations({
+						apiUrl,
+						apiKey,
+						locale,
+						projectLocale,
+						entries,
+						origin,
+				  })
+				: {},
 	});
 
 export default createTacoTranslateClient;
@@ -297,8 +299,10 @@ function useTranslateStringFunction({
 			);
 		}
 
-		if (inputString.match(/  /)) {
-			console.warn(`<TacoTranslate> Detected a \`string\` with multiple spaces. This may lead to unintenional side-effects in the translation: \`${inputString}\``)
+		if (inputString.includes('  ')) {
+			console.warn(
+				`<TacoTranslate> Detected a \`string\` with multiple spaces. This may lead to unintenional side-effects in the translation: \`${inputString}\``
+			);
 		}
 	}
 
