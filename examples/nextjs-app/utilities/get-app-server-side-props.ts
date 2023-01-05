@@ -1,4 +1,4 @@
-import process from 'node:process';
+import process from 'process';
 import {type GetServerSidePropsContext} from 'next';
 import tacoTranslate from './tacotranslate';
 
