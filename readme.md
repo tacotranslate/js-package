@@ -2,7 +2,7 @@
 
 Take your React application to new markets automatically with AI-powered and contextually aware translations. [Visit TacoTranslate.com](https://tacotranslate.com) for more information, and to create an account for free!
 
-Zero additional dependencies!
+The only production dependenies are React and [DOMPurify](https://www.npmjs.com/package/dompurify) – a module that prevents against XSS attacks within your strings.
 
 ## Install [from npm](https://www.npmjs.com/package/tacotranslate)
 

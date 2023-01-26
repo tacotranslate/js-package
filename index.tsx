@@ -9,6 +9,7 @@ import React, {
 	useState,
 	createElement,
 } from 'react';
+import {sanitize} from 'dompurify'
 
 type TacoTranslateError = Error & {code?: string; type?: string};
 
@@ -351,11 +352,14 @@ function Translate({
 	...parameters
 }: TranslateComponentProperties) {
 	const output = useTranslateStringFunction({id, string, variables});
+	const sanitized = useMemo(() => (
+		sanitize(output, {USE_PROFILES: {html: true}})
+	), [output])
 
 	return createElement(as, {
 		...parameters,
 		// eslint-disable-next-line @typescript-eslint/naming-convention
-		dangerouslySetInnerHTML: {__html: output},
+		dangerouslySetInnerHTML: {__html: sanitized},
 	});
 }
 
