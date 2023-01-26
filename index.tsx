@@ -330,6 +330,7 @@ function useTranslateStringFunction({
 	}, [translation, string, variables]);
 
 	useEffect(() => {
+		console.log({translation, createEntry, key, string})
 		if (!translation && createEntry) {
 			createEntry({k: key, s: string});
 		}
