@@ -12,7 +12,7 @@ import React, {
 
 type TacoTranslateError = Error & {code?: string; type?: string};
 
-export type Entry = {k?: string; s: string};
+export type Entry = {k?: string; s: string; l?: Locale};
 export type Translations = Record<string, string>;
 
 export const locales = [
@@ -288,7 +288,7 @@ function useTranslateStringFunction({
 	string: inputString,
 	variables,
 }: TranslateProperties) {
-	const {translations, createEntry} = useContext(TranslationContext);
+	const {translations, locale, createEntry} = useContext(TranslationContext);
 
 	if (process.env.NODE_ENV === 'development') {
 		if (typeof inputString !== 'string') {
@@ -330,11 +330,10 @@ function useTranslateStringFunction({
 	}, [translation, string, variables]);
 
 	useEffect(() => {
-		console.log({translation, createEntry, key, string})
 		if (!translation && createEntry) {
-			createEntry({k: key, s: string});
+			createEntry({k: key, s: string, l: locale});
 		}
-	}, [translation, createEntry, key, string]);
+	}, [translation, createEntry, key, string, locale]);
 
 	return output;
 }
@@ -384,7 +383,8 @@ export function TranslationProvider(
 		locale ? {[locale]: inputTranslations ?? {}} : {}
 	);
 
-	const createEntry = useCallback((entry: Entry) => {
+	const createEntry = useCallback((inputEntry: Entry) => {
+		const {l, ...entry} = inputEntry;
 		setEntries((previousEntries) => [...previousEntries, entry]);
 	}, []);
 
