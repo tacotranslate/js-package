@@ -93,7 +93,7 @@ export const locales = [
 	['cy', 'Welsh'],
 ];
 
-export type Locale = typeof locales[number][0];
+export type Locale = (typeof locales)[number][0];
 export type Localizations = Record<Locale, Translations>;
 
 const defaultApiUrl =
@@ -442,7 +442,7 @@ export function TranslationProvider(
 	}, [locale, inputTranslations]);
 
 	const translations = useMemo(
-		() => (currentLocale ? localizations[currentLocale] : {}),
+		() => (currentLocale ? localizations[currentLocale] ?? {} : {}),
 		[localizations, currentLocale]
 	);
 

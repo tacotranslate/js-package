@@ -16,7 +16,7 @@ function LocaleSelector({initialLocale}: LocaleSelectorProperties) {
 			setCurrentInput(locale);
 			document.cookie = `NEXT_LOCALE=${locale.toLowerCase()}; Max-Age=31560000; SameSite=Lax; Path=/;`;
 
-			void router.push(router.pathname, router.pathname, {
+			void router.push(router.pathname, undefined, {
 				locale: locale.toLowerCase(),
 			});
 		},

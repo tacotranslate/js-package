@@ -1,6 +1,6 @@
 # TacoTranslate
 
-Automatically translate your React application in minutes with contextually aware AI. [Visit TacoTranslate.com](https://tacotranslate.com) for more information and to create an account for free!
+Take your React application to new markets automatically with AI-powered and contextually aware translations. [Visit TacoTranslate.com](https://tacotranslate.com) for more information, and to create an account for free!
 
 Zero additional dependencies!
 
@@ -253,6 +253,25 @@ const tacoTranslate = createTacoTranslateClient({
 ```
 
 Strings will then just be output as they come in.
+
+#### Uninstalling TacoTranslate
+
+To uninstall, first remove the package:
+
+```
+npm uninstall tacotranslate
+```
+
+Then, within all your files, remove any TacoTranslate imports and hooks. For example, using a regular expression, your IDE could replace `<Translate>` with the original string like so:
+
+- Replace:
+	```
+	<Translate\s(?:.*?)string="([^"]*?)"(?:.*?)\/>
+	```
+- With: 
+	```
+	"$1"
+	```
 
 ### Supported languages
 
