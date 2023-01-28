@@ -118,7 +118,17 @@ export default function Page() {
 	const translate = useTranslateString();
 	
 	return (
-		<title>{translate({string: 'My page title'})}</title>
+		<title>{translate('My page title')}</title>
+	);
+}
+```
+
+Both `id` and `variables` can be set in an options object as the second parameter, like this:
+
+```jsx
+function Page() {
+	return (
+		<p>{translate('Visitor count: {{count}}', {count: 123})}</p>
 	);
 }
 ```
@@ -134,9 +144,9 @@ function useTranslations() {
 	const translate = useTranslateString();
 
 	return {
-		itemCreated: translate({string: 'Item created!'}),
-		itemCreationError: translate({string: 'Error creating item. Please try again!'}),
-		itemDeleted: translate({string: 'Item deleted.'})
+		itemCreated: translate('Item created!'),
+		itemCreationError: translate('Error creating item. Please try again!'),
+		itemDeleted: translate('Item deleted.')
 	};
 }
 

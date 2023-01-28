@@ -9,7 +9,7 @@ import React, {
 	useState,
 	createElement,
 } from 'react';
-import {sanitize} from 'dompurify'
+import {sanitize} from 'dompurify';
 
 type TacoTranslateError = Error & {code?: string; type?: string};
 
@@ -231,14 +231,13 @@ const createTacoTranslateClient =
 
 export default createTacoTranslateClient;
 
-export type TranslateProperties = {
+export type TranslateOptions = {
 	id?: string;
-	string: string;
 	variables?: Record<string, string>;
 };
 
 export type TranslateComponentProperties = HTMLAttributes<HTMLSpanElement> &
-	TranslateProperties & {as?: keyof HTMLElementTagNameMap};
+	TranslateOptions & {as?: keyof HTMLElementTagNameMap; string: string};
 
 export type TranslationContextProperties = {
 	origin?: string;
@@ -284,11 +283,10 @@ const template = (input = '', object: Record<string, string> = {}) =>
 		}
 	});
 
-function useTranslateStringFunction({
-	id,
-	string: inputString,
-	variables,
-}: TranslateProperties) {
+function useTranslateStringFunction(
+	inputString: string,
+	{id, variables}: TranslateOptions
+) {
 	const {translations, locale, createEntry} = useContext(TranslationContext);
 
 	if (process.env.NODE_ENV === 'development') {
@@ -351,10 +349,12 @@ function Translate({
 	as = 'span',
 	...parameters
 }: TranslateComponentProperties) {
-	const output = useTranslateStringFunction({id, string, variables});
-	const sanitized = useMemo(() => (
-		sanitize(output, {USE_PROFILES: {html: true}})
-	), [output])
+	const output = useTranslateStringFunction(string, {id, variables});
+	const sanitized = useMemo(
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		() => sanitize(output, {USE_PROFILES: {html: true}}),
+		[output]
+	);
 
 	return createElement(as, {
 		...parameters,
