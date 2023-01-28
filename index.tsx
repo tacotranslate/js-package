@@ -9,7 +9,7 @@ import React, {
 	useState,
 	createElement,
 } from 'react';
-import * as dompurify from 'dompurify';
+import {sanitize} from 'isomorphic-dompurify';
 
 type TacoTranslateError = Error & {code?: string; type?: string};
 
@@ -353,7 +353,7 @@ function Translate({
 	const output = useTranslateStringFunction(string, {id, variables});
 	const sanitized = useMemo(
 		// eslint-disable-next-line @typescript-eslint/naming-convention
-		() => dompurify.sanitize(output, {USE_PROFILES: {html: true}}),
+		() => sanitize(output, {USE_PROFILES: {html: true}}),
 		[output]
 	);
 
