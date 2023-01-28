@@ -21,7 +21,8 @@
 		"fix": "xo --prettier --fix",
 		"format": "prettier -w .",
 		"format:check": "prettier --check .",
-		"typescript:check": "tsc --noEmit --p tsconfig.json"
+		"typescript:check": "tsc --noEmit --p tsconfig.json",
+		"prepublishOnly": "npm run build"
 	},
 	"peerDependencies": {
 		"react": "^18.2.0",
