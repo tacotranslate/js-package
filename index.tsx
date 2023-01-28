@@ -9,7 +9,7 @@ import React, {
 	useState,
 	createElement,
 } from 'react';
-import dompurify from 'dompurify';
+import * as dompurify from 'dompurify';
 
 type TacoTranslateError = Error & {code?: string; type?: string};
 
