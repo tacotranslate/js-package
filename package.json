@@ -24,6 +24,9 @@
 		"typescript:check": "tsc --noEmit --p tsconfig.json",
 		"prepublishOnly": "npm run build"
 	},
+	"dependencies": {
+		"dompurify": "^2.4.3"
+	},
 	"peerDependencies": {
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
@@ -68,8 +71,5 @@
 				}
 			}
 		]
-	},
-	"dependencies": {
-		"dompurify": "^2.4.3"
 	}
 }
