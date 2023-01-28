@@ -133,9 +133,9 @@ function Page() {
 }
 ```
 
-#### Translation strings as a map (best practice)
+#### Translation strings as a map hook
 
-When working with multiple strings in your code where using components is not applicable, you could create a hook with a map to your translations.
+When working with multiple strings in your code where using components is not applicable, you could, for example, create a hook with a map to your translations.
 
 ```jsx
 import {useTranslateString} from 'tacotranslate';
