@@ -285,7 +285,7 @@ const template = (input = '', object: Record<string, string> = {}) =>
 
 function useTranslateStringFunction(
 	inputString: string,
-	{id, variables}: TranslateOptions
+	{id, variables}: TranslateOptions | undefined = {}
 ) {
 	const {translations, locale, createEntry} = useContext(TranslationContext);
 
