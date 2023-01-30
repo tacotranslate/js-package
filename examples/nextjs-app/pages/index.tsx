@@ -30,18 +30,12 @@ function Page({locale}: PageProperties) {
 				<meta property="og:locale" content={locale} />
 				<meta
 					name="description"
-					content={translate({
-						string:
-							'With TacoTranslate, you can automatically localize your React applications to any language within minutes.',
-					})}
+					content={translate('With TacoTranslate, you can automatically localize your React applications to any language within minutes.')}
 				/>
 
 				<meta
 					property="og:description"
-					content={translate({
-						string:
-							'With TacoTranslate, you can automatically localize your React applications to any language within minutes.',
-					})}
+					content={translate('With TacoTranslate, you can automatically localize your React applications to any language within minutes.')}
 				/>
 			</Head>
 

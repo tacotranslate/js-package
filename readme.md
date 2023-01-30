@@ -42,7 +42,7 @@ TacoTranslate automatically translates your React application to any of our curr
 
 ### Setting up your project
 
-Your application needs to be wrapped inside a `<TranslationProvider>` that is fed the properties `client` and `locale`. For Next.js, we recommend doing this inside `_app.js`. Check out [our examples folder on GitHub](https://github.com/tacotranslate/npm-package/tree/master/examples/) for more.
+Your application needs to be wrapped inside a `<TranslationProvider>` that is fed the properties `client` and `locale`. For Next.js, we recommend doing this inside `_app.js`. Check out [our examples folder on GitHub](https://github.com/tacotranslate/npm-package/tree/master/examples/) for more information.
 
 ```jsx
 import createTacoTranslateClient, {TranslationProvider} from 'tacotranslate';
@@ -192,7 +192,7 @@ In addition to those properties, `<TranslationProvider>` can also be fed the fol
     	```jsx
     	<TranslationProvider url="tacotranslate.com/contact" />
     	```
-  	- Check out [our `nextjs-server-side-rendering` example on GitHub](https://github.com/tacotranslate/npm-package/blob/master/examples/nextjs-server-side-rendering/pages/index.jsx) to see it used in code.
+  	- Check out [our `nextjs-app` example on GitHub](https://github.com/tacotranslate/npm-package/blob/master/examples/nextjs-app/pages/index.jsx) to see it used in code.
 - **`translations`** (optional)
   	- An object with a list of initial translations to prevent a client side request when the page loads. Useful when rendering on the server. You can request a list of translations for the current URL (origin) by using `getTranslations` from a `client`.
 
