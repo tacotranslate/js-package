@@ -14,11 +14,11 @@ export default function App({
 	Component,
 	pageProps,
 }: AppProps & {pageProps: PageProperties}) {
-	const {url, locale, translations} = pageProps;
+	const {origin, locale, translations} = pageProps;
 
 	return (
 		<TranslationProvider
-			origin={url}
+			origin={origin}
 			client={tacoTranslate}
 			locale={locale}
 			translations={translations}

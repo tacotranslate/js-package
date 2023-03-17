@@ -205,7 +205,7 @@ export type CreateTacoTranslateClientParameters = {
 	isEnabled?: boolean;
 };
 
-type TacoTranslateClientParameters = {locale: Locale};
+export type TacoTranslateClientParameters = {locale: Locale};
 export type GetTranslationsParameters = {entries?: Entry[]; origin?: string};
 
 const createTacoTranslateClient =
@@ -248,6 +248,7 @@ export type TranslationContextProperties = {
 	createEntry?: (entry: Entry) => void;
 	Translate?: typeof Translate;
 	translate?: typeof useTranslateStringFunction;
+	error?: Error;
 };
 
 const TranslationContext = createContext<TranslationContextProperties>({});
@@ -278,7 +279,10 @@ const template = (input = '', object: Record<string, string> = {}) =>
 
 			return templateIdentifier;
 		} catch (error: unknown) {
-			console.error(error);
+			if (process.env.NODE_ENV === 'development') {
+				console.error(error);
+			}
+
 			return templateIdentifier;
 		}
 	});
@@ -292,16 +296,16 @@ function useTranslateStringFunction(
 
 	if (process.env.NODE_ENV === 'development') {
 		if (typeof inputString !== 'string') {
-			throw new TypeError('<TacoTranslate> `string` must be a string!');
+			throw new TypeError('<TacoTranslate> `string` must be a string.');
 		} else if (inputString.length > 1500) {
 			throw new TypeError(
-				`<TacoTranslate> \`string\` is too long at ${inputString.length}. Max length is 1500 characters. Please split the string across multiple <TacoTranslate> components/functions.`
+				`<TacoTranslate> 'string' is too long at ${inputString.length}. Max length is 1500 characters. Please split the string across multiple <TacoTranslate> components/functions.`
 			);
 		}
 
 		if (inputString.includes('  ')) {
 			console.warn(
-				`<TacoTranslate> Detected a \`string\` with multiple spaces. This may lead to unintenional side-effects in the translation: \`${inputString}\``
+				`<TacoTranslate> Detected a 'string' with multiple spaces. This may lead to unintenional side-effects in the translation: '${inputString}'`
 			);
 		}
 	}
@@ -382,6 +386,7 @@ export function TranslationProvider(
 		children,
 	} = properties;
 
+	const [error, setError] = useState<Error>();
 	const [currentLocale, setCurrentLocale] = useState(locale);
 	const [entries, setEntries] = useState<Entry[]>([]);
 	const [localizations, setLocalizations] = useState<Localizations>(() =>
@@ -426,7 +431,11 @@ export function TranslationProvider(
 					setCurrentLocale(locale);
 				})
 				.catch((error) => {
-					console.error(error);
+					if (process.env.NODE_ENV === 'development') {
+						console.error(error);
+					}
+
+					setError(error);
 				});
 		}
 	}, [client, locale, entries, origin]);
@@ -461,8 +470,9 @@ export function TranslationProvider(
 			createEntry,
 			Translate,
 			translate: useTranslateStringFunction,
+			error,
 		}),
-		[client, locale, entries, translations, createEntry]
+		[client, locale, entries, translations, createEntry, error]
 	);
 
 	return <Provider value={value}>{children}</Provider>;

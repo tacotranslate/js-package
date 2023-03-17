@@ -12,7 +12,7 @@ npm install tacotranslate
 
 ## Usage
 
-Check out [our examples folder on GitHub](https://github.com/tacotranslate/npm-package/tree/master/examples/) to learn more.
+Check out [our examples folder on GitHub](https://github.com/tacotranslate/npm-package/tree/test/examples/) to learn more.
 
 ```jsx
 import createTacoTranslateClient, {
@@ -42,7 +42,7 @@ TacoTranslate automatically translates your React application to any of our curr
 
 ### Setting up your project
 
-Your application needs to be wrapped inside a `<TranslationProvider>` that is fed the properties `client` and `locale`. For Next.js, we recommend doing this inside `_app.js`. Check out [our examples folder on GitHub](https://github.com/tacotranslate/npm-package/tree/master/examples/) for more information.
+Your application needs to be wrapped inside a `<TranslationProvider>` that is fed the properties `client` and `locale`. For Next.js, we recommend doing this inside `_app.js`. Check out [our examples folder on GitHub](https://github.com/tacotranslate/npm-package/tree/test/examples/) for more information.
 
 ```jsx
 import createTacoTranslateClient, {TranslationProvider} from 'tacotranslate';
@@ -50,11 +50,11 @@ import createTacoTranslateClient, {TranslationProvider} from 'tacotranslate';
 const tacoTranslate = createTacoTranslateClient({apiKey: '1234567890'});
 
 export default function App({Component, pageProps}) {
-	const {url, locale, translations} = pageProps;
+	const {origin, locale, translations} = pageProps;
 
 	return (
 		<TranslationProvider
-			url={url}
+			origin={origin}
 			client={tacoTranslate}
 			locale={locale}
 			translations={translations}
@@ -144,8 +144,8 @@ function useTranslations() {
 	const translate = useTranslateString();
 
 	return {
-		itemCreated: translate('Item created!'),
-		itemCreationError: translate('Error creating item. Please try again!'),
+		itemCreated: translate('Item created.'),
+		itemCreationError: translate('Error creating item. Please try again.'),
 		itemDeleted: translate('Item deleted.')
 	};
 }
@@ -182,7 +182,7 @@ const tacoTranslate = createTacoTranslateClient({
 - **`client`**
   	- `client` is a TacoTranslate client from the `createTacoTranslateClient` function that is provided an object with `apiKey`.
 - **`locale`**
- 	- `locale` is the langauge code of the language you are translating to. Refer to the exported `locales` object (from the `tacotranslate` package), or [visit the GitHub repository](https://github.com/tacotranslate/npm-package/blob/master/index.tsx) to see it in code.
+ 	- `locale` is the langauge code of the language you are translating to. Refer to the exported `locales` object (from the `tacotranslate` package), or [visit the GitHub repository](https://github.com/tacotranslate/npm-package/blob/test/index.tsx) to see it in code.
 
 In addition to those properties, `<TranslationProvider>` can also be fed the following:
 
@@ -190,9 +190,9 @@ In addition to those properties, `<TranslationProvider>` can also be fed the fol
   	- An identifier pointing to the current page or view – such as an URL. This is useful for server side rendering, where you’d want to request all the translations for the current page. If not set, TacoTranslate infers the current URL by running `window.location.host + window.location.pathname`.
   	- For example:
     	```jsx
-    	<TranslationProvider url="tacotranslate.com/contact" />
+    	<TranslationProvider origin="tacotranslate.com/contact" />
     	```
-  	- Check out [our `nextjs-app` example on GitHub](https://github.com/tacotranslate/npm-package/blob/master/examples/nextjs-app/pages/index.jsx) to see it used in code.
+  	- Check out [our `nextjs-app` example on GitHub](https://github.com/tacotranslate/npm-package/blob/test/examples/nextjs-app/pages/index.jsx) to see it used in code.
 - **`translations`** (optional)
   	- An object with a list of initial translations to prevent a client side request when the page loads. Useful when rendering on the server. You can request a list of translations for the current URL (origin) by using `getTranslations` from a `client`.
 
@@ -231,25 +231,45 @@ const tacoTranslate = createTacoTranslateClient({apiKey: '1234567890'});
 
 export async function getServerSideProps(context) {
 	const {resolvedUrl: path, locale} = context;
-	let url = `localhost:3000${path}`;
+	let origin = `localhost:3000${path}`;
 
 	if (context.req?.headers?.host) {
-		url = `${context.req.headers.host}${path}`;
+		origin = `${context.req.headers.host}${path}`;
 	}
 
 	const {getTranslations} = tacoTranslate({locale});
-	const translations = await getTranslations({origin: url}).catch((error) => {
+	const translations = await getTranslations({origin}).catch((error) => {
 		console.error(error);
 		return {};
 	});
 
 	return {
-		props: {locale, translations, url},
+		props: {locale, translations, origin},
 	};
 }
 ```
 
-Check out [our `nextjs-app` example](https://github.com/tacotranslate/npm-package/tree/master/examples/nextjs-app) to see it used in a server rendered application. 
+Check out [our `nextjs-app` example](https://github.com/tacotranslate/npm-package/tree/test/examples/nextjs-app) to see it used in a server rendered application. 
+
+### Acting on errors
+
+The `useTacoTranslate` hook includes an `error` object that will be populated with a JavaScript `Error` when an error occurs. Errors may be network errors, or errors thrown from the API. 
+
+Errors are always logged to the console during local development (`process.env.NODE_ENV === 'development'`).
+
+```jsx
+import {useTacoTranslate} from 'tacotranslate';
+
+function Component() {
+	const {error} = useTacoTranslate();
+
+	useEffect(() => {
+		// some error handling
+	}, [error]);
+
+	return null;
+}
+```
 
 ### Disabling TacoTranslate
 
@@ -263,6 +283,50 @@ const tacoTranslate = createTacoTranslateClient({
 ```
 
 Strings will then just be output as they come in.
+
+#### Bypassing TacoTranslate
+
+You can also implement your own handling of translations – only using TacoTranslate as a module. To do that, you’ll need to create and use your own client. Here’s an example
+
+```jsx
+function getTranslations({locale, projectLocale, entries, origin}) {
+	// ... your custom handling code here
+
+	return {
+		'My string': 'My translated string'
+	}
+}
+
+const createCustomClient = ({projectLocale, isEnabled = true}) => (
+	({locale}: TacoTranslateClientParameters) => ({
+		getTranslations: async ({entries, origin}) => (
+			isEnabled
+				? getTranslations({locale, projectLocale, entries, origin})
+				: {}
+		)
+	})
+);
+
+const customClient = createCustomClient({projectLocale: 'es'})
+
+const App = () => (
+	<TranslationProvider client={customClient} locale="es">
+		<Page/>
+	<TranslationProvider>
+);
+```
+
+Your custom client should be a function taking `projectLocale` and `isEnabled` as input parameters in an object, returning a function taking `locale` as an input parameter in an object, finally returning an object with an asynchronous `getTranslations` function taking `entries` and `origin` as input parameters in an object.
+
+The return data of `getTranslations` should look similar to this:
+
+```jsx
+{
+	'My string': 'My translated string'
+}
+```
+
+`entries` are an array of objects containing properties `k` for `key`, `s` for `string`, and `l` for locale.
 
 #### Uninstalling TacoTranslate
 
