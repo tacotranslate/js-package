@@ -94,6 +94,8 @@ export const locales = [
 	['cy', 'Welsh'],
 ];
 
+export const rightToLeftLocaleCodes = ['ar', 'ha', 'he', 'ps', 'fa', 'ur'];
+
 export type Locale = (typeof locales)[number][0];
 export type Localizations = Record<Locale, Translations>;
 
@@ -243,6 +245,8 @@ export type TranslationContextProperties = {
 	origin?: string;
 	client?: ReturnType<typeof createTacoTranslateClient>;
 	locale?: Locale;
+	isLeftToRight?: boolean;
+	isRightToLeft?: boolean;
 	entries?: Entry[];
 	translations?: Translations;
 	createEntry?: (entry: Entry) => void;
@@ -398,6 +402,13 @@ export function TranslationProvider(
 		setEntries((previousEntries) => [...previousEntries, entry]);
 	}, []);
 
+	const isRightToLeft = useMemo(
+		() => (locale ? rightToLeftLocaleCodes.includes(locale) : undefined),
+		[locale]
+	);
+
+	const isLeftToRight = useMemo(() => !isRightToLeft, [isRightToLeft]);
+
 	useEffect(() => {
 		if (!client || !locale) {
 			return;
@@ -465,6 +476,8 @@ export function TranslationProvider(
 		() => ({
 			client,
 			locale,
+			isLeftToRight,
+			isRightToLeft,
 			entries,
 			translations,
 			createEntry,
@@ -472,7 +485,16 @@ export function TranslationProvider(
 			translate: useTranslateStringFunction,
 			error,
 		}),
-		[client, locale, entries, translations, createEntry, error]
+		[
+			client,
+			locale,
+			isLeftToRight,
+			isRightToLeft,
+			entries,
+			translations,
+			createEntry,
+			error,
+		]
 	);
 
 	return <Provider value={value}>{children}</Provider>;

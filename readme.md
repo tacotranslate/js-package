@@ -92,6 +92,22 @@ TacoTranslate will then preserve that text as-is. If you’re borrowing words fr
 
 This will improve the user experience of people using screen readers or similar tools to browse the web.
 
+### Handling RTL (Right to Left) languages
+
+If your app supports both left to right and right to left languages, you should implement the applicable styling. The current reading direction can be retrieved from the context, like this:
+
+```jsx
+function Component() {
+	const {Translate, isLeftToRight, isRightToLeft} = useTacoTranslate();
+	
+	return (
+		<span style={{textAlign: isRightToLeft ? 'right' : 'left'}}>
+			<Translate string="Hello, world!" />
+		</span>
+	);
+}
+```
+
 ### With custom variables
 
 Sometimes, your translations include variables, such as usernames, that we don’t want to translate. Nor to generate separate strings for every occurrence. With TacoTranslate, implementing support for that is simple:
