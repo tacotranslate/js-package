@@ -286,7 +286,7 @@ Strings will then just be output as they come in.
 
 #### Bypassing TacoTranslate
 
-You can also implement your own handling of translations – only using TacoTranslate as a module. To do that, you’ll need to create and use your own client. Here’s an example
+You can also implement your own handling of translations (ie. _“roll your own”_) – only using TacoTranslate as a module. To do that, you’ll need to create and use a custom client. Here’s an example:
 
 ```jsx
 function getTranslations({locale, projectLocale, entries, origin}) {
@@ -298,7 +298,7 @@ function getTranslations({locale, projectLocale, entries, origin}) {
 }
 
 const createCustomClient = ({projectLocale, isEnabled = true}) => (
-	({locale}: TacoTranslateClientParameters) => ({
+	({locale}) => ({
 		getTranslations: async ({entries, origin}) => (
 			isEnabled
 				? getTranslations({locale, projectLocale, entries, origin})
