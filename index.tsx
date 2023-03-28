@@ -270,12 +270,82 @@ const template = (input = '', object: Record<string, string> = {}) =>
 		}
 	});
 
+export type TranslationContextProperties = {
+	origin?: string;
+	client?: ReturnType<typeof createTacoTranslateClient>;
+	locale?: Locale;
+	isLeftToRight?: boolean;
+	isRightToLeft?: boolean;
+	entries: Entry[];
+	translations: Translations;
+	createEntry: (entry: Entry) => void;
+	Translate: typeof Translate;
+	translate: typeof useTranslateStringFunction;
+	error?: Error;
+};
+
+const initialContext: TranslationContextProperties = {
+	entries: [],
+	translations: {},
+	createEntry: () => undefined,
+	Translate,
+	translate: (inputString: string) => inputString,
+};
+
+const TranslationContext =
+	createContext<TranslationContextProperties>(initialContext);
+
+const {Provider, Consumer: TranslationConsumer} = TranslationContext;
+export {TranslationContext, TranslationConsumer};
+
+export const useTacoTranslate = () => {
+	const context = useContext(TranslationContext);
+
+	if (process.env.NODE_ENV === 'development') {
+		if (!context.client) {
+			throw new TypeError(
+				'<TacoTranslate> is unable to find required <TranslationProvider>.'
+			);
+		} else if (!context.locale) {
+			throw new TypeError(
+				'<TacoTranslate> `locale` is not set on <TranslationProvider>.'
+			);
+		}
+	}
+
+	return context;
+};
+
+export type TranslateComponentProperties = HTMLAttributes<HTMLSpanElement> &
+	TranslateOptions & {as?: keyof HTMLElementTagNameMap; string: string};
+
+function Translate({
+	id,
+	string,
+	variables,
+	as = 'span',
+	...parameters
+}: TranslateComponentProperties) {
+	const output = useTranslateStringFunction(string, {id, variables});
+	const sanitized = useMemo(
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		() => sanitize(output, {USE_PROFILES: {html: true}}),
+		[output]
+	);
+
+	return createElement(as, {
+		...parameters,
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		dangerouslySetInnerHTML: {__html: sanitized},
+	});
+}
+
 function useTranslateStringFunction(
 	inputString: string,
 	options?: TranslateOptions
 ) {
 	const {id, variables} = options ?? {};
-	const {translations, locale, createEntry} = useContext(TranslationContext);
+	const {translations, locale, createEntry} = useTacoTranslate();
 
 	if (process.env.NODE_ENV === 'development') {
 		if (typeof inputString !== 'string') {
@@ -288,7 +358,7 @@ function useTranslateStringFunction(
 
 		if (inputString.includes('  ')) {
 			console.warn(
-				`<TacoTranslate> Detected a 'string' with multiple spaces. This may lead to unintenional side-effects in the translation: '${inputString}'`
+				`<TacoTranslate> Detected a 'string' with multiple spaces. This may lead to unintenional side-effects in the translation: \`${inputString}\``
 			);
 		}
 	}
@@ -324,67 +394,6 @@ function useTranslateStringFunction(
 
 	return output;
 }
-
-export type TranslateComponentProperties = HTMLAttributes<HTMLSpanElement> &
-	TranslateOptions & {as?: keyof HTMLElementTagNameMap; string: string};
-
-function Translate({
-	id,
-	string,
-	variables,
-	as = 'span',
-	...parameters
-}: TranslateComponentProperties) {
-	const output = useTranslateStringFunction(string, {id, variables});
-	const sanitized = useMemo(
-		// eslint-disable-next-line @typescript-eslint/naming-convention
-		() => sanitize(output, {USE_PROFILES: {html: true}}),
-		[output]
-	);
-
-	return createElement(as, {
-		...parameters,
-		// eslint-disable-next-line @typescript-eslint/naming-convention
-		dangerouslySetInnerHTML: {__html: sanitized},
-	});
-}
-
-export type TranslationContextProperties = {
-	origin?: string;
-	client?: ReturnType<typeof createTacoTranslateClient>;
-	locale?: Locale;
-	isLeftToRight?: boolean;
-	isRightToLeft?: boolean;
-	entries?: Entry[];
-	translations?: Translations;
-	createEntry?: (entry: Entry) => void;
-	Translate?: typeof Translate;
-	translate?: typeof useTranslateStringFunction;
-	error?: Error;
-};
-
-const TranslationContext = createContext<TranslationContextProperties>({});
-
-const {Provider, Consumer: TranslationConsumer} = TranslationContext;
-export {TranslationContext, TranslationConsumer};
-
-export const useTacoTranslate = () => {
-	const context = useContext(TranslationContext);
-
-	if (process.env.NODE_ENV === 'development') {
-		if (!context.client) {
-			throw new TypeError(
-				'<TacoTranslate> is unable to find required <TranslateProvider>.'
-			);
-		} else if (!context.locale) {
-			throw new TypeError(
-				'<TacoTranslate> `locale` is not set on <TranslateProvider>.'
-			);
-		}
-	}
-
-	return context;
-};
 
 export const useTranslateString = () => {
 	const {translate} = useTacoTranslate();
