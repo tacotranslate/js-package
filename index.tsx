@@ -66,7 +66,7 @@ export const locales = [
 	['mt', 'Maltese'],
 	['mr', 'Marathi'],
 	['mn', 'Mongolian'],
-	['no', 'Norwegian'],
+	['no', 'Norwegian (bokmål)'],
 	['ps', 'Pashto'],
 	['pl', 'Polish'],
 	['pt', 'Portuguese (Brazil)'],
@@ -238,27 +238,6 @@ export type TranslateOptions = {
 	variables?: Record<string, string>;
 };
 
-export type TranslateComponentProperties = HTMLAttributes<HTMLSpanElement> &
-	TranslateOptions & {as?: keyof HTMLElementTagNameMap; string: string};
-
-export type TranslationContextProperties = {
-	origin?: string;
-	client?: ReturnType<typeof createTacoTranslateClient>;
-	locale?: Locale;
-	isLeftToRight?: boolean;
-	isRightToLeft?: boolean;
-	entries?: Entry[];
-	translations?: Translations;
-	createEntry?: (entry: Entry) => void;
-	Translate?: typeof Translate;
-	translate?: typeof useTranslateStringFunction;
-	error?: Error;
-};
-
-const TranslationContext = createContext<TranslationContextProperties>({});
-const {Provider, Consumer: TranslationConsumer} = TranslationContext;
-export {TranslationContext, TranslationConsumer};
-
 /**
  * Transform a string template
  * @param {string} input - the input string
@@ -346,10 +325,8 @@ function useTranslateStringFunction(
 	return output;
 }
 
-export const useTranslateString = () => {
-	const {translate} = useContext(TranslationContext);
-	return translate;
-};
+export type TranslateComponentProperties = HTMLAttributes<HTMLSpanElement> &
+	TranslateOptions & {as?: keyof HTMLElementTagNameMap; string: string};
 
 function Translate({
 	id,
@@ -372,9 +349,52 @@ function Translate({
 	});
 }
 
+export type TranslationContextProperties = {
+	origin?: string;
+	client?: ReturnType<typeof createTacoTranslateClient>;
+	locale?: Locale;
+	isLeftToRight?: boolean;
+	isRightToLeft?: boolean;
+	entries?: Entry[];
+	translations?: Translations;
+	createEntry?: (entry: Entry) => void;
+	Translate?: typeof Translate;
+	translate?: typeof useTranslateStringFunction;
+	error?: Error;
+};
+
+const TranslationContext = createContext<TranslationContextProperties>({});
+
+const {Provider, Consumer: TranslationConsumer} = TranslationContext;
+export {TranslationContext, TranslationConsumer};
+
+export const useTacoTranslate = () => {
+	const context = useContext(TranslationContext);
+
+	useEffect(() => {
+		if (!context) {
+			throw new TypeError(
+				'<TacoTranslate> is unable to find required <TranslateProvider>.'
+			);
+		}
+	}, [context]);
+
+	return context;
+};
+
+export const useTranslateString = () => {
+	const {translate} = useTacoTranslate();
+	return translate;
+};
+
 export const useTranslate = () => {
-	const {Translate} = useContext(TranslationContext);
+	const {Translate} = useTacoTranslate();
 	return Translate;
+};
+
+export const useLocale = () => {
+	const {locale} = useTacoTranslate();
+	return locale;
 };
 
 export function TranslationProvider(
@@ -499,9 +519,3 @@ export function TranslationProvider(
 
 	return <Provider value={value}>{children}</Provider>;
 }
-
-export const useTacoTranslate = () => useContext(TranslationContext);
-export const useLocale = () => {
-	const {locale} = useContext(TranslationContext);
-	return locale;
-};
