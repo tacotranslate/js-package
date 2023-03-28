@@ -371,19 +371,17 @@ export {TranslationContext, TranslationConsumer};
 export const useTacoTranslate = () => {
 	const context = useContext(TranslationContext);
 
-	useEffect(() => {
-		if (process.env.NODE_ENV === 'development') {
-			if (!context.client) {
-				throw new TypeError(
-					'<TacoTranslate> is unable to find required <TranslateProvider>.'
-				);
-			} else if (!context.locale) {
-				throw new TypeError(
-					'<TacoTranslate> `locale` is not set on <TranslateProvider>.'
-				);
-			}
+	if (process.env.NODE_ENV === 'development') {
+		if (!context.client) {
+			throw new TypeError(
+				'<TacoTranslate> is unable to find required <TranslateProvider>.'
+			);
+		} else if (!context.locale) {
+			throw new TypeError(
+				'<TacoTranslate> `locale` is not set on <TranslateProvider>.'
+			);
 		}
-	}, [context]);
+	}
 
 	return context;
 };
