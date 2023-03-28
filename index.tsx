@@ -274,41 +274,42 @@ export type TranslationContextProperties = {
 	origin?: string;
 	client?: ReturnType<typeof createTacoTranslateClient>;
 	locale?: Locale;
+	translations?: Translations;
+};
+
+export type TacoTranslateContextProperties = TranslationContextProperties & {
 	isLeftToRight?: boolean;
 	isRightToLeft?: boolean;
 	entries: Entry[];
-	translations: Translations;
 	createEntry: (entry: Entry) => void;
 	Translate: typeof Translate;
 	translate: typeof useTranslateStringFunction;
 	error?: Error;
 };
 
-const initialContext: TranslationContextProperties = {
+const initialContext: TacoTranslateContextProperties = {
 	entries: [],
-	translations: {},
 	createEntry: () => undefined,
 	Translate,
 	translate: (inputString: string) => inputString,
 };
 
-const TranslationContext =
-	createContext<TranslationContextProperties>(initialContext);
+const TacoTranslateContext =
+	createContext<TacoTranslateContextProperties>(initialContext);
 
-const {Provider, Consumer: TranslationConsumer} = TranslationContext;
-export {TranslationContext, TranslationConsumer};
+const TranslationContext = createContext<TranslationContextProperties>({});
 
 export const useTacoTranslate = () => {
-	const context = useContext(TranslationContext);
+	const context = useContext(TacoTranslateContext);
 
 	if (process.env.NODE_ENV === 'development') {
 		if (!context.client) {
 			throw new TypeError(
-				'<TacoTranslate> is unable to find required <TranslationProvider>.'
+				'<TacoTranslate> is unable to find required <TranslationProvider>. `client` is not set.'
 			);
 		} else if (!context.locale) {
 			throw new TypeError(
-				'<TacoTranslate> `locale` is not set on <TranslationProvider>.'
+				'<TacoTranslate> `locale` is required on <TranslationProvider>.'
 			);
 		}
 	}
@@ -530,5 +531,11 @@ export function TranslationProvider(
 		]
 	);
 
-	return <Provider value={value}>{children}</Provider>;
+	return (
+		<TranslationContext.Provider value={value}>
+			<TacoTranslateContext.Provider value={value}>
+				{children}
+			</TacoTranslateContext.Provider>
+		</TranslationContext.Provider>
+	);
 }
