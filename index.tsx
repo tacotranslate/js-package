@@ -456,41 +456,45 @@ export function TranslationProvider(
 			return;
 		}
 
-		if (typeof window !== 'undefined' && entries.length > 0) {
-			const {getTranslations} = client({locale});
-			const currentEntries = [...entries];
-			const currentEntryKeys = new Set(
-				currentEntries.map((entry) => entry.k ?? entry.s)
-			);
+		if (typeof window !== 'undefined') {
+			if (entries.length > 0) {
+				const {getTranslations} = client({locale});
+				const currentEntries = [...entries];
+				const currentEntryKeys = new Set(
+					currentEntries.map((entry) => entry.k ?? entry.s)
+				);
 
-			setEntries((previousEntries) => [
-				...previousEntries.filter(
-					(entry) => !currentEntryKeys.has(entry.k ?? entry.s)
-				),
-			]);
+				setEntries((previousEntries) => [
+					...previousEntries.filter(
+						(entry) => !currentEntryKeys.has(entry.k ?? entry.s)
+					),
+				]);
 
-			getTranslations({entries: currentEntries, origin: currentOrigin})
-				.then((translations) => {
-					setLocalizations((previousLocalizations) => ({
-						...previousLocalizations,
-						[currentOrigin]: {
-							...previousLocalizations[currentOrigin],
-							[locale]: {
-								...previousLocalizations[currentOrigin]?.[locale],
-								...translations,
+				getTranslations({entries: currentEntries, origin: currentOrigin})
+					.then((translations) => {
+						setLocalizations((previousLocalizations) => ({
+							...previousLocalizations,
+							[currentOrigin]: {
+								...previousLocalizations[currentOrigin],
+								[locale]: {
+									...previousLocalizations[currentOrigin]?.[locale],
+									...translations,
+								},
 							},
-						},
-					}));
+						}));
 
-					setCurrentLocale(locale);
-				})
-				.catch((error) => {
-					if (process.env.NODE_ENV === 'development') {
-						console.error(error);
-					}
+						setCurrentLocale(locale);
+					})
+					.catch((error) => {
+						if (process.env.NODE_ENV === 'development') {
+							console.error(error);
+						}
 
-					setError(error);
-				});
+						setError(error);
+					});
+			} else {
+				setCurrentLocale(locale);
+			}
 		}
 	}, [client, locale, entries, currentOrigin]);
 
