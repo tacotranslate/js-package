@@ -20,7 +20,7 @@ export default function App({
 		<TranslationProvider
 			origin={origin}
 			client={tacoTranslate}
-			locale={locale}
+			locale={locale ?? 'en'}
 			translations={translations}
 		>
 			<Component {...pageProps} />
