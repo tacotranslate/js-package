@@ -1,19 +1,20 @@
 import React from 'react';
 import {type AppProps} from 'next/app';
-import {TranslationProvider, type Translations} from 'tacotranslate';
+import {
+	type Locale,
+	TranslationProvider,
+	type Translations,
+} from 'tacotranslate';
 import tacoTranslate from '../utilities/tacotranslate';
 import '../global.css';
 
 type PageProperties = {
-	url: string;
-	locale: string;
+	origin: string;
+	locale: Locale;
 	translations: Translations;
 };
 
-export default function App({
-	Component,
-	pageProps,
-}: AppProps & {pageProps: PageProperties}) {
+export default function App({Component, pageProps}: AppProps<PageProperties>) {
 	const {origin, locale, translations} = pageProps;
 
 	return (
