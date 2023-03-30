@@ -97,7 +97,7 @@ export const locales = [
 export const rightToLeftLocaleCodes = ['ar', 'ha', 'he', 'ps', 'fa', 'ur'];
 
 export type Locale = (typeof locales)[number][0];
-export type Localizations = Record<Locale, Translations>;
+export type Localizations = Record<string, Record<Locale, Translations>>;
 
 const defaultApiUrl =
 	process.env.TACOTRANSLATE_API_URL ?? 'https://api.tacotranslate.com';
@@ -427,8 +427,16 @@ export function TranslationProvider(
 	const [error, setError] = useState<Error>();
 	const [currentLocale, setCurrentLocale] = useState(locale);
 	const [entries, setEntries] = useState<Entry[]>([]);
+	const [currentOrigin, setCurrentOrigin] = useState(() => {
+		if (typeof window === 'undefined') {
+			return origin ?? '*';
+		}
+
+		return origin ?? window.location.host + window.location.pathname;
+	});
+
 	const [localizations, setLocalizations] = useState<Localizations>(() =>
-		locale ? {[locale]: inputTranslations ?? {}} : {}
+		locale ? {[currentOrigin]: {[locale]: inputTranslations ?? {}}} : {}
 	);
 
 	const createEntry = useCallback((inputEntry: Entry) => {
@@ -449,8 +457,6 @@ export function TranslationProvider(
 		}
 
 		if (typeof window !== 'undefined' && entries.length > 0) {
-			const currentOrigin =
-				origin ?? window.location.host + window.location.pathname;
 			const {getTranslations} = client({locale});
 			const currentEntries = [...entries];
 			const currentEntryKeys = new Set(
@@ -467,9 +473,12 @@ export function TranslationProvider(
 				.then((translations) => {
 					setLocalizations((previousLocalizations) => ({
 						...previousLocalizations,
-						[locale]: {
-							...previousLocalizations[locale],
-							...translations,
+						[currentOrigin]: {
+							...previousLocalizations[currentOrigin],
+							[locale]: {
+								...previousLocalizations[currentOrigin]?.[locale],
+								...translations,
+							},
 						},
 					}));
 
@@ -483,27 +492,51 @@ export function TranslationProvider(
 					setError(error);
 				});
 		}
-	}, [client, locale, entries, origin]);
+	}, [client, locale, entries, currentOrigin]);
+
+	const [translationsToInject, setTranslationsToInject] =
+		useState<Translations>();
 
 	useEffect(() => {
-		if (locale) {
-			setCurrentLocale(locale);
+		setTranslationsToInject(inputTranslations);
+	}, [inputTranslations]);
 
-			if (inputTranslations && Object.keys(inputTranslations).length > 0) {
-				setLocalizations((previousLocalizations) => ({
-					...previousLocalizations,
+	useEffect(() => {
+		if (
+			translationsToInject &&
+			locale &&
+			Object.keys(translationsToInject).length > 0
+		) {
+			setTranslationsToInject(undefined);
+			setLocalizations((previousLocalizations) => ({
+				...previousLocalizations,
+				[currentOrigin]: {
+					...previousLocalizations[currentOrigin],
 					[locale]: {
-						...previousLocalizations[locale],
-						...inputTranslations,
+						...previousLocalizations[currentOrigin]?.[locale],
+						...translationsToInject,
 					},
-				}));
-			}
+				},
+			}));
 		}
-	}, [locale, inputTranslations]);
+	}, [translationsToInject, locale, currentOrigin]);
+
+	if (origin) {
+		if (origin !== currentOrigin) {
+			setCurrentOrigin(origin);
+		}
+	} else if (typeof window !== 'undefined') {
+		const currentUrl = window.location.host + window.location.pathname;
+
+		if (currentOrigin !== currentUrl) {
+			setCurrentOrigin(currentUrl);
+		}
+	}
 
 	const translations = useMemo(
-		() => (currentLocale ? localizations[currentLocale] ?? {} : {}),
-		[localizations, currentLocale]
+		() =>
+			currentLocale ? localizations[currentOrigin]?.[currentLocale] ?? {} : {},
+		[localizations, currentOrigin, currentLocale]
 	);
 
 	const value = useMemo(
