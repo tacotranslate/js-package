@@ -106,25 +106,22 @@ const maxUrlLength = 2048;
 const patchDefaultString = (string: string) =>
 	string.replace(/\[{3}.*?]{3}/g, (match) => match.slice(3, -3));
 
-async function getTranslations({
-	apiUrl = defaultApiUrl,
-	apiKey,
-	locale,
-	projectLocale,
-	entries,
-	origin,
-}: {
+export type GetTranslationsParameters = {
 	apiUrl: string;
 	apiKey: string;
 	locale: Locale;
 	projectLocale?: Locale;
 	entries?: Entry[];
 	origin?: string;
-}): Promise<Translations> {
-	if (locale === projectLocale) {
-		return {};
-	}
+};
 
+async function getTranslations({
+	apiUrl = defaultApiUrl,
+	apiKey,
+	locale,
+	entries,
+	origin,
+}: GetTranslationsParameters): Promise<Translations> {
 	const requests = [];
 	let url = `${apiUrl}/api/v1/t?a=${apiKey}&l=${locale}`;
 
@@ -208,7 +205,10 @@ export type CreateTacoTranslateClientParameters = {
 };
 
 export type TacoTranslateClientParameters = {locale: Locale};
-export type GetTranslationsParameters = {entries?: Entry[]; origin?: string};
+export type ClientGetTranslationsParameters = {
+	entries?: Entry[];
+	origin?: string;
+};
 
 const createTacoTranslateClient =
 	({
@@ -218,8 +218,11 @@ const createTacoTranslateClient =
 		isEnabled = true,
 	}: CreateTacoTranslateClientParameters) =>
 	({locale}: TacoTranslateClientParameters) => ({
-		getTranslations: async ({entries, origin}: GetTranslationsParameters) =>
-			isEnabled
+		getTranslations: async ({
+			entries,
+			origin,
+		}: ClientGetTranslationsParameters) =>
+			isEnabled && locale !== projectLocale
 				? getTranslations({
 						apiUrl,
 						apiKey,
@@ -253,7 +256,7 @@ const template = (input = '', object: Record<string, string> = {}) =>
 			// eslint-disable-next-line no-new-func, @typescript-eslint/no-unsafe-assignment
 			const value: string = new Function(
 				'object',
-				`return object.${identifier};`
+				`return object['${identifier}'];`
 			)(object);
 
 			if (typeof value === 'string') {
@@ -278,6 +281,7 @@ export type TranslationContextProperties = {
 };
 
 export type TacoTranslateContextProperties = TranslationContextProperties & {
+	isLoading?: boolean;
 	isLeftToRight?: boolean;
 	isRightToLeft?: boolean;
 	entries: Entry[];
@@ -424,6 +428,7 @@ export function TranslationProvider(
 		children,
 	} = properties;
 
+	const [isLoading, setIsLoading] = useState<boolean>();
 	const [error, setError] = useState<Error>();
 	const [currentLocale, setCurrentLocale] = useState(locale);
 	const [entries, setEntries] = useState<Entry[]>([]);
@@ -458,6 +463,8 @@ export function TranslationProvider(
 
 		if (typeof window !== 'undefined') {
 			if (entries.length > 0) {
+				setIsLoading(true);
+
 				const {getTranslations} = client({locale});
 				const currentEntries = [...entries];
 				const currentEntryKeys = new Set(
@@ -484,6 +491,7 @@ export function TranslationProvider(
 						}));
 
 						setCurrentLocale(locale);
+						setIsLoading(false);
 					})
 					.catch((error) => {
 						if (process.env.NODE_ENV === 'development') {
@@ -491,6 +499,7 @@ export function TranslationProvider(
 						}
 
 						setError(error);
+						setIsLoading(false);
 					});
 			} else {
 				setCurrentLocale(locale);
@@ -547,6 +556,7 @@ export function TranslationProvider(
 		() => ({
 			client,
 			locale,
+			isLoading,
 			isLeftToRight,
 			isRightToLeft,
 			entries,
@@ -559,6 +569,7 @@ export function TranslationProvider(
 		[
 			client,
 			locale,
+			isLoading,
 			isLeftToRight,
 			isRightToLeft,
 			entries,

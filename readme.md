@@ -47,19 +47,15 @@ Your application needs to be wrapped inside a `<TranslationProvider>` that is fe
 ```jsx
 import createTacoTranslateClient, {TranslationProvider} from 'tacotranslate';
 
-const tacoTranslate = createTacoTranslateClient({apiKey: '1234567890'});
+const tacoTranslate = createTacoTranslateClient({
+	apiKey: '1234567890',
+	projectLocale: 'en'
+});
 
-export default function App({Component, pageProps}) {
-	const {origin, locale, translations} = pageProps;
-
+export default function App() {
 	return (
-		<TranslationProvider
-			origin={origin}
-			client={tacoTranslate}
-			locale={locale ?? 'en'}
-			translations={translations}
-		>
-			<Component {...pageProps} />
+		<TranslationProvider client={tacoTranslate} locale="es">
+			...
 		</TranslationProvider>
 	);
 }
@@ -108,9 +104,31 @@ function Component() {
 }
 ```
 
+### Display a loading indicator when client side loading
+
+When loading translations on the client side (for example when the locale changes), you can display a loader (or anything else you’d like) by looking at the `isLoading` property from `useTacoTranslate` like this:
+
+```jsx
+function Component() {
+	const {Translate, isLoading} = useTacoTranslate();
+	
+	return (
+		<div>
+			<div>
+				<Translate string="Hello, world!" />
+			</div>
+			
+			{isLoading ? (
+				<span>Loading...</span>
+			) : null}
+		</div>
+	);
+}
+```
+
 ### With custom variables
 
-Sometimes, your translations include variables, such as usernames, that we don’t want to translate. Nor to generate separate strings for every occurrence. With TacoTranslate, implementing support for that is simple:
+Sometimes, your translations will include variables, such as usernames, that we don’t want to translate. Nor do we want to generate separate strings for every occurrence. With TacoTranslate, implementing support for that is simple:
 
 ```jsx
 function Component() {
@@ -143,42 +161,11 @@ Both `id` and `variables` can be set in an options object as the second paramete
 
 ```jsx
 function Page() {
+	const translate = useTranslateString();
+
 	return (
 		<p>{translate('Visitor count: {{count}}', {count: 123})}</p>
 	);
-}
-```
-
-#### Translation strings as a map hook
-
-When working with multiple strings in your code where using components is not applicable, you could, for example, create a hook with a map to your translations.
-
-```jsx
-import {useTranslateString} from 'tacotranslate';
-
-function useTranslations() {
-	const translate = useTranslateString();
-
-	return {
-		itemCreated: translate('Item created.'),
-		itemCreationError: translate('Error creating item. Please try again.'),
-		itemDeleted: translate('Item deleted.')
-	};
-}
-
-export default function Component() {
-	const translations = useTranslations();
-	const handleCreate = useCallback(() => {
-		if (Math.random() > 0.5) {
-			window.alert(translations.itemCreated);
-		} else {
-			window.alert(translations.itemCreationError);
-		}
-	}, [translations])
-
-	return (
-		<button type="button" onClick={handleCreate}>Create item</button>
-	)
 }
 ```
 
@@ -304,19 +291,26 @@ Strings will then just be output as they come in.
 
 You can also implement your own handling of translations (ie. _“roll your own”_) – only using TacoTranslate as a module. To do that, you’ll need to create and use a custom client. Here’s an example:
 
-```jsx
-function getTranslations({locale, projectLocale, entries, origin}) {
-	// ... your custom handling code here
+```tsx
+async function getTranslations({locale, projectLocale, entries, origin}: GetTranslationsParameters): Promise<Translations> {
+	const url = new URL('https://your-api.com/translate');
+	url.searchParams.set('locale', locale);
+	url.searchParams.set('origin', origin);
+	url.searchParams.set('entries', JSON.stringify(entries))
+
+	const request = await fetch(url.toString());
+	
+	// ... some custom handling code here, and then you return a simple flat object, like this:
 
 	return {
 		'My string': 'My translated string'
 	}
 }
 
-const createCustomClient = ({projectLocale, isEnabled = true}) => (
-	({locale}) => ({
-		getTranslations: async ({entries, origin}) => (
-			isEnabled
+const createCustomClient = ({projectLocale, isEnabled = true}): CreateTacoTranslateClientParameters => (
+	({locale}: TacoTranslateClientParameters) => ({
+		getTranslations: async ({entries, origin}: ClientGetTranslationsParameters) => (
+			isEnabled && (locale !== projectLocale)
 				? getTranslations({locale, projectLocale, entries, origin})
 				: {}
 		)
