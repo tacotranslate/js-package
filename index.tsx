@@ -440,8 +440,6 @@ export function TranslationProvider(
 		return origin ?? window.location.host + window.location.pathname;
 	});
 
-	console.log({currentOrigin, locale, inputTranslations});
-
 	const [localizations, setLocalizations] = useState<Localizations>(() =>
 		locale ? {[currentOrigin]: {[locale]: inputTranslations ?? {}}} : {}
 	);
@@ -524,36 +522,29 @@ export function TranslationProvider(
 		}
 	}
 
-	const [translationsToInject, setTranslationsToInject] = useState<
-		Translations | undefined
-	>(inputTranslations);
-
-	useEffect(() => {
-		setTranslationsToInject(inputTranslations);
-	}, [inputTranslations]);
-
-	if (
-		translationsToInject &&
-		locale &&
-		Object.keys(translationsToInject).length > 0
-	) {
-		setTranslationsToInject(undefined);
-		setLocalizations((previousLocalizations) => ({
-			...previousLocalizations,
-			[currentOrigin]: {
-				...previousLocalizations[currentOrigin],
-				[locale]: {
-					...previousLocalizations[currentOrigin]?.[locale],
-					...translationsToInject,
-				},
-			},
-		}));
-	}
+	const patchedLocalizations = useMemo(
+		() =>
+			origin && locale
+				? {
+						...localizations,
+						[origin]: {
+							...localizations[origin],
+							[locale]: {
+								...localizations[origin]?.[locale],
+								...inputTranslations,
+							},
+						},
+				  }
+				: {},
+		[origin, locale, inputTranslations, localizations]
+	);
 
 	const translations = useMemo(
 		() =>
-			currentLocale ? localizations[currentOrigin]?.[currentLocale] ?? {} : {},
-		[localizations, currentOrigin, currentLocale]
+			currentLocale
+				? patchedLocalizations[currentOrigin]?.[currentLocale] ?? {}
+				: {},
+		[patchedLocalizations, currentOrigin, currentLocale]
 	);
 
 	const value = useMemo(
