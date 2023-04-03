@@ -440,6 +440,8 @@ export function TranslationProvider(
 		return origin ?? window.location.host + window.location.pathname;
 	});
 
+	console.log({currentOrigin, locale, inputTranslations});
+
 	const [localizations, setLocalizations] = useState<Localizations>(() =>
 		locale ? {[currentOrigin]: {[locale]: inputTranslations ?? {}}} : {}
 	);
@@ -510,33 +512,6 @@ export function TranslationProvider(
 		}
 	}, [client, locale, entries, currentOrigin]);
 
-	const [translationsToInject, setTranslationsToInject] =
-		useState<Translations>();
-
-	useEffect(() => {
-		setTranslationsToInject(inputTranslations);
-	}, [inputTranslations]);
-
-	useEffect(() => {
-		if (
-			translationsToInject &&
-			locale &&
-			Object.keys(translationsToInject).length > 0
-		) {
-			setTranslationsToInject(undefined);
-			setLocalizations((previousLocalizations) => ({
-				...previousLocalizations,
-				[currentOrigin]: {
-					...previousLocalizations[currentOrigin],
-					[locale]: {
-						...previousLocalizations[currentOrigin]?.[locale],
-						...translationsToInject,
-					},
-				},
-			}));
-		}
-	}, [translationsToInject, locale, currentOrigin]);
-
 	if (origin) {
 		if (origin !== currentOrigin) {
 			setCurrentOrigin(origin);
@@ -547,6 +522,32 @@ export function TranslationProvider(
 		if (currentOrigin !== currentUrl) {
 			setCurrentOrigin(currentUrl);
 		}
+	}
+
+	const [translationsToInject, setTranslationsToInject] = useState<
+		Translations | undefined
+	>(inputTranslations);
+
+	useEffect(() => {
+		setTranslationsToInject(inputTranslations);
+	}, [inputTranslations]);
+
+	if (
+		translationsToInject &&
+		locale &&
+		Object.keys(translationsToInject).length > 0
+	) {
+		setTranslationsToInject(undefined);
+		setLocalizations((previousLocalizations) => ({
+			...previousLocalizations,
+			[currentOrigin]: {
+				...previousLocalizations[currentOrigin],
+				[locale]: {
+					...previousLocalizations[currentOrigin]?.[locale],
+					...translationsToInject,
+				},
+			},
+		}));
 	}
 
 	const translations = useMemo(
