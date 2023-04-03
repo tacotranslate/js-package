@@ -450,8 +450,11 @@ export function TranslationProvider(
 	}, []);
 
 	const isRightToLeft = useMemo(
-		() => (locale ? rightToLeftLocaleCodes.includes(locale) : undefined),
-		[locale]
+		() =>
+			currentLocale
+				? rightToLeftLocaleCodes.includes(currentLocale)
+				: undefined,
+		[currentLocale]
 	);
 
 	const isLeftToRight = useMemo(() => !isRightToLeft, [isRightToLeft]);
