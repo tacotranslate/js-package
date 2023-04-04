@@ -1,8 +1,8 @@
 import createTacoTranslateClient from 'tacotranslate';
 
 const tacoTranslate = createTacoTranslateClient({
-	apiKey: '123-456-789',
-	projectLocale: 'en',
+	apiKey: process.env.TACOTRANSLATE_API_KEY,
+	projectLocale: process.env.TACOTRANSLATE_PROJECT_LOCALE,
 });
 
 export default tacoTranslate;

@@ -335,6 +335,7 @@ const createCustomClient =
 			isEnabled && locale !== projectLocale
 				? getTranslations({locale, entries, origin})
 				: {},
+		getLocales: async () => ['en', 'no']
 	});
 
 const customClient = createCustomClient({projectLocale: 'es'});
@@ -357,6 +358,8 @@ The return data of `getTranslations` should look similar to this:
 ```
 
 `entries` are an array of objects containing properties `k` for `key`, `s` for `string`, and `l` for locale.
+
+Also, a `getLocales` function is required. It should return an array of strings representing the locale codes of the languages you are supporting.
 
 #### Uninstalling TacoTranslate
 

@@ -1,6 +1,11 @@
 import Head from 'next/head';
 import React from 'react';
-import {locales, useTranslate, useTranslateString} from 'tacotranslate';
+import {
+	type Locale,
+	locales,
+	useTranslate,
+	useTranslateString,
+} from 'tacotranslate';
 import LocaleSelector from '../components/locale-selector';
 import Wrapper from '../components/wrapper';
 import getAppServerSideProps from '../utilities/get-app-server-side-props';
@@ -12,10 +17,11 @@ const bodyFontStyles = {
 };
 
 type PageProperties = {
-	locale: string;
+	locale: Locale;
+	locales: Locale[];
 };
 
-function Page({locale}: PageProperties) {
+function Page({locale, locales: supportedLocales}: PageProperties) {
 	const Translate = useTranslate();
 	const translate = useTranslateString();
 	const currentLocale = locales.find(
@@ -43,7 +49,7 @@ function Page({locale}: PageProperties) {
 				/>
 			</Head>
 
-			<LocaleSelector initialLocale={locale} />
+			<LocaleSelector initialLocale={locale} options={supportedLocales} />
 
 			<h1>
 				<Translate string="[[[Hola]]], world! Welcome to TacoTranslate." />

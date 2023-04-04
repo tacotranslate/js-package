@@ -4,7 +4,7 @@ import tacoTranslate from './tacotranslate';
 
 export default async function getAppStaticProps(
 	path: string,
-	{locale}: GetStaticPropsContext
+	{locale, locales}: GetStaticPropsContext
 ) {
 	let origin = `localhost:3000${path}`;
 
@@ -21,7 +21,7 @@ export default async function getAppStaticProps(
 	});
 
 	return {
-		props: {locale, translations, origin},
+		props: {locale, locales, translations, origin},
 		revalidate: 10,
 	};
 }

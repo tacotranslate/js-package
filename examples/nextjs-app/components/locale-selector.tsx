@@ -1,12 +1,13 @@
 import React, {useState, useCallback, type ChangeEvent} from 'react';
 import {useRouter} from 'next/router';
-import {locales} from 'tacotranslate';
+import {type Locale, locales} from 'tacotranslate';
 
 type LocaleSelectorProperties = {
-	initialLocale: string;
+	initialLocale: Locale;
+	options: Locale[];
 };
 
-function LocaleSelector({initialLocale}: LocaleSelectorProperties) {
+function LocaleSelector({initialLocale, options}: LocaleSelectorProperties) {
 	const router = useRouter();
 	const [currentInput, setCurrentInput] = useState(initialLocale);
 
@@ -25,11 +26,21 @@ function LocaleSelector({initialLocale}: LocaleSelectorProperties) {
 
 	return (
 		<select value={currentInput} onChange={handleChange}>
-			{locales.map(([locale, name]) => (
-				<option key={locale} value={locale}>
-					{name}
-				</option>
-			))}
+			{options.map((code) => {
+				const pair = locales.find((index) => index[0] === code);
+
+				if (pair) {
+					const [locale, language] = pair;
+
+					return (
+						<option key={locale} value={locale}>
+							{language}
+						</option>
+					);
+				}
+
+				return null;
+			})}
 		</select>
 	);
 }

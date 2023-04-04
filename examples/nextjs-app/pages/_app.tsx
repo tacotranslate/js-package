@@ -12,6 +12,7 @@ import '../global.css';
 type PageProperties = {
 	origin: string;
 	locale: Locale;
+	locales: Locale[];
 	translations: Translations;
 };
 
