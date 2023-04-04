@@ -1,1 +1,8 @@
 examples
+.gitignore
+.prettierignore
+.prettierrc.json
+jest.config.js
+jest.setup.js
+test.tsx
+tsconfig.json

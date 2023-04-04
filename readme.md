@@ -1,5 +1,7 @@
 # TacoTranslate
 
+![](https://img.shields.io/npm/v/tacotranslate) ![](https://img.shields.io/github/checks-status/tacotranslate/npm-package/master)
+
 Take your React application to new markets automatically with AI-powered and contextually aware translations. [Visit TacoTranslate.com](https://tacotranslate.com) for more information, and to create an account for free!
 
 The only production dependenies are React and [Isomporphic DOMPurify](https://www.npmjs.com/package/isomorphic-dompurify) – a module that prevents against XSS attacks within your strings.
@@ -292,32 +294,50 @@ Strings will then just be output as they come in.
 You can also implement your own handling of translations (ie. _“roll your own”_) – only using TacoTranslate as a module. To do that, you’ll need to create and use a custom client. Here’s an example:
 
 ```tsx
-async function getTranslations({locale, projectLocale, entries, origin}: GetTranslationsParameters): Promise<Translations> {
+async function getTranslations({
+	locale,
+	entries,
+	origin,
+}: Pick<
+	GetTranslationsParameters,
+	'locale' | 'entries' | 'origin'
+>): Promise<Translations> {
 	const url = new URL('https://your-api.com/translate');
 	url.searchParams.set('locale', locale);
-	url.searchParams.set('origin', origin);
-	url.searchParams.set('entries', JSON.stringify(entries))
+	url.searchParams.set('entries', JSON.stringify(entries));
+
+	if (origin) {
+		url.searchParams.set('origin', origin);
+	}
 
 	const request = await fetch(url.toString());
-	
+
 	// ... some custom handling code here, and then you return a simple flat object, like this:
 
 	return {
-		'My string': 'My translated string'
-	}
+		'My string': 'My translated string',
+	};
 }
 
-const createCustomClient = ({projectLocale, isEnabled = true}): CreateTacoTranslateClientParameters => (
+const createCustomClient =
+	({
+		projectLocale,
+		isEnabled = true,
+	}: Pick<
+		CreateTacoTranslateClientParameters,
+		'projectLocale' | 'isEnabled'
+	>) =>
 	({locale}: TacoTranslateClientParameters) => ({
-		getTranslations: async ({entries, origin}: ClientGetTranslationsParameters) => (
-			isEnabled && (locale !== projectLocale)
-				? getTranslations({locale, projectLocale, entries, origin})
-				: {}
-		)
-	})
-);
+		getTranslations: async ({
+			entries,
+			origin,
+		}: ClientGetTranslationsParameters) =>
+			isEnabled && locale !== projectLocale
+				? getTranslations({locale, entries, origin})
+				: {},
+	});
 
-const customClient = createCustomClient({projectLocale: 'es'})
+const customClient = createCustomClient({projectLocale: 'es'});
 
 const App = () => (
 	<TranslationProvider client={customClient} locale="es">

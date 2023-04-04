@@ -1,4 +1,6 @@
 .next
+.vercel
+build
 node_modules
 package-lock.json
 readme.md
