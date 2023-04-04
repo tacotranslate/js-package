@@ -94,6 +94,8 @@ export const locales = [
 	['cy', 'Welsh'],
 ];
 
+export const localeCodes = locales.map(([code]) => code);
+export const languages = locales.map(([, language]) => language)
 export const rightToLeftLocaleCodes = ['ar', 'ha', 'he', 'ps', 'fa', 'ur'];
 
 export type Locale = (typeof locales)[number][0];
@@ -262,9 +264,9 @@ const createTacoTranslateClient =
 			isEnabled
 				? getLocales({apiUrl, apiKey}).catch((error) => {
 						console.error(error);
-						return locales;
+						return localeCodes;
 				  })
-				: locales,
+				: localeCodes,
 	});
 
 export default createTacoTranslateClient;
