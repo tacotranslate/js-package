@@ -10,7 +10,7 @@ import {
 	TranslationProvider,
 	useTacoTranslate,
 	useTranslate,
-	locales,
+	localeCodes,
 } from '.';
 
 const translations: Translations = {
@@ -35,7 +35,7 @@ const createClient =
 	({locale}: TacoTranslateClientParameters) => ({
 		getTranslations: async () =>
 			isEnabled && locale !== projectLocale ? getTranslations() : {},
-		getLocales: async () => locales,
+		getLocales: async () => localeCodes,
 	});
 
 const client = createClient({projectLocale: 'en'});

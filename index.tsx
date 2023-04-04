@@ -95,7 +95,7 @@ export const locales = [
 ];
 
 export const localeCodes = locales.map(([code]) => code);
-export const languages = locales.map(([, language]) => language)
+export const languages = locales.map(([, language]) => language);
 export const rightToLeftLocaleCodes = ['ar', 'ha', 'he', 'ps', 'fa', 'ur'];
 
 export type Locale = (typeof locales)[number][0];
