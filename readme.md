@@ -1,6 +1,6 @@
 # TacoTranslate
 
-![](https://img.shields.io/npm/v/tacotranslate) ![](https://img.shields.io/github/actions/workflow/status/tacotranslate/npm-package/tests.yml)
+![https://npmjs.com/package/tacotranslate](https://img.shields.io/npm/v/tacotranslate) ![https://github.com/tacotranslate/npm-package](https://img.shields.io/github/actions/workflow/status/tacotranslate/npm-package/tests.yml)
 
 Take your React application to new markets automatically with AI-powered and contextually aware translations. [Visit TacoTranslate.com](https://tacotranslate.com) for more information, and to create an account for free!
 
