@@ -8,7 +8,6 @@ import {
 	type TacoTranslateClientParameters,
 	type Translations,
 	TranslationProvider,
-	useTranslate,
 	useTacoTranslate,
 } from '.';
 
@@ -75,9 +74,7 @@ test('translations should be replaced', async () => {
 			const tacoTranslate = useTacoTranslate();
 			const {Translate} = tacoTranslate;
 
-			if (isLoading !== true) {
-				isLoading = tacoTranslate.isLoading;
-			}
+			isLoading = tacoTranslate.isLoading;
 
 			return (
 				<div role="text">
@@ -93,7 +90,17 @@ test('translations should be replaced', async () => {
 		);
 	});
 
-	await waitFor(() => isLoading === false);
+	await waitFor(
+		async () =>
+			new Promise((resolve) => {
+				setInterval(() => {
+					if (isLoading === false) {
+						resolve(true);
+					}
+				}, 50);
+			})
+	);
+
 	await waitFor(() => screen.getByRole('text'));
 
 	expect(screen.getByRole('text').textContent).toBe(translations[textContent]);
@@ -109,9 +116,7 @@ test('variables should be replaced', async () => {
 			const tacoTranslate = useTacoTranslate();
 			const {Translate} = tacoTranslate;
 
-			if (isLoading !== true) {
-				isLoading = tacoTranslate.isLoading;
-			}
+			isLoading = tacoTranslate.isLoading;
 
 			return (
 				<div role="text">
@@ -127,7 +132,17 @@ test('variables should be replaced', async () => {
 		);
 	});
 
-	await waitFor(() => isLoading === false);
+	await waitFor(
+		async () =>
+			new Promise((resolve) => {
+				setInterval(() => {
+					if (isLoading === false) {
+						resolve(true);
+					}
+				}, 50);
+			})
+	);
+
 	await waitFor(() => screen.getByRole('text'));
 
 	expect(screen.getByRole('text').textContent).toBe(`Hello, ${name}!`);
@@ -142,9 +157,7 @@ test('ids should be supported', async () => {
 			const tacoTranslate = useTacoTranslate();
 			const {Translate} = tacoTranslate;
 
-			if (isLoading !== true) {
-				isLoading = tacoTranslate.isLoading;
-			}
+			isLoading = tacoTranslate.isLoading;
 
 			return (
 				<div role="text">
@@ -160,7 +173,17 @@ test('ids should be supported', async () => {
 		);
 	});
 
-	await waitFor(() => isLoading === false);
+	await waitFor(
+		async () =>
+			new Promise((resolve) => {
+				setInterval(() => {
+					if (isLoading === false) {
+						resolve(true);
+					}
+				}, 50);
+			})
+	);
+
 	await waitFor(() => screen.getByRole('text'));
 
 	expect(screen.getByRole('text').textContent).toBe(translations.some_text_id);
