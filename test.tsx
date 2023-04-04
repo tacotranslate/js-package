@@ -9,6 +9,7 @@ import {
 	type Translations,
 	TranslationProvider,
 	useTacoTranslate,
+	useTranslate,
 } from '.';
 
 const translations: Translations = {
@@ -67,14 +68,10 @@ test('renders the context', () => {
 
 test('translations should be replaced', async () => {
 	const textContent = 'Hello, world!';
-	let isLoading: boolean | undefined;
 
 	await act(() => {
 		function Component() {
-			const tacoTranslate = useTacoTranslate();
-			const {Translate} = tacoTranslate;
-
-			isLoading = tacoTranslate.isLoading;
+			const Translate = useTranslate();
 
 			return (
 				<div role="text">
@@ -90,17 +87,6 @@ test('translations should be replaced', async () => {
 		);
 	});
 
-	await waitFor(
-		async () =>
-			new Promise((resolve) => {
-				setInterval(() => {
-					if (isLoading === false) {
-						resolve(true);
-					}
-				}, 50);
-			})
-	);
-
 	await waitFor(() => screen.getByRole('text'));
 
 	expect(screen.getByRole('text').textContent).toBe(translations[textContent]);
@@ -109,14 +95,10 @@ test('translations should be replaced', async () => {
 test('variables should be replaced', async () => {
 	const textContent = 'Hello, {{name}}!';
 	const name = 'Pedro';
-	let isLoading: boolean | undefined;
 
 	await act(() => {
 		function Component() {
-			const tacoTranslate = useTacoTranslate();
-			const {Translate} = tacoTranslate;
-
-			isLoading = tacoTranslate.isLoading;
+			const Translate = useTranslate();
 
 			return (
 				<div role="text">
@@ -132,17 +114,6 @@ test('variables should be replaced', async () => {
 		);
 	});
 
-	await waitFor(
-		async () =>
-			new Promise((resolve) => {
-				setInterval(() => {
-					if (isLoading === false) {
-						resolve(true);
-					}
-				}, 50);
-			})
-	);
-
 	await waitFor(() => screen.getByRole('text'));
 
 	expect(screen.getByRole('text').textContent).toBe(`Hello, ${name}!`);
@@ -150,14 +121,10 @@ test('variables should be replaced', async () => {
 
 test('ids should be supported', async () => {
 	const textContent = 'Hello, there!';
-	let isLoading: boolean | undefined;
 
 	await act(() => {
 		function Component() {
-			const tacoTranslate = useTacoTranslate();
-			const {Translate} = tacoTranslate;
-
-			isLoading = tacoTranslate.isLoading;
+			const Translate = useTranslate();
 
 			return (
 				<div role="text">
@@ -172,17 +139,6 @@ test('ids should be supported', async () => {
 			</TranslationProvider>
 		);
 	});
-
-	await waitFor(
-		async () =>
-			new Promise((resolve) => {
-				setInterval(() => {
-					if (isLoading === false) {
-						resolve(true);
-					}
-				}, 50);
-			})
-	);
 
 	await waitFor(() => screen.getByRole('text'));
 

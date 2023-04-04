@@ -535,7 +535,7 @@ export function TranslationProvider(
 							},
 						},
 				  }
-				: {},
+				: localizations,
 		[origin, locale, inputTranslations, localizations]
 	);
 
