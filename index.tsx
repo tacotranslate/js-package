@@ -197,6 +197,32 @@ async function getTranslations({
 	return Object.assign({}, ...translations);
 }
 
+export type GetLocalesParameters = {
+	apiUrl: string;
+	apiKey: string;
+};
+
+async function getLocales({
+	apiUrl = defaultApiUrl,
+	apiKey,
+}: GetLocalesParameters) {
+	const url = `${apiUrl}/api/v1/l?a=${apiKey}`;
+	const response = await fetch(url)
+		.then(async (response) => response.json())
+		.then((data) => {
+			if (data.success) {
+				return data.locales as Locale[];
+			}
+
+			const error: TacoTranslateError = new Error(data.error.message);
+			error.code = data.error.code as string;
+			error.type = data.error.type as string;
+			throw error;
+		});
+
+	return response;
+}
+
 export type CreateTacoTranslateClientParameters = {
 	apiUrl?: string;
 	apiKey: string;
@@ -232,6 +258,13 @@ const createTacoTranslateClient =
 						origin,
 				  })
 				: {},
+		getLocales: async () =>
+			isEnabled
+				? getLocales({apiUrl, apiKey}).catch((error) => {
+						console.error(error);
+						return locales;
+				  })
+				: locales,
 	});
 
 export default createTacoTranslateClient;
