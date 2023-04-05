@@ -150,11 +150,13 @@ To translate strings directly instead of through a React component, you can impo
 ```jsx
 import {useTranslateString} from 'tacotranslate';
 
-export default function Page() {
+export default function Head() {
 	const translate = useTranslateString();
 	
 	return (
-		<title>{translate('My page title')}</title>
+		<head>
+			<title>{translate('My page title')}</title>
+		</head>
 	);
 }
 ```
@@ -256,6 +258,12 @@ export async function getServerSideProps(context) {
 
 Check out [our `nextjs-app` example](https://github.com/tacotranslate/npm-package/tree/test/examples/nextjs-app) to see it used in a server rendered application. 
 
+### `getLocales`
+
+This function, also from the `client` object, can be used to retrieve a list of the locale codes supported by your project. **The first locale code in this list is the project locale.**
+
+Check out [our `nextjs-app` example](https://github.com/tacotranslate/npm-package/tree/test/examples/nextjs-app) to see it used in a server rendered application. 
+
 ### Acting on errors
 
 The `useTacoTranslate` hook includes an `error` object that will be populated with a JavaScript `Error` when an error occurs. Errors may be network errors, or errors thrown from the API. 
@@ -269,7 +277,9 @@ function Component() {
 	const {error} = useTacoTranslate();
 
 	useEffect(() => {
-		// some error handling
+		if (error) {
+			// some error handling
+		}
 	}, [error]);
 
 	return null;
@@ -287,11 +297,11 @@ const tacoTranslate = createTacoTranslateClient({
 });
 ```
 
-Strings will then just be output as they come in.
+Strings will then just be output in the same language as they come in.
 
 #### Bypassing TacoTranslate
 
-You can also implement your own handling of translations (ie. _“roll your own”_) – only using TacoTranslate as a module. To do that, you’ll need to create and use a custom client. Here’s an example:
+You can also implement your own handling of translations (ie. _“roll your own”_) – only using TacoTranslate as a module. To do that, you’ll need to create and use a custom client, and have your own translation API. Here’s an example:
 
 ```tsx
 async function getTranslations({
