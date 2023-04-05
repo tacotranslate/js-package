@@ -345,7 +345,7 @@ const createCustomClient =
 			isEnabled && locale !== projectLocale
 				? getTranslations({locale, entries, origin})
 				: {},
-		getLocales: async () => ['en', 'no']
+		getLocales: async () => ['en', 'es']
 	});
 
 const customClient = createCustomClient({projectLocale: 'es'});
@@ -445,7 +445,7 @@ TacoTranslate currently supports translation between the following 75 languages:
 | Maltese | mt |
 | Marathi | mr |
 | Mongolian | mn |
-| Norwegian | no |
+| Norwegian (bokmål) | no |
 | Pashto | ps |
 | Polish | pl |
 | Portuguese (Brazil) | pt |
