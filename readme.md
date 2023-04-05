@@ -92,16 +92,16 @@ This will improve the user experience of people using screen readers or similar 
 
 ### Handling RTL (Right to Left) languages
 
-If your app supports both left to right and right to left languages, you should implement the applicable styling. The current reading direction can be retrieved from the context, like this:
+If your application supports both left to right and right to left languages, you should implement the applicable styling. The current reading direction can be retrieved from the context, like this:
 
 ```jsx
-function Component() {
+function Page() {
 	const {Translate, isLeftToRight, isRightToLeft} = useTacoTranslate();
 	
 	return (
-		<span style={{textAlign: isRightToLeft ? 'right' : 'left'}}>
+		<html dir={isRightToLeft ? 'rtl' : 'ltr'}>
 			<Translate string="Hello, world!" />
-		</span>
+		</html>
 	);
 }
 ```
