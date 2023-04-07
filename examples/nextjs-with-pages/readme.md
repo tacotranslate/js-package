@@ -1,4 +1,4 @@
-# TacoTranslate in a Next.js app
+# TacoTranslate in a Next.js app with the `pages/` folder
 
 See this example live at [demo.tacotranslate.com](https://demo.tacotranslate.com).
 

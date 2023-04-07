@@ -46,6 +46,8 @@ TacoTranslate automatically translates your React application to any of our curr
 
 Your application needs to be wrapped inside a `<TranslationProvider>` that is fed the properties `client` and `locale`. For Next.js, we recommend doing this inside `_app.js`. Check out [our examples folder on GitHub](https://github.com/tacotranslate/npm-package/tree/test/examples/) for more information.
 
+[Visit TacoTranslate.com](https://tacotranslate.com) to create an API key and translate to 1 language for free.
+
 ```jsx
 import createTacoTranslateClient, {TranslationProvider} from 'tacotranslate';
 
@@ -74,6 +76,8 @@ export default function Component() {
 }
 ```
 
+To start seeing strings come in to TacoTranslate, set the language to anything but the project locale, and start browsing through your application.
+
 ### Opting out of translation
 
 If you have segments like names or similar that you do not want to translate, you can wrap the segment in triple square brackets, like this: `[[[TacoTranslate]]]`. For example:
@@ -85,7 +89,7 @@ If you have segments like names or similar that you do not want to translate, yo
 TacoTranslate will then preserve that text as-is. If you’re borrowing words from other languages in your strings, such as the Spanish "¡Hola!" that we like using, we strongly recommend labelling the string with it, like this:
 
 ```jsx
-<Translate string={`[[[<span lang="es">Hola</span>]]], world! Welcome to TacoTranslate.`} />
+<Translate string={`<span lang="es">[[[Hola]]]</span>, world! Welcome to TacoTranslate.`} />
 ```
 
 This will improve the user experience of people using screen readers or similar tools to browse the web.

@@ -5,7 +5,8 @@ import tacoTranslate from './tacotranslate';
 export default async function getServerSideProps(
 	context: GetServerSidePropsContext
 ) {
-	const {resolvedUrl: path, locale, locales} = context;
+	const {resolvedUrl, locale, locales} = context;
+	const [path] = resolvedUrl.split('?')
 	let origin = `localhost:3000${path}`;
 
 	if (context.req?.headers?.host) {
