@@ -66,7 +66,7 @@ export const locales = [
 	['mt', 'Maltese'],
 	['mr', 'Marathi'],
 	['mn', 'Mongolian'],
-	['no', 'Norwegian (bokmål)'],
+	['no', 'Norwegian (Bokmål)'],
 	['ps', 'Pashto'],
 	['pl', 'Polish'],
 	['pt', 'Portuguese (Brazil)'],
@@ -164,10 +164,7 @@ async function getTranslations({
 					apiUrl,
 					apiKey,
 					locale,
-					entries: excludedEntries.map((entry) => ({
-						...entry,
-						k: entry.k ?? entry.s,
-					})),
+					entries: excludedEntries,
 					origin,
 				})
 			);
@@ -237,6 +234,9 @@ export type ClientGetTranslationsParameters = {
 	entries?: Entry[];
 	origin?: string;
 };
+
+const getEntryKey = (entry: Entry) =>
+	entry.k ? `${entry.k}:${entry.s}` : entry.s;
 
 const createTacoTranslateClient =
 	({
@@ -313,6 +313,7 @@ export type TranslationContextProperties = {
 	client?: ReturnType<typeof createTacoTranslateClient>;
 	locale?: Locale;
 	translations?: Translations;
+	useDangerouslySetInnerHTML?: boolean;
 };
 
 export type TacoTranslateContextProperties = TranslationContextProperties & {
@@ -357,28 +358,12 @@ export const useTacoTranslate = () => {
 };
 
 export type TranslateComponentProperties = HTMLAttributes<HTMLSpanElement> &
-	TranslateOptions & {as?: keyof HTMLElementTagNameMap; string: string};
-
-function Translate({
-	id,
-	string,
-	variables,
-	as = 'span',
-	...parameters
-}: TranslateComponentProperties) {
-	const output = useTranslateStringFunction(string, {id, variables});
-	const sanitized = useMemo(
-		// eslint-disable-next-line @typescript-eslint/naming-convention
-		() => sanitize(output, {USE_PROFILES: {html: true}}),
-		[output]
-	);
-
-	return createElement(as, {
-		...parameters,
-		// eslint-disable-next-line @typescript-eslint/naming-convention
-		dangerouslySetInnerHTML: {__html: sanitized},
-	});
-}
+	TranslateOptions & {
+		as?: keyof HTMLElementTagNameMap;
+		string: string;
+		// eslint-disable-next-line react/boolean-prop-naming
+		useDangerouslySetInnerHTML?: boolean;
+	};
 
 function useTranslateStringFunction(
 	inputString: string,
@@ -414,8 +399,7 @@ function useTranslateStringFunction(
 		return inputString;
 	}, [variables, inputString]);
 
-	const key = id ?? string;
-	const translation = translations?.[key];
+	const translation = translations?.[id ? `${id}:${string}` : string];
 	const output = useMemo(() => {
 		const value = translation ?? patchDefaultString(string);
 
@@ -428,11 +412,47 @@ function useTranslateStringFunction(
 
 	useEffect(() => {
 		if (!translation && createEntry) {
-			createEntry({k: key, s: string, l: locale});
+			createEntry({k: id, s: string, l: locale});
 		}
-	}, [translation, createEntry, key, string, locale]);
+	}, [translation, createEntry, id, string, locale]);
 
 	return output;
+}
+
+function Translate({
+	id,
+	string,
+	variables,
+	as = 'span',
+	useDangerouslySetInnerHTML: componentUseDangerouslySetInnerHtml,
+	...parameters
+}: TranslateComponentProperties) {
+	const {useDangerouslySetInnerHTML: contextUseDangerouslySetInnerHtml} =
+		useTacoTranslate();
+	const useDangerouslySetInnerHtml =
+		componentUseDangerouslySetInnerHtml === undefined
+			? contextUseDangerouslySetInnerHtml ?? false
+			: componentUseDangerouslySetInnerHtml ?? false;
+
+	const output = useTranslateStringFunction(string, {id, variables});
+	const sanitized = useMemo(
+		() =>
+			useDangerouslySetInnerHtml
+				? // eslint-disable-next-line @typescript-eslint/naming-convention
+				  sanitize(output, {USE_PROFILES: {html: true}})
+				: output,
+		[useDangerouslySetInnerHtml, output]
+	);
+
+	if (useDangerouslySetInnerHtml) {
+		return createElement(as, {
+			...parameters,
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			dangerouslySetInnerHTML: {__html: sanitized},
+		});
+	}
+
+	return createElement(as, parameters, output);
 }
 
 export const useTranslateString = () => {
@@ -460,6 +480,8 @@ export function TranslationProvider(
 		client,
 		locale,
 		translations: inputTranslations,
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		useDangerouslySetInnerHTML = true,
 		children,
 	} = properties;
 
@@ -474,6 +496,18 @@ export function TranslationProvider(
 
 		return origin ?? window.location.host + window.location.pathname;
 	});
+
+	if (origin) {
+		if (origin !== currentOrigin) {
+			setCurrentOrigin(origin);
+		}
+	} else if (typeof window !== 'undefined') {
+		const currentUrl = window.location.host + window.location.pathname;
+
+		if (currentOrigin !== currentUrl) {
+			setCurrentOrigin(currentUrl);
+		}
+	}
 
 	const [localizations, setLocalizations] = useState<Localizations>(() =>
 		locale ? {[currentOrigin]: {[locale]: inputTranslations ?? {}}} : {}
@@ -506,12 +540,12 @@ export function TranslationProvider(
 				const {getTranslations} = client({locale});
 				const currentEntries = [...entries];
 				const currentEntryKeys = new Set(
-					currentEntries.map((entry) => entry.k ?? entry.s)
+					currentEntries.map((entry) => getEntryKey(entry))
 				);
 
 				setEntries((previousEntries) => [
 					...previousEntries.filter(
-						(entry) => !currentEntryKeys.has(entry.k ?? entry.s)
+						(entry) => !currentEntryKeys.has(getEntryKey(entry))
 					),
 				]);
 
@@ -545,18 +579,6 @@ export function TranslationProvider(
 		}
 	}, [client, locale, entries, currentOrigin]);
 
-	if (origin) {
-		if (origin !== currentOrigin) {
-			setCurrentOrigin(origin);
-		}
-	} else if (typeof window !== 'undefined') {
-		const currentUrl = window.location.host + window.location.pathname;
-
-		if (currentOrigin !== currentUrl) {
-			setCurrentOrigin(currentUrl);
-		}
-	}
-
 	const patchedLocalizations = useMemo(
 		() =>
 			origin && locale
@@ -589,6 +611,8 @@ export function TranslationProvider(
 			isLoading,
 			isLeftToRight,
 			isRightToLeft,
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			useDangerouslySetInnerHTML,
 			entries,
 			translations,
 			createEntry,
@@ -602,6 +626,7 @@ export function TranslationProvider(
 			isLoading,
 			isLeftToRight,
 			isRightToLeft,
+			useDangerouslySetInnerHTML,
 			entries,
 			translations,
 			createEntry,

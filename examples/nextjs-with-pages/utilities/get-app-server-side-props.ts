@@ -6,7 +6,7 @@ export default async function getServerSideProps(
 	context: GetServerSidePropsContext
 ) {
 	const {resolvedUrl, locale, locales} = context;
-	const [path] = resolvedUrl.split('?')
+	const [path] = resolvedUrl.split('?');
 	let origin = `localhost:3000${path}`;
 
 	if (context.req?.headers?.host) {

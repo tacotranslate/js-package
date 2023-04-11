@@ -78,6 +78,35 @@ export default function Component() {
 
 To start seeing strings come in to TacoTranslate, set the language to anything but the project locale, and start browsing through your application.
 
+### Opting out of `dangerouslySetInnerHTML`
+
+By default, TacoTranslate will use `dangerouslySetInnerHTML` to render strings. However, if you don’t have or want HTML inside your strings, you can opt out of it like this:
+
+#### On the component-level:
+
+```jsx
+export default function Component() {
+	const Translate = useTranslate();
+	return <Translate string="Hello, world!" useDangerouslySetInnerHTML={false} />;
+}
+```
+
+#### On the context-level:
+
+This will enforce not using `dangerouslySetInnerHTML` on all `<Translate>` components, unless a `<Translate>` component explicitly sets `useDangerouslySetInnerHTML` to `true` on the component level.
+
+```jsx
+export default function App() {
+	return (
+		<TranslationProvider client={tacoTranslate} locale="es" useDangerouslySetInnerHTML={false}>
+			...
+		</TranslationProvider>
+	);
+}
+```
+
+It is worth noting that strings are ran through [Isomporphic DOMPurify](https://www.npmjs.com/package/isomorphic-dompurify) before being rendered using `dangerouslySetInnerHTML`, a module that will prevent against XSS attacks within your strings.
+
 ### Opting out of translation
 
 If you have segments like names or similar that you do not want to translate, you can wrap the segment in triple square brackets, like this: `[[[TacoTranslate]]]`. For example:
@@ -214,7 +243,7 @@ In addition to those properties, `<TranslationProvider>` can also be fed the fol
 - **`string`**
 	- The text to translate. Needs to be written in the same language as your project `locale`. 
 - **`id`** (optional)
-	- A translation ID. This is optional, but can be helpful for translating the same string into multiple, differing outputs. Then, later, [inside our web application](https://tacotranslate.com), you can edit the automatic translation.
+	- A translation ID. This is optional, but can be helpful for translating the same string into multiple, differing outputs in other languages. Then, later, [inside our web application](https://tacotranslate.com), you can edit the automatic translation.
 	- For example:
 		```jsx
 		<>
