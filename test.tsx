@@ -101,6 +101,114 @@ test('translations should be replaced', async () => {
 	expect(screen.getByRole('text').textContent).toBe(translations[textContent]);
 });
 
+test('should render html if useDangerouslySetInnerHTML is not set on the component nor context', async () => {
+	const textContent = 'Hello, world! <b>testing</b>';
+
+	await act(() => {
+		function Component() {
+			const Translate = useTranslate();
+
+			return (
+				<div role="text">
+					<Translate string={textContent} />
+				</div>
+			);
+		}
+
+		return render(
+			<TranslationProvider client={client} locale="no">
+				<Component />
+			</TranslationProvider>
+		);
+	});
+
+	await waitFor(() => screen.getByRole('text'));
+	expect(screen.getByRole('text').textContent).toBe('Hello, world! testing');
+});
+
+test('should not render html if useDangerouslySetInnerHTML is false on the component', async () => {
+	const textContent = 'Hello, world! <b>testing</b>';
+
+	await act(() => {
+		function Component() {
+			const Translate = useTranslate();
+
+			return (
+				<div role="text">
+					<Translate string={textContent} useDangerouslySetInnerHTML={false} />
+				</div>
+			);
+		}
+
+		return render(
+			<TranslationProvider client={client} locale="no">
+				<Component />
+			</TranslationProvider>
+		);
+	});
+
+	await waitFor(() => screen.getByRole('text'));
+	expect(screen.getByRole('text').textContent).toBe(textContent);
+});
+
+test('should not render html if useDangerouslySetInnerHTML is false on the context', async () => {
+	const textContent = 'Hello, world! <b>testing</b>';
+
+	await act(() => {
+		function Component() {
+			const Translate = useTranslate();
+
+			return (
+				<div role="text">
+					<Translate string={textContent} />
+				</div>
+			);
+		}
+
+		return render(
+			<TranslationProvider
+				client={client}
+				locale="no"
+				useDangerouslySetInnerHTML={false}
+			>
+				<Component />
+			</TranslationProvider>
+		);
+	});
+
+	await waitFor(() => screen.getByRole('text'));
+	expect(screen.getByRole('text').textContent).toBe(textContent);
+});
+
+test('should render html if useDangerouslySetInnerHTML is false on the context, but true on the component', async () => {
+	const textContent = 'Hello, world! <b>testing</b>';
+
+	await act(() => {
+		function Component() {
+			const Translate = useTranslate();
+
+			return (
+				<div role="text">
+					<Translate useDangerouslySetInnerHTML string={textContent} />
+				</div>
+			);
+		}
+
+		return render(
+			<TranslationProvider
+				client={client}
+				locale="no"
+				useDangerouslySetInnerHTML={false}
+			>
+				<Component />
+			</TranslationProvider>
+		);
+	});
+
+	await waitFor(() => screen.getByRole('text'));
+	expect(screen.getByRole('text').textContent).toBe('Hello, world! testing');
+});
+
 test('variables should be replaced', async () => {
 	const textContent = 'Hello, {{name}}!';
 	const name = 'Pedro';
