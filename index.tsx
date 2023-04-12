@@ -13,7 +13,7 @@ import {sanitize} from 'isomorphic-dompurify';
 
 type TacoTranslateError = Error & {code?: string; type?: string};
 
-export type Entry = {k?: string; s: string; l?: Locale};
+export type Entry = {i?: string; s: string; l?: Locale};
 export type Translations = Record<string, string>;
 
 export const locales = [
@@ -117,6 +117,19 @@ export type GetTranslationsParameters = {
 	origin?: string;
 };
 
+type GetTranslationsResponse =
+	| {
+			success: false;
+			error: TacoTranslateError;
+	  }
+	| {
+			success: true;
+			inputLocale: Locale;
+			outputLocale: Locale;
+			translations: Translations;
+			errors: TacoTranslateError[];
+	  };
+
 async function getTranslations({
 	apiUrl = defaultApiUrl,
 	apiKey,
@@ -135,10 +148,10 @@ async function getTranslations({
 		const preparedEntries = entries
 			.filter(
 				(entry, index, self) =>
-					index === self.findIndex((thing) => thing.k === entry.k)
+					index === self.findIndex((thing) => thing.i === entry.i)
 			)
 			.map((entry) =>
-				entry.k === entry.s ? {s: entry.s} : {k: entry.k, s: entry.s}
+				entry.i === entry.s ? {s: entry.s} : {i: entry.i, s: entry.s}
 			);
 
 		const includedEntries: Entry[] = [];
@@ -174,9 +187,19 @@ async function getTranslations({
 	requests.push(
 		fetch(url)
 			.then(async (response) => response.json())
-			.then((data) => {
+			.then((data: GetTranslationsResponse) => {
 				if (data.success) {
-					return data.translations as Translations;
+					if (process.env.NODE_ENV === 'development' && data.errors) {
+						for (const error of data.errors) {
+							console.error(
+								new Error(
+									`<TacoTranslate> encountered an error when doing a \`getTranslations\` request: ${error.message}`
+								)
+							);
+						}
+					}
+
+					return data.translations;
 				}
 
 				if (data.error.code === 'locale_is_source_locale') {
@@ -184,8 +207,8 @@ async function getTranslations({
 				}
 
 				const error: TacoTranslateError = new Error(data.error.message);
-				error.code = data.error.code as string;
-				error.type = data.error.type as string;
+				error.code = data.error.code;
+				error.type = data.error.type;
 				throw error;
 			})
 	);
@@ -236,7 +259,7 @@ export type ClientGetTranslationsParameters = {
 };
 
 const getEntryKey = (entry: Entry) =>
-	entry.k ? `${entry.k}:${entry.s}` : entry.s;
+	entry.i ? `${entry.i}:${entry.s}` : entry.s;
 
 const createTacoTranslateClient =
 	({
@@ -377,14 +400,28 @@ function useTranslateStringFunction(
 			throw new TypeError('<TacoTranslate> `string` must be a string.');
 		} else if (inputString.length > 1500) {
 			throw new TypeError(
-				`<TacoTranslate> 'string' is too long at ${inputString.length}. Max length is 1500 characters. Please split the string across multiple <TacoTranslate> components/functions.`
+				`<TacoTranslate> \`string\` is too long at ${inputString.length}. Max length is 1500 characters. Please split the string across multiple <TacoTranslate> components/functions.`
 			);
 		}
 
 		if (inputString.includes('  ')) {
 			console.warn(
-				`<TacoTranslate> Detected a 'string' with multiple spaces. This may lead to unintenional side-effects in the translation: \`${inputString}\``
+				`<TacoTranslate> Detected a \`string\` with multiple spaces. This may lead to unintenional side-effects in the translation: \`${inputString}\``
 			);
+		}
+
+		if (id) {
+			if (typeof id !== 'string') {
+				throw new TypeError('<TacoTranslate> `id` must be a string.');
+			} else if (id.length > 50) {
+				throw new TypeError(
+					`<TacoTranslate> \`id\` is too long at ${id.length}. Max length is 50 characters.`
+				);
+			} else if (!/^[a-zA-Z_][a-z\d-_]*$/.test(id)) {
+				throw new TypeError(
+					`<TacoTranslate> \`id\` format is invalid. Must satisfy \`[a-zA-Z_][a-z0-9-_]*\`.`
+				);
+			}
 		}
 	}
 
@@ -412,7 +449,7 @@ function useTranslateStringFunction(
 
 	useEffect(() => {
 		if (!translation && createEntry) {
-			createEntry({k: id, s: string, l: locale});
+			createEntry({i: id, s: string, l: locale});
 		}
 	}, [translation, createEntry, id, string, locale]);
 

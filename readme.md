@@ -359,6 +359,7 @@ async function getTranslations({
 
 	return {
 		'My string': 'My translated string',
+		'an_id:My string': 'My translated string with ID'
 	};
 }
 
@@ -396,11 +397,14 @@ The return data of `getTranslations` should look similar to this:
 
 ```jsx
 {
-	'My string': 'My translated string'
+	'My string': 'My translated string',
+	'an_id:My string': 'My translated string with ID'
 }
 ```
 
-`entries` are an array of objects containing properties `k` for `key`, `s` for `string`, and `l` for locale.
+Left hand side is the original string, or `ID:ORIGINAL_STRING` if ID is set (the pair separated by a colon). Right hand side is the replacement.
+
+`entries` are an array of objects containing properties `i` for `id`, `s` for `string`, and `l` for locale.
 
 Also, a `getLocales` function is required. It should return an array of strings representing the locale codes of the languages you are supporting.
 
@@ -478,7 +482,7 @@ TacoTranslate currently supports translation between the following 75 languages:
 | Maltese | mt |
 | Marathi | mr |
 | Mongolian | mn |
-| Norwegian (bokmål) | no |
+| Norwegian (Bokmål) | no |
 | Pashto | ps |
 | Polish | pl |
 | Portuguese (Brazil) | pt |
