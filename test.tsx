@@ -11,6 +11,8 @@ import {
 	useTacoTranslate,
 	useTranslate,
 	localeCodes,
+	ClientGetTranslationsParameters,
+	Entry,
 } from '.';
 
 const translations: Translations = {
@@ -74,6 +76,89 @@ test('renders the context', () => {
 		</TranslationProvider>
 	);
 });
+
+test('missing translations should be fetched', async () => {
+	const fetchedEntries: Entry[] = []
+
+	await act(async () => {
+		const createClient = () =>
+			() => ({
+				getTranslations: async ({entries}: ClientGetTranslationsParameters) => {
+					if (entries) {
+						fetchedEntries.push(...entries)
+					}
+
+					return {}
+				},
+				getLocales: async () => localeCodes,
+			});
+
+		const client = createClient();
+
+		const Component = () => {
+			const Translate = useTranslate();
+
+			return (
+				<div role="text">
+					<Translate string="Hello!" />
+					<Translate string="Another string." />
+				</div>
+			);
+		}
+
+		return await render(
+			<TranslationProvider client={client} locale="no">
+				<Component />
+			</TranslationProvider>
+		);
+	});
+
+	await waitFor(() => screen.getByRole('text'));
+
+	expect(JSON.stringify(fetchedEntries)).toBe('[{"s":"Hello!"},{"s":"Another string."}]')
+});
+
+test('present translations should not be fetched', async () => {
+	const fetchedEntries: Entry[] = []
+
+	await act(async () => {
+		const createClient = () =>
+			() => ({
+				getTranslations: async ({entries}: ClientGetTranslationsParameters) => {
+					if (entries) {
+						fetchedEntries.push(...entries)
+					}
+
+					return {}
+				},
+				getLocales: async () => localeCodes,
+			});
+
+		const client = createClient();
+
+		const Component = () => {
+			const Translate = useTranslate();
+
+			return (
+				<div role="text">
+					<Translate string="Hello!" />
+					<Translate string="Another string." />
+				</div>
+			);
+		}
+
+		return await render(
+			<TranslationProvider client={client} locale="no" translations={{"Hello!": "Hello there."}}>
+				<Component />
+			</TranslationProvider>
+		);
+	});
+
+	await waitFor(() => screen.getByRole('text'));
+
+	expect(JSON.stringify(fetchedEntries)).toBe('[{"s":"Another string."}]')
+});
+
 
 test('translations should be replaced', async () => {
 	const textContent = 'Hello, world!';
