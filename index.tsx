@@ -224,6 +224,16 @@ export type GetLocalesParameters = {
 	apiKey: string;
 };
 
+type GetLocalesResponse =
+	| {
+			success: false;
+			error: TacoTranslateError;
+	  }
+	| {
+			success: true;
+			locales: Locale[];
+	  };
+
 async function getLocales({
 	apiUrl = defaultApiUrl,
 	apiKey,
@@ -231,14 +241,14 @@ async function getLocales({
 	const url = `${apiUrl}/api/v1/l?a=${apiKey}`;
 	const response = await fetch(url)
 		.then(async (response) => response.json())
-		.then((data) => {
+		.then((data: GetLocalesResponse) => {
 			if (data.success) {
-				return data.locales as Locale[];
+				return data.locales;
 			}
 
 			const error: TacoTranslateError = new Error(data.error.message);
-			error.code = data.error.code as string;
-			error.type = data.error.type as string;
+			error.code = data.error.code;
+			error.type = data.error.type;
 			throw error;
 		});
 
@@ -580,11 +590,11 @@ export function TranslationProvider(
 					currentEntries.map((entry) => getEntryKey(entry))
 				);
 
-				setEntries((previousEntries) => [
-					...previousEntries.filter(
+				setEntries((previousEntries) =>
+					previousEntries.filter(
 						(entry) => !currentEntryKeys.has(getEntryKey(entry))
-					),
-				]);
+					)
+				);
 
 				getTranslations({entries: currentEntries, origin: currentOrigin})
 					.then((translations) => {
@@ -602,12 +612,15 @@ export function TranslationProvider(
 						setCurrentLocale(locale);
 						setIsLoading(false);
 					})
-					.catch((error) => {
+					.catch((error: unknown) => {
 						if (process.env.NODE_ENV === 'development') {
 							console.error(error);
 						}
 
-						setError(error);
+						if (error instanceof Error) {
+							setError(error);
+						}
+
 						setIsLoading(false);
 					});
 			} else {

@@ -6,6 +6,7 @@ import {
 	useTranslate,
 	useTranslateString,
 } from 'tacotranslate';
+import {type GetServerSidePropsContext} from 'next';
 import LocaleSelector from '../components/locale-selector';
 import Wrapper from '../components/wrapper';
 import getAppServerSideProps from '../utilities/get-app-server-side-props';
@@ -26,7 +27,7 @@ function Page({locale, locales: supportedLocales}: PageProperties) {
 	const translate = useTranslateString();
 	const currentLocale = locales.find(
 		([localeCode]) => localeCode === locale
-	) || ['xx', 'Unknown'];
+	) ?? ['xx', 'Unknown'];
 
 	return (
 		<Wrapper>
@@ -69,7 +70,7 @@ function Page({locale, locales: supportedLocales}: PageProperties) {
 	);
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
 	return getAppServerSideProps(context);
 }
 
