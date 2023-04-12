@@ -145,14 +145,9 @@ async function getTranslations({
 	}
 
 	if (entries) {
-		const preparedEntries = entries
-			.filter(
-				(entry, index, self) =>
-					index === self.findIndex((thing) => thing.i === entry.i)
-			)
-			.map((entry) =>
-				entry.i === entry.s ? {s: entry.s} : {i: entry.i, s: entry.s}
-			);
+		const preparedEntries = entries.map((entry) =>
+			entry.i === entry.s ? {s: entry.s} : {i: entry.i, s: entry.s}
+		);
 
 		const includedEntries: Entry[] = [];
 		const excludedEntries: Entry[] = [];
