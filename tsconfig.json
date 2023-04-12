@@ -12,5 +12,5 @@
 		"declaration": true,
 		"outDir": "build"
 	},
-	"exclude": ["node_modules", "build", "examples", "test.tsx"]
+	"exclude": ["node_modules", "build", "examples"]
 }

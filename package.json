@@ -16,7 +16,7 @@
 		"email": "hola@tacotranslate.com"
 	},
 	"scripts": {
-		"build": "tsc --p tsconfig.json",
+		"build": "tsc --p tsconfig.build.json",
 		"test": "jest",
 		"lint": "xo --prettier",
 		"fix": "xo --prettier --fix",
