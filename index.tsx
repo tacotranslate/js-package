@@ -149,6 +149,8 @@ async function getTranslations({
 			entry.i === entry.s ? {s: entry.s} : {i: entry.i, s: entry.s}
 		);
 
+		preparedEntries.sort((a, b) => a.s.localeCompare(b.s));
+
 		const includedEntries: Entry[] = [];
 		const excludedEntries: Entry[] = [];
 
