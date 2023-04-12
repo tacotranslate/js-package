@@ -570,13 +570,9 @@ export function TranslationProvider(
 
 	const isLeftToRight = useMemo(() => !isRightToLeft, [isRightToLeft]);
 
-	useEffect(() => {
-		if (!client || !locale) {
-			return;
-		}
-
-		if (typeof window !== 'undefined') {
-			if (entries.length > 0) {
+	if (typeof window !== 'undefined') {
+		if (entries.length > 0) {
+			if (!isLoading && client && locale) {
 				setIsLoading(true);
 
 				const {getTranslations} = client({locale});
@@ -618,11 +614,11 @@ export function TranslationProvider(
 
 						setIsLoading(false);
 					});
-			} else {
-				setCurrentLocale(locale);
 			}
+		} else if (locale !== currentLocale) {
+			setCurrentLocale(locale);
 		}
-	}, [client, locale, entries, currentOrigin]);
+	}
 
 	const patchedLocalizations = useMemo(
 		() =>
