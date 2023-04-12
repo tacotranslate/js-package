@@ -572,55 +572,64 @@ export function TranslationProvider(
 
 	const isLeftToRight = useMemo(() => !isRightToLeft, [isRightToLeft]);
 
-	if (typeof window !== 'undefined') {
-		if (entries.length > 0) {
-			if (!isLoading && client && locale) {
-				setIsLoading(true);
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			if (entries.length > 0) {
+				if (!isLoading && client && locale) {
+					setIsLoading(true);
 
-				const {getTranslations} = client({locale});
-				const currentEntries = [...entries];
-				const currentEntryKeys = new Set(
-					currentEntries.map((entry) => getEntryKey(entry))
-				);
+					const {getTranslations} = client({locale});
+					const currentEntryKeys = new Set<string>();
+					const currentEntries: Entry[] = [];
 
-				setEntries((previousEntries) =>
-					previousEntries.filter(
-						(entry) => !currentEntryKeys.has(getEntryKey(entry))
-					)
-				);
+					for (const entry of entries) {
+						const entryKey = getEntryKey(entry);
 
-				getTranslations({entries: currentEntries, origin: currentOrigin})
-					.then((translations) => {
-						setLocalizations((previousLocalizations) => ({
-							...previousLocalizations,
-							[currentOrigin]: {
-								...previousLocalizations[currentOrigin],
-								[locale]: {
-									...previousLocalizations[currentOrigin]?.[locale],
-									...translations,
+						if (!currentEntryKeys.has(entryKey)) {
+							currentEntryKeys.add(entryKey);
+							currentEntries.push(entry);
+						}
+					}
+
+					setEntries((previousEntries) =>
+						previousEntries.filter(
+							(entry) => !currentEntryKeys.has(getEntryKey(entry))
+						)
+					);
+
+					getTranslations({entries: currentEntries, origin: currentOrigin})
+						.then((translations) => {
+							setLocalizations((previousLocalizations) => ({
+								...previousLocalizations,
+								[currentOrigin]: {
+									...previousLocalizations[currentOrigin],
+									[locale]: {
+										...previousLocalizations[currentOrigin]?.[locale],
+										...translations,
+									},
 								},
-							},
-						}));
+							}));
 
-						setCurrentLocale(locale);
-						setIsLoading(false);
-					})
-					.catch((error: unknown) => {
-						if (process.env.NODE_ENV === 'development') {
-							console.error(error);
-						}
+							setCurrentLocale(locale);
+							setIsLoading(false);
+						})
+						.catch((error: unknown) => {
+							if (process.env.NODE_ENV === 'development') {
+								console.error(error);
+							}
 
-						if (error instanceof Error) {
-							setError(error);
-						}
+							if (error instanceof Error) {
+								setError(error);
+							}
 
-						setIsLoading(false);
-					});
+							setIsLoading(false);
+						});
+				}
+			} else {
+				setCurrentLocale(locale);
 			}
-		} else if (locale !== currentLocale) {
-			setCurrentLocale(locale);
 		}
-	}
+	}, [client, currentOrigin, entries, isLoading, locale]);
 
 	const patchedLocalizations = useMemo(
 		() =>
