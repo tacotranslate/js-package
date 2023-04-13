@@ -38,7 +38,7 @@ export default function App({Component, pageProps}: AppProps<PageProperties>) {
 		<TranslationProvider
 			origin={origin}
 			client={tacoTranslate}
-			locale={locale ?? 'en'}
+			locale={locale}
 			translations={translations}
 		>
 			<Page>

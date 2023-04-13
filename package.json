@@ -73,10 +73,13 @@
 			},
 			{
 				"files": [
-					"**/*/next-env.d.ts"
+					"**/*/next-env.d.ts",
+					"**/*/process.d.ts"
 				],
 				"rules": {
-					"@typescript-eslint/triple-slash-reference": 0
+					"@typescript-eslint/triple-slash-reference": 0,
+					"@typescript-eslint/consistent-type-definitions": 0,
+					"no-unused-vars": 0
 				}
 			}
 		]

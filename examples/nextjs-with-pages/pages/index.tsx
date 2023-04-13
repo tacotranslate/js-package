@@ -9,7 +9,7 @@ import {
 import {type GetServerSidePropsContext} from 'next';
 import LocaleSelector from '../components/locale-selector';
 import Wrapper from '../components/wrapper';
-import getAppServerSideProps from '../utilities/get-app-server-side-props';
+import customGetServerSideProps from '../utilities/get-server-side-props';
 
 const bodyFontStyles = {
 	fontSize: 18,
@@ -71,7 +71,7 @@ function Page({locale, locales: supportedLocales}: PageProperties) {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-	return getAppServerSideProps(context);
+	return customGetServerSideProps(context);
 }
 
 export default Page;

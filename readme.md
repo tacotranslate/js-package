@@ -286,17 +286,23 @@ This function, retrieved from the `client` object, is useful when rendering your
 
 For Next.js, setting this up is really easy with `getServerSideProps` or `getStaticProps`.
 
+#### `getServerSideProps`
+
 ```jsx
-import createTacoTranslateClient from 'tacotranslate';
+import process from 'node:process';
+import tacoTranslate from './tacotranslate';
 
-const tacoTranslate = createTacoTranslateClient({apiKey: '1234567890'});
-
-export async function getServerSideProps(context) {
-	const {resolvedUrl: path, locale} = context;
+export default async function getServerSideProps(context) {
+	const {resolvedUrl, locale = process.env.DEFAULT_LOCALE, locales} = context;
+	const [path] = resolvedUrl.split('?');
 	let origin = `localhost:3000${path}`;
 
 	if (context.req?.headers?.host) {
 		origin = `${context.req.headers.host}${path}`;
+	} else if (process.env.WEBSITE_URL) {
+		origin = `${process.env.WEBSITE_URL}${path}`;
+	} else if (process.env.VERCEL_URL) {
+		origin = `${process.env.VERCEL_URL}${path}`;
 	}
 
 	const {getTranslations} = tacoTranslate({locale});
@@ -306,7 +312,39 @@ export async function getServerSideProps(context) {
 	});
 
 	return {
-		props: {locale, translations, origin},
+		props: {locale, locales, translations, origin},
+	};
+}
+
+```
+
+#### `getStaticProps`
+
+```jsx
+import process from 'node:process';
+import tacoTranslate from './tacotranslate';
+
+export default async function getStaticProps(
+	path: string,
+	{locale = process.env.DEFAULT_LOCALE, locales}
+) {
+	let origin = `localhost:3000${path}`;
+
+	if (process.env.WEBSITE_URL) {
+		origin = `${process.env.WEBSITE_URL}${path}`;
+	} else if (process.env.VERCEL_URL) {
+		origin = `${process.env.VERCEL_URL}${path}`;
+	}
+
+	const {getTranslations} = tacoTranslate({locale});
+	const translations = await getTranslations({origin}).catch((error) => {
+		console.error(error);
+		return {};
+	});
+
+	return {
+		props: {locale, locales, translations, origin},
+		revalidate: 10,
 	};
 }
 ```

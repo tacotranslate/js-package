@@ -5,7 +5,7 @@ import tacoTranslate from './tacotranslate';
 export default async function getServerSideProps(
 	context: GetServerSidePropsContext
 ) {
-	const {resolvedUrl, locale, locales} = context;
+	const {resolvedUrl, locale = process.env.DEFAULT_LOCALE, locales} = context;
 	const [path] = resolvedUrl.split('?');
 	let origin = `localhost:3000${path}`;
 
