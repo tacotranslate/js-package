@@ -8,3 +8,4 @@ jest.config.js
 jest.setup.js
 test.tsx
 tsconfig.json
+tsconfig.build.json
