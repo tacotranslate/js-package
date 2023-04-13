@@ -201,7 +201,29 @@ function Page() {
 	const translate = useTranslateString();
 
 	return (
-		<p>{translate('Visitor count: {{count}}', {count: 123})}</p>
+		<head>
+			<title>{translate('Visitor count: {{count}}', {count: 123})}</title>
+		</head>
+	);
+}
+```
+
+String translations can also be assigned to variables, and used in (for example) hooks:
+
+```jsx
+function Page() {
+	const Translate = useTranslate();
+	const translate = useTranslateString();
+	const message = translate('Something happened!');
+
+	const handleClick = useCallback(() => {
+		alert(message);
+	}, [message]);
+
+	return (
+		<button onClick={handleClick}>
+			<Translate string="Click me!"/>
+		</button>
 	);
 }
 ```
