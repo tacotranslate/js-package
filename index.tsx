@@ -115,6 +115,7 @@ export type GetTranslationsParameters = {
 	projectLocale?: Locale;
 	entries?: Entry[];
 	origin?: string;
+	timeout?: number;
 };
 
 type GetTranslationsResponse =
@@ -136,89 +137,109 @@ async function getTranslations({
 	locale,
 	entries,
 	origin,
+	timeout = 2000,
 }: GetTranslationsParameters): Promise<Translations> {
-	const requests = [];
-	let url = `${apiUrl}/api/v1/t?a=${apiKey}&l=${locale}`;
+	return new Promise((resolve, reject) => {
+		const requests = [];
+		let url = `${apiUrl}/api/v1/t?a=${apiKey}&l=${locale}`;
 
-	if (origin) {
-		url += `&o=${encodeURIComponent(origin)}`;
-	}
+		if (origin) {
+			url += `&o=${encodeURIComponent(origin)}`;
+		}
 
-	if (entries) {
-		const preparedEntries = entries.map((entry) =>
-			entry.i === entry.s ? {s: entry.s} : {i: entry.i, s: entry.s}
-		);
+		if (entries) {
+			const preparedEntries = entries.map((entry) =>
+				entry.i === entry.s ? {s: entry.s} : {i: entry.i, s: entry.s}
+			);
 
-		preparedEntries.sort((a, b) => a.s.localeCompare(b.s));
+			preparedEntries.sort((a, b) => a.s.localeCompare(b.s));
 
-		const includedEntries: Entry[] = [];
-		const excludedEntries: Entry[] = [];
+			const includedEntries: Entry[] = [];
+			const excludedEntries: Entry[] = [];
 
-		for (const entry of preparedEntries) {
-			const attemptedUrl = `${url}&s=${encodeURIComponent(
-				JSON.stringify([...includedEntries, entry])
-			)}`;
+			for (const entry of preparedEntries) {
+				const attemptedUrl = `${url}&s=${encodeURIComponent(
+					JSON.stringify([...includedEntries, entry])
+				)}`;
 
-			if (attemptedUrl.length < maxUrlLength) {
-				includedEntries.push(entry);
-			} else {
-				excludedEntries.push(entry);
+				if (attemptedUrl.length < maxUrlLength) {
+					includedEntries.push(entry);
+				} else {
+					excludedEntries.push(entry);
+				}
+			}
+
+			url += `&s=${encodeURIComponent(JSON.stringify(includedEntries))}`;
+
+			if (excludedEntries.length > 0) {
+				requests.push(
+					getTranslations({
+						apiUrl,
+						apiKey,
+						locale,
+						entries: excludedEntries,
+						origin,
+					})
+				);
 			}
 		}
 
-		url += `&s=${encodeURIComponent(JSON.stringify(includedEntries))}`;
-
-		if (excludedEntries.length > 0) {
-			requests.push(
-				getTranslations({
-					apiUrl,
-					apiKey,
-					locale,
-					entries: excludedEntries,
-					origin,
-				})
-			);
-		}
-	}
-
-	requests.push(
-		fetch(url)
-			.then(async (response) => response.json())
-			.then((data: GetTranslationsResponse) => {
-				if (data.success) {
-					if (process.env.NODE_ENV === 'development' && data.errors) {
-						for (const error of data.errors) {
-							console.error(
-								new Error(
-									`<TacoTranslate> encountered an error when doing a \`getTranslations\` request: ${error.message}`
-								)
-							);
+		requests.push(
+			fetch(url)
+				.then(async (response) => response.json())
+				.then((data: GetTranslationsResponse) => {
+					if (data.success) {
+						if (process.env.NODE_ENV === 'development' && data.errors) {
+							for (const error of data.errors) {
+								console.error(
+									new Error(
+										`<TacoTranslate> encountered an error when doing a \`getTranslations\` request: ${error.message}`
+									)
+								);
+							}
 						}
+
+						return data.translations;
 					}
 
-					return data.translations;
-				}
+					if (data.error.code === 'locale_is_source_locale') {
+						return {};
+					}
 
-				if (data.error.code === 'locale_is_source_locale') {
-					return {};
-				}
+					const error: TacoTranslateError = new Error(data.error.message);
+					error.code = data.error.code;
+					error.type = data.error.type;
+					throw error;
+				})
+		);
 
-				const error: TacoTranslateError = new Error(data.error.message);
-				error.code = data.error.code;
-				error.type = data.error.type;
-				throw error;
+		let hasTimedOut = false;
+		const timeoutInstance = setTimeout(() => {
+			reject(new Error('<TacoTranslate> `getTranslations` timeout.'));
+			hasTimedOut = true;
+		}, timeout);
+
+		void Promise.all(requests)
+			.then((translations) => {
+				if (!hasTimedOut) {
+					clearTimeout(timeoutInstance);
+
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+					resolve(Object.assign({}, ...translations));
+				}
 			})
-	);
-
-	const translations: Translations[] = await Promise.all(requests);
-
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-	return Object.assign({}, ...translations);
+			.catch((error) => {
+				if (!hasTimedOut) {
+					reject(error);
+				}
+			});
+	});
 }
 
 export type GetLocalesParameters = {
 	apiUrl: string;
 	apiKey: string;
+	timeout?: number;
 };
 
 type GetLocalesResponse =
@@ -234,22 +255,39 @@ type GetLocalesResponse =
 async function getLocales({
 	apiUrl = defaultApiUrl,
 	apiKey,
+	timeout = 2000,
 }: GetLocalesParameters) {
-	const url = `${apiUrl}/api/v1/l?a=${apiKey}`;
-	const response = await fetch(url)
-		.then(async (response) => response.json())
-		.then((data: GetLocalesResponse) => {
-			if (data.success) {
-				return data.locales;
-			}
+	return new Promise((resolve, reject) => {
+		const url = `${apiUrl}/api/v1/l?a=${apiKey}`;
+		let hasTimedOut = false;
+		const timeoutInstance = setTimeout(() => {
+			reject(new Error('<TacoTranslate> `getLocales` timeout.'));
+			hasTimedOut = true;
+		}, timeout);
 
-			const error: TacoTranslateError = new Error(data.error.message);
-			error.code = data.error.code;
-			error.type = data.error.type;
-			throw error;
-		});
+		fetch(url)
+			.then(async (response) => response.json())
+			.then((data: GetLocalesResponse) => {
+				if (!hasTimedOut) {
+					clearTimeout(timeoutInstance);
 
-	return response;
+					if (data.success) {
+						resolve(data.locales);
+						return;
+					}
+
+					const error: TacoTranslateError = new Error(data.error.message);
+					error.code = data.error.code;
+					error.type = data.error.type;
+					reject(error);
+				}
+			})
+			.catch((error) => {
+				if (!hasTimedOut) {
+					reject(error);
+				}
+			});
+	});
 }
 
 export type CreateTacoTranslateClientParameters = {
