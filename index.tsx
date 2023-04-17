@@ -99,6 +99,7 @@ export const languages = locales.map(([, language]) => language);
 export const rightToLeftLocaleCodes = ['ar', 'ha', 'he', 'ps', 'fa', 'ur'];
 
 export type Locale = (typeof locales)[number][0];
+export type Language = (typeof locales)[number][1];
 export type Localizations = Record<string, Record<Locale, Translations>>;
 
 const defaultApiUrl =
@@ -365,15 +366,13 @@ const template = (input = '', object: Record<string, string> = {}) =>
 			if (typeof value === 'string') {
 				return value;
 			}
-
-			return templateIdentifier;
 		} catch (error: unknown) {
 			if (process.env.NODE_ENV === 'development') {
 				console.error(error);
 			}
-
-			return templateIdentifier;
 		}
+
+		return '';
 	});
 
 export type TranslationContextProperties = {
@@ -385,6 +384,7 @@ export type TranslationContextProperties = {
 };
 
 export type TacoTranslateContextProperties = TranslationContextProperties & {
+	language?: Language;
 	isLoading?: boolean;
 	isLeftToRight?: boolean;
 	isRightToLeft?: boolean;
@@ -570,6 +570,11 @@ export function TranslationProvider(
 	const [isLoading, setIsLoading] = useState<boolean>();
 	const [error, setError] = useState<Error>();
 	const [currentLocale, setCurrentLocale] = useState(locale);
+	const currentLanguage: Language | undefined = useMemo(
+		() => locales.find(([localeCode]) => localeCode === currentLocale)?.[1],
+		[currentLocale]
+	);
+
 	const [entries, setEntries] = useState<Entry[]>([]);
 	const [currentOrigin, setCurrentOrigin] = useState(() => {
 		if (typeof window === 'undefined') {
@@ -697,7 +702,8 @@ export function TranslationProvider(
 	const value = useMemo(
 		() => ({
 			client,
-			locale,
+			locale: currentLocale,
+			language: currentLanguage,
 			isLoading,
 			isLeftToRight,
 			isRightToLeft,
@@ -712,7 +718,8 @@ export function TranslationProvider(
 		}),
 		[
 			client,
-			locale,
+			currentLocale,
+			currentLanguage,
 			isLoading,
 			isLeftToRight,
 			isRightToLeft,

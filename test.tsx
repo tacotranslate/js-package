@@ -323,6 +323,32 @@ test('variables should be replaced', async () => {
 	expect(screen.getByRole('text').textContent).toBe(`Hello, ${name}!`);
 });
 
+test('unmatched variables should be removed', async () => {
+	const textContent = 'Hello, {{name}}!';
+
+	await act(() => {
+		function Component() {
+			const Translate = useTranslate();
+
+			return (
+				<div role="text">
+					<Translate string={textContent} variables={{something: 'test'}} />
+				</div>
+			);
+		}
+
+		return render(
+			<TranslationProvider client={client} locale="no">
+				<Component />
+			</TranslationProvider>
+		);
+	});
+
+	await waitFor(() => screen.getByRole('text'));
+
+	expect(screen.getByRole('text').textContent).toBe('Hello, !');
+});
+
 test('ids should be supported', async () => {
 	const textContent = 'Hello, there!';
 
@@ -370,6 +396,29 @@ test('the locale should be set', async () => {
 	});
 
 	expect(locale).toBe('no');
+});
+
+test('the langauge should be set', async () => {
+	let language = '';
+
+	await act(() => {
+		function Component() {
+			const tacoTranslate = useTacoTranslate();
+			const {Translate} = tacoTranslate;
+
+			language = tacoTranslate.language ?? '';
+
+			return <Translate string="Hello, world!" />;
+		}
+
+		return render(
+			<TranslationProvider client={client} locale="no">
+				<Component />
+			</TranslationProvider>
+		);
+	});
+
+	expect(language).toBe('Norwegian (Bokmål)');
 });
 
 test('left to right should be true when applicable', async () => {

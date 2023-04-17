@@ -17,7 +17,7 @@
 	},
 	"scripts": {
 		"build": "tsc --p tsconfig.build.json",
-		"test": "jest",
+		"test": "npm run build && jest",
 		"lint": "xo --prettier",
 		"fix": "xo --prettier --fix",
 		"format": "prettier -w .",

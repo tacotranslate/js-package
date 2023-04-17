@@ -176,6 +176,25 @@ function Component() {
 
 On `<Translate>`, you can provide an object of values that will replace mustache-style template tags, like `{{name}}`.
 
+**NOTE**: Be careful when rendering untrusted data. Ideally, you would [disable `dangerouslySetInnerHTML`](#opting-out-of-dangerouslysetinnerhtml) with untrusted variables, like this:
+
+```jsx
+function Component() {
+	const Translate = useTranslate();
+	const untrustedData = getUntrustedData();
+
+	return (
+		<Translate 
+			string="Hello, {{untrustedData}}!" 
+			variables={{untrustedData}} 
+			useDangerouslySetInnerHTML={false} 
+		/>
+	);
+}
+```
+
+It’s worth noting, however, that TacoTranslate always sanitizes strings through [Isomporphic DOMPurify](https://www.npmjs.com/package/isomorphic-dompurify) before rendering anything.
+
 ### Translating strings
 
 To translate strings directly instead of through a React component, you can import the `useTranslateString` hook. For example, use this to set the page `<title>`.
