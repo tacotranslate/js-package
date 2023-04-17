@@ -4,7 +4,7 @@
 		"node_modules",
 		"build",
 		"examples",
-		"client.test.ts",
+		"index.test.ts",
 		"react.test.tsx"
 	]
 }

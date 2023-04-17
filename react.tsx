@@ -17,15 +17,15 @@ import {
 	type Localizations,
 	type TranslateOptions,
 	type Translations,
-} from './client';
-import type createTacoTranslateClient from './client';
+} from '.';
+import type createTacoTranslateClient from '.';
 import {
 	getEntryKey,
 	locales,
 	patchDefaultString,
 	rightToLeftLocaleCodes,
 	template,
-} from './client';
+} from '.';
 
 export type TranslationContextProperties = {
 	origin?: string;

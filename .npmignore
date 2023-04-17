@@ -6,7 +6,7 @@ examples
 .prettierrc.json
 jest.config.js
 jest.setup.js
-client.test.ts
+index.test.ts
 react.test.tsx
 tsconfig.json
 tsconfig.build.json
