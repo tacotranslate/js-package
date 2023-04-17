@@ -1,11 +1,7 @@
 import React, {type ReactElement, useEffect} from 'react';
 import {type AppProps} from 'next/app';
-import {
-	type Locale,
-	TranslationProvider,
-	type Translations,
-	useTacoTranslate,
-} from 'tacotranslate';
+import {type Locale, type Translations} from 'tacotranslate';
+import {TranslationProvider, useTacoTranslate} from 'tacotranslate/react';
 import tacoTranslate from '../utilities/tacotranslate';
 import '../global.css';
 

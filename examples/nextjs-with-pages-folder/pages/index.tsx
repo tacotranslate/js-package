@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import React from 'react';
+import {type Locale} from 'tacotranslate';
 import {
-	type Locale,
 	useTranslate,
 	useTranslateString,
 	useTacoTranslate,
-} from 'tacotranslate';
+} from 'tacotranslate/react';
 import {type GetServerSidePropsContext} from 'next';
 import LocaleSelector from '../components/locale-selector';
 import Wrapper from '../components/wrapper';
