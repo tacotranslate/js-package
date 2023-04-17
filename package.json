@@ -4,6 +4,10 @@
 	"version": "1.0.0-beta.46",
 	"main": "build/index.js",
 	"types": "build/index.d.ts",
+	"exports": {
+		".": "./build/index.js",
+		"./react": "./build/react.js"
+	},
 	"author": "TacoTranslate <hola@tacotranslate.com>",
 	"license": "MIT",
 	"homepage": "https://tacotranslate.com",
