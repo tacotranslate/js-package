@@ -17,10 +17,8 @@ npm install tacotranslate
 Check out [our examples folder on GitHub](https://github.com/tacotranslate/npm-package/tree/test/examples/) to learn more.
 
 ```jsx
-import createTacoTranslateClient, {
-	useTranslate,
-	TranslationProvider,
-} from 'tacotranslate';
+import createTacoTranslateClient from 'tacotranslate';
+import {useTranslate, TranslationProvider} from 'tacotranslate/react';
 
 const tacoTranslate = createTacoTranslateClient({apiKey: '1234567890'});
 
@@ -49,7 +47,8 @@ Your application needs to be wrapped inside a `<TranslationProvider>` that is fe
 [Visit TacoTranslate.com](https://tacotranslate.com) to create an API key and translate to 1 language for free.
 
 ```jsx
-import createTacoTranslateClient, {TranslationProvider} from 'tacotranslate';
+import createTacoTranslateClient from 'tacotranslate';
+import {TranslationProvider} from 'tacotranslate/react';
 
 const tacoTranslate = createTacoTranslateClient({
 	apiKey: '1234567890',
@@ -68,7 +67,7 @@ export default function App() {
 Now, inside a component, simply import the `useTranslate` hook. **And that’s it!**
 
 ```jsx
-import {useTranslate} from 'tacotranslate';
+import {useTranslate} from 'tacotranslate/react';
 
 export default function Component() {
 	const Translate = useTranslate();
@@ -200,7 +199,7 @@ It’s worth noting, however, that TacoTranslate always sanitizes strings throug
 To translate strings directly instead of through a React component, you can import the `useTranslateString` hook. For example, use this to set the page `<title>`.
 
 ```jsx
-import {useTranslateString} from 'tacotranslate';
+import {useTranslateString} from 'tacotranslate/react';
 
 export default function Head() {
 	const translate = useTranslateString();
@@ -303,72 +302,7 @@ In addition to those properties, `<TranslationProvider>` can also be fed the fol
 
 This function, retrieved from the `client` object, is useful when rendering your application from the server. The returned `translations` object can be fed into `<TranslationProvider>`, avoiding a client side request, and immediately displaying the correct language to your user.
 
-For Next.js, setting this up is really easy with `getServerSideProps` or `getStaticProps`.
-
-#### `getServerSideProps`
-
-```jsx
-import process from 'node:process';
-import tacoTranslate from './tacotranslate';
-
-export default async function getServerSideProps(context) {
-	const {resolvedUrl, locale = process.env.DEFAULT_LOCALE, locales} = context;
-	const [path] = resolvedUrl.split('?');
-	let origin = `localhost:3000${path}`;
-
-	if (context.req?.headers?.host) {
-		origin = `${context.req.headers.host}${path}`;
-	} else if (process.env.WEBSITE_URL) {
-		origin = `${process.env.WEBSITE_URL}${path}`;
-	} else if (process.env.VERCEL_URL) {
-		origin = `${process.env.VERCEL_URL}${path}`;
-	}
-
-	const {getTranslations} = tacoTranslate({locale});
-	const translations = await getTranslations({origin}).catch((error) => {
-		console.error(error);
-		return {};
-	});
-
-	return {
-		props: {locale, locales, translations, origin},
-	};
-}
-
-```
-
-#### `getStaticProps`
-
-```jsx
-import process from 'node:process';
-import tacoTranslate from './tacotranslate';
-
-export default async function getStaticProps(
-	path: string,
-	{locale = process.env.DEFAULT_LOCALE, locales}
-) {
-	let origin = `localhost:3000${path}`;
-
-	if (process.env.WEBSITE_URL) {
-		origin = `${process.env.WEBSITE_URL}${path}`;
-	} else if (process.env.VERCEL_URL) {
-		origin = `${process.env.VERCEL_URL}${path}`;
-	}
-
-	const {getTranslations} = tacoTranslate({locale});
-	const translations = await getTranslations({origin}).catch((error) => {
-		console.error(error);
-		return {};
-	});
-
-	return {
-		props: {locale, locales, translations, origin},
-		revalidate: 10,
-	};
-}
-```
-
-Check out [our `nextjs-app` example](https://github.com/tacotranslate/npm-package/tree/test/examples/nextjs-app) to see it used in a server rendered application. 
+For Next.js, setting this up is really easy with `getServerSideProps` or `getStaticProps`. Check out [our `nextjs-app` example](https://github.com/tacotranslate/npm-package/tree/test/examples/nextjs-app) to see it used in a server rendered application. 
 
 ### `getLocales`
 
@@ -383,7 +317,7 @@ The `useTacoTranslate` hook includes an `error` object that will be populated wi
 Errors are always logged to the console during local development (`process.env.NODE_ENV === 'development'`).
 
 ```jsx
-import {useTacoTranslate} from 'tacotranslate';
+import {useTacoTranslate} from 'tacotranslate/react';
 
 function Component() {
 	const {error} = useTacoTranslate();
@@ -528,6 +462,8 @@ If you’re using Jest, you might get an error stating `ReferenceError: TextEnco
 		setupFiles: ['./jest.setup.js']
 	};
 	```
+
+[Read more here.](https://github.com/kkomelin/isomorphic-dompurify/issues/91)
 
 ### Supported languages
 

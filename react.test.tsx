@@ -3,13 +3,11 @@ import {render, screen, waitFor} from '@testing-library/react';
 // eslint-disable-next-line import/no-unassigned-import
 import '@testing-library/jest-dom';
 import {act} from 'react-dom/test-utils';
+import {TranslationProvider, useTacoTranslate, useTranslate} from './react';
 import {
 	type CreateTacoTranslateClientParameters,
 	type TacoTranslateClientParameters,
 	type Translations,
-	TranslationProvider,
-	useTacoTranslate,
-	useTranslate,
 	localeCodes,
 	type ClientGetTranslationsParameters,
 	type Entry,
