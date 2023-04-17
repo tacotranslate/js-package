@@ -194,6 +194,29 @@ function Component() {
 
 It’s worth noting, however, that TacoTranslate always sanitizes strings through [Isomporphic DOMPurify](https://www.npmjs.com/package/isomorphic-dompurify) before rendering anything.
 
+#### Dealing with variants, eg. numbers with plural labels
+
+Currently, the best way to deal with plural labels or variants is to check the value programmatically, and then changing the output based on it.
+
+```jsx
+function PhotoCount() {
+	const Translate = useTranslate();
+	const count = 1;
+	
+	return (
+		count === 0 ? (
+			<Translate string="You have no photos."/> 
+		) : (
+			count === 1 ? (
+				<Translate string="You have 1 photo."/> 
+			) : (
+				<Translate string="You have {{count}} photos."/>
+			)
+		)
+	);
+}
+```
+
 ### Translating strings
 
 To translate strings directly instead of through a React component, you can import the `useTranslateString` hook. For example, use this to set the page `<title>`.
