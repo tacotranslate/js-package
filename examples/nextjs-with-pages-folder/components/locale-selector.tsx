@@ -3,7 +3,7 @@ import {useRouter} from 'next/router';
 import {type Locale, locales} from 'tacotranslate';
 
 type LocaleSelectorProperties = {
-	initialLocale: Locale;
+	initialLocale?: Locale;
 	options: Locale[];
 };
 

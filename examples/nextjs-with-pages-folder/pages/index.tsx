@@ -2,32 +2,27 @@ import Head from 'next/head';
 import React from 'react';
 import {
 	type Locale,
-	locales,
 	useTranslate,
 	useTranslateString,
+	useTacoTranslate,
 } from 'tacotranslate';
 import {type GetServerSidePropsContext} from 'next';
 import LocaleSelector from '../components/locale-selector';
 import Wrapper from '../components/wrapper';
 import customGetServerSideProps from '../utilities/get-server-side-props';
 
-const bodyFontStyles = {
-	fontSize: 18,
+const fontFamilyStyles = {
 	fontFamily: 'sans-serif',
-	lineHeight: 1.7,
 };
 
 type PageProperties = {
-	locale: Locale;
 	locales: Locale[];
 };
 
-function Page({locale, locales: supportedLocales}: PageProperties) {
+function Page({locales: supportedLocales}: PageProperties) {
+	const {locale, language} = useTacoTranslate();
 	const Translate = useTranslate();
 	const translate = useTranslateString();
-	const currentLocale = locales.find(
-		([localeCode]) => localeCode === locale
-	) ?? ['xx', 'Unknown'];
 
 	return (
 		<Wrapper>
@@ -52,19 +47,27 @@ function Page({locale, locales: supportedLocales}: PageProperties) {
 
 			<LocaleSelector initialLocale={locale} options={supportedLocales} />
 
-			<h1>
+			<h1 style={fontFamilyStyles}>
 				<Translate string="[[[Hola]]], world! Welcome to TacoTranslate." />
 			</h1>
 
-			<h2>
+			<h2 style={fontFamilyStyles}>
 				<Translate
 					string="Current language: {{variable}}"
-					variables={{variable: currentLocale[1]}}
+					variables={{variable: language ?? ''}}
 				/>
 			</h2>
 
-			<p style={bodyFontStyles}>
-				<Translate string="TacoTranslate is a service that automatically translates your React application to any language in minutes. Join us in saying [[[adiós]]] to JSON files, and <a href='https://tacotranslate.com'>set up your free TacoTranslate account</a> today!<br><br>Out of the box, you’ll get to translate <strong>one language for free</strong>. In addition, we are collaborating with one the top translation providers in the world, should you need to get a more accurate translation than what machine learning can provide.<br><br><a href='https://tacotranslate.com'>Sign up now, [[[amigo]]]!</a>" />
+			<p
+				style={{
+					...fontFamilyStyles,
+					fontSize: 18,
+					lineHeight: 1.7,
+				}}
+			>
+				<Translate
+					string={`TacoTranslate is a service that automatically translates your React application to any language in minutes. Join us in saying [[[<span lang="es">adiós</span>]]] to JSON files, and <a href='https://tacotranslate.com'>set up your free TacoTranslate account</a> today!<br><br>Out of the box, you’ll get to translate to <strong>one language for free</strong>.<br><a href='https://tacotranslate.com'>Sign up now, [[[<span lang="es">amigo</span>]]]!</a>`}
+				/>
 			</p>
 		</Wrapper>
 	);

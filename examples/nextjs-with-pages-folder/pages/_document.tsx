@@ -5,9 +5,7 @@ import {rightToLeftLocaleCodes} from 'tacotranslate';
 class CustomDocument extends Document {
 	render() {
 		const {locale = process.env.DEFAULT_LOCALE} = this.props.__NEXT_DATA__;
-		const direction = rightToLeftLocaleCodes.includes(locale)
-			? 'rtl'
-			: undefined;
+		const direction = rightToLeftLocaleCodes.includes(locale) ? 'rtl' : 'ltr';
 
 		return (
 			<Html dir={direction}>
