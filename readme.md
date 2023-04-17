@@ -487,6 +487,29 @@ Then, within all your files, remove any TacoTranslate imports and hooks. For exa
 	"$1"
 	```
 
+### Known issues
+
+If you’re using Jest, you might get an error stating `ReferenceError: TextEncoder is not defined`, or `ReferenceError: TextDecoder is not defined`. To fix this, do the following:
+
+1. Create or edit `jest.setup.js`:
+
+	```js
+	const {TextEncoder, TextDecoder} = require('node:util');
+
+	global.TextEncoder = TextEncoder;
+	global.TextDecoder = TextDecoder;
+	```
+
+2. Include the setup file in the `setupFiles` array within `jest.config.js`:
+
+	```js
+	module.exports = {
+		preset: 'ts-jest',
+		testEnvironment: 'jsdom',
+		setupFiles: ['./jest.setup.js']
+	};
+	```
+
 ### Supported languages
 
 TacoTranslate currently supports translation between the following 75 languages:
