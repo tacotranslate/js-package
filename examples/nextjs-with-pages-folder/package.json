@@ -12,6 +12,7 @@
 		"tacotranslate": "^1.0.0-beta.48"
 	},
 	"devDependencies": {
+		"@types/react": "^18.0.37",
 		"eslint-config-next": "13.3.0"
 	}
 }
