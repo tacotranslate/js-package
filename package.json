@@ -2,8 +2,8 @@
 	"name": "tacotranslate",
 	"description": "Automatically translate your React application in minutes",
 	"version": "1.0.0-beta.50",
-	"main": "build/index.js",
-	"types": "build/index.d.ts",
+	"main": "index.js",
+	"types": "index.d.ts",
 	"author": "TacoTranslate <hola@tacotranslate.com>",
 	"license": "MIT",
 	"homepage": "https://tacotranslate.com",
@@ -16,7 +16,7 @@
 		"email": "hola@tacotranslate.com"
 	},
 	"scripts": {
-		"clean": "rm -rf ./build",
+		"clean": "node clean.js",
 		"build": "npm run clean && tsc --p tsconfig.build.json",
 		"test": "npm run build && jest",
 		"lint": "xo --prettier",

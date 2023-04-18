@@ -3,3 +3,7 @@
 node_modules
 build
 coverage
+index.js
+react.js
+index.d.ts
+react.d.ts

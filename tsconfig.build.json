@@ -1,10 +1,7 @@
 {
 	"extends": "./tsconfig.json",
-	"exclude": [
-		"node_modules",
-		"build",
-		"examples",
-		"index.test.ts",
-		"react.test.tsx"
+	"include": [
+		"./index.ts",
+		"./react.tsx"
 	]
 }

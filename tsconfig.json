@@ -9,8 +9,7 @@
 		"strictNullChecks": true,
 		"jsx": "react",
 		"skipLibCheck": true,
-		"declaration": true,
-		"outDir": "build"
+		"declaration": true
 	},
-	"exclude": ["node_modules", "build", "examples"]
+	"exclude": ["./node_modules", "./build", "./examples"]
 }
