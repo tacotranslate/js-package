@@ -285,8 +285,8 @@ export type CreateTacoTranslateClientParameters = {
 	isEnabled?: boolean;
 };
 
-export type TacoTranslateClientParameters = {locale: Locale};
 export type ClientGetTranslationsParameters = {
+	locale: Locale;
 	entries?: Entry[];
 	origin?: string;
 };
@@ -294,36 +294,35 @@ export type ClientGetTranslationsParameters = {
 export const getEntryKey = (entry: Entry) =>
 	entry.i ? `${entry.i}:${entry.s}` : entry.s;
 
-const createTacoTranslateClient =
-	({
-		apiUrl = defaultApiUrl,
-		apiKey,
-		projectLocale,
-		isEnabled = true,
-	}: CreateTacoTranslateClientParameters) =>
-	({locale}: TacoTranslateClientParameters) => ({
-		getTranslations: async ({
-			entries,
-			origin,
-		}: ClientGetTranslationsParameters) =>
-			isEnabled && locale !== projectLocale
-				? getTranslations({
-						apiUrl,
-						apiKey,
-						locale,
-						projectLocale,
-						entries,
-						origin,
-				  })
-				: {},
-		getLocales: async () =>
-			isEnabled
-				? getLocales({apiUrl, apiKey}).catch((error) => {
-						console.error(error);
-						return localeCodes;
-				  })
-				: localeCodes,
-	});
+const createTacoTranslateClient = ({
+	apiUrl = defaultApiUrl,
+	apiKey,
+	projectLocale,
+	isEnabled = true,
+}: CreateTacoTranslateClientParameters) => ({
+	getTranslations: async ({
+		locale,
+		entries,
+		origin,
+	}: ClientGetTranslationsParameters) =>
+		isEnabled && locale !== projectLocale
+			? getTranslations({
+					apiUrl,
+					apiKey,
+					locale,
+					projectLocale,
+					entries,
+					origin,
+			  })
+			: {},
+	getLocales: async () =>
+		isEnabled
+			? getLocales({apiUrl, apiKey}).catch((error) => {
+					console.error(error);
+					return localeCodes;
+			  })
+			: localeCodes,
+});
 
 export default createTacoTranslateClient;
 

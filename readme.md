@@ -406,9 +406,9 @@ const createCustomClient =
 	}: Pick<
 		CreateTacoTranslateClientParameters,
 		'projectLocale' | 'isEnabled'
-	>) =>
-	({locale}: TacoTranslateClientParameters) => ({
+	>) => ({
 		getTranslations: async ({
+			locale,
 			entries,
 			origin,
 		}: ClientGetTranslationsParameters) =>
@@ -427,7 +427,7 @@ const App = () => (
 );
 ```
 
-Your custom client should be a function taking `projectLocale` and `isEnabled` as input parameters in an object, returning a function taking `locale` as an input parameter in an object, finally returning an object with an asynchronous `getTranslations` function taking `entries` and `origin` as input parameters in an object.
+Your custom client should be a function taking `projectLocale` and `isEnabled` as input parameters in an object, returning an object with an asynchronous `getTranslations` function taking `locale`, `entries`, and `origin` as input parameters in an object.
 
 The return data of `getTranslations` should look similar to this:
 

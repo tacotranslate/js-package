@@ -6,7 +6,6 @@ import {act} from 'react-dom/test-utils';
 import {TranslationProvider, useTacoTranslate, useTranslate} from './react';
 import {
 	type CreateTacoTranslateClientParameters,
-	type TacoTranslateClientParameters,
 	type Translations,
 	localeCodes,
 	type ClientGetTranslationsParameters,
@@ -24,46 +23,42 @@ async function getTranslations(): Promise<Translations> {
 	return translations;
 }
 
-const createClient =
-	({
-		projectLocale,
-		isEnabled = true,
-	}: Pick<
-		CreateTacoTranslateClientParameters,
-		'projectLocale' | 'isEnabled'
-	>) =>
-	({locale}: TacoTranslateClientParameters) => ({
-		getTranslations: async () =>
-			isEnabled && locale !== projectLocale ? getTranslations() : {},
-		getLocales: async () => localeCodes,
-	});
+const createClient = ({
+	projectLocale,
+	isEnabled = true,
+}: Pick<
+	CreateTacoTranslateClientParameters,
+	'projectLocale' | 'isEnabled'
+>) => ({
+	getTranslations: async ({locale}: ClientGetTranslationsParameters) =>
+		isEnabled && locale !== projectLocale ? getTranslations() : {},
+	getLocales: async () => localeCodes,
+});
 
 const client = createClient({projectLocale: 'en'});
 
-const createErrorClient =
-	({
-		projectLocale,
-		isEnabled = true,
-	}: Pick<
-		CreateTacoTranslateClientParameters,
-		'projectLocale' | 'isEnabled'
-	>) =>
-	({locale}: TacoTranslateClientParameters) => ({
-		async getTranslations() {
-			if (isEnabled && locale !== projectLocale) {
-				throw new Error('Some error');
-			}
+const createErrorClient = ({
+	projectLocale,
+	isEnabled = true,
+}: Pick<
+	CreateTacoTranslateClientParameters,
+	'projectLocale' | 'isEnabled'
+>) => ({
+	async getTranslations({locale}: ClientGetTranslationsParameters) {
+		if (isEnabled && locale !== projectLocale) {
+			throw new Error('Some error');
+		}
 
-			return {};
-		},
-		async getLocales() {
-			if (isEnabled) {
-				throw new Error('Some error');
-			}
+		return {};
+	},
+	async getLocales() {
+		if (isEnabled) {
+			throw new Error('Some error');
+		}
 
-			return [];
-		},
-	});
+		return [];
+	},
+});
 
 const errorClient = createErrorClient({projectLocale: 'en'});
 
@@ -79,7 +74,7 @@ test('missing translations should be fetched', async () => {
 	const fetchedEntries: Entry[] = [];
 
 	await act(async () => {
-		const createClient = () => () => ({
+		const createClient = () => ({
 			async getTranslations({entries}: ClientGetTranslationsParameters) {
 				if (entries) {
 					fetchedEntries.push(...entries);
@@ -121,7 +116,7 @@ test('present translations should not be fetched', async () => {
 	const fetchedEntries: Entry[] = [];
 
 	await act(async () => {
-		const createClient = () => () => ({
+		const createClient = () => ({
 			async getTranslations({entries}: ClientGetTranslationsParameters) {
 				if (entries) {
 					fetchedEntries.push(...entries);

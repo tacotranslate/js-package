@@ -273,7 +273,6 @@ export function TranslationProvider(
 				if (!isLoading && client && locale) {
 					setIsLoading(true);
 
-					const {getTranslations} = client({locale});
 					const currentEntryKeys = new Set<string>();
 					const currentEntries: Entry[] = [];
 
@@ -292,7 +291,12 @@ export function TranslationProvider(
 						)
 					);
 
-					getTranslations({entries: currentEntries, origin: currentOrigin})
+					client
+						.getTranslations({
+							locale,
+							entries: currentEntries,
+							origin: currentOrigin,
+						})
 						.then((translations) => {
 							setLocalizations((previousLocalizations) => ({
 								...previousLocalizations,
