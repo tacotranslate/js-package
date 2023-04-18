@@ -1,7 +1,6 @@
 .DS_Store
 .next
 node_modules
-build
 coverage
 index.js
 react.js
