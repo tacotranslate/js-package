@@ -27,20 +27,15 @@ function Page({locales: supportedLocales}: PageProperties) {
 	return (
 		<Wrapper>
 			<Head>
-				<title>TacoTranslate: Next.js app example</title>
-
 				<meta property="og:locale" content={locale} />
+				<title>
+					{translate('Next.js with pages/ folder example with TacoTranslate')}
+				</title>
+
 				<meta
 					name="description"
 					content={translate(
-						'With TacoTranslate, you can automatically localize your React applications to any language within minutes.'
-					)}
-				/>
-
-				<meta
-					property="og:description"
-					content={translate(
-						'With TacoTranslate, you can automatically localize your React applications to any language within minutes.'
+						'With TacoTranslate, you can automatically localize your React applications to any language within minutes. Example with TacoTranslate to internationalize a Next.js app using the pages/ folder.'
 					)}
 				/>
 			</Head>
@@ -48,7 +43,9 @@ function Page({locales: supportedLocales}: PageProperties) {
 			<LocaleSelector initialLocale={locale} options={supportedLocales} />
 
 			<h1 style={fontFamilyStyles}>
-				<Translate string="[[[Hola]]], world! Welcome to TacoTranslate." />
+				<Translate
+					string={`[[[<span lang="es">Hola</span>]]], world! Welcome to TacoTranslate.`}
+				/>
 			</h1>
 
 			<h2 style={fontFamilyStyles}>
