@@ -3,8 +3,7 @@ const {default: createTacoTranslateClient} = require('tacotranslate');
 
 module.exports = async () => {
 	const apiKey = process.env.TACOTRANSLATE_API_KEY;
-	const client = createTacoTranslateClient({apiKey});
-	const {getLocales} = client({locale: process.env.DEFAULT_LOCALE});
+	const {getLocales} = createTacoTranslateClient({apiKey});
 	const locales = await getLocales();
 	const [projectLocale] = locales;
 

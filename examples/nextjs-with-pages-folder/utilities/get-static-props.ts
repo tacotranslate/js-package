@@ -4,7 +4,10 @@ import tacoTranslate from './tacotranslate';
 
 export default async function getStaticProps(
 	path: string,
-	{locale = process.env.DEFAULT_LOCALE, locales}: GetStaticPropsContext
+	{
+		locale = process.env.TACOTRANSLATE_PROJECT_LOCALE,
+		locales,
+	}: GetStaticPropsContext
 ) {
 	let origin = `localhost:3000${path}`;
 
@@ -14,11 +17,12 @@ export default async function getStaticProps(
 		origin = `${process.env.VERCEL_URL}${path}`;
 	}
 
-	const {getTranslations} = tacoTranslate({locale});
-	const translations = await getTranslations({origin}).catch((error) => {
-		console.error(error);
-		return {};
-	});
+	const translations = await tacoTranslate
+		.getTranslations({locale, origin})
+		.catch((error) => {
+			console.error(error);
+			return {};
+		});
 
 	return {
 		props: {locale, locales, translations, origin},
