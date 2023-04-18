@@ -3,6 +3,20 @@ export type TacoTranslateError = Error & {code?: string; type?: string};
 export type Entry = {i?: string; s: string; l?: Locale};
 export type Translations = Record<string, string>;
 
+export type VerboseEntry = {id?: string; string: string};
+export const createEntry = (entry: VerboseEntry): Entry => ({
+	i: entry.id,
+	s: entry.string,
+});
+
+export const getEntryKey = (entry: Entry) =>
+	entry.i ? `${entry.i}:${entry.s}` : entry.s;
+
+export const getEntryFromTranslations = (
+	entry: Entry,
+	translations: Translations
+) => translations[getEntryKey(entry)] ?? entry.s;
+
 export const locales = [
 	['af', 'Afrikaans'],
 	['sq', 'Albanian'],
@@ -291,9 +305,6 @@ export type ClientGetTranslationsParameters = {
 	origin?: string;
 };
 
-export const getEntryKey = (entry: Entry) =>
-	entry.i ? `${entry.i}:${entry.s}` : entry.s;
-
 const createTacoTranslateClient = ({
 	apiUrl = defaultApiUrl,
 	apiKey,
@@ -343,11 +354,7 @@ export const template = (input = '', object: Record<string, string> = {}) =>
 		const identifier = templateIdentifier.slice(2, -2);
 
 		try {
-			// eslint-disable-next-line no-new-func, @typescript-eslint/no-unsafe-assignment
-			const value: string = new Function(
-				'object',
-				`return object['${identifier}'];`
-			)(object);
+			const value = object[identifier];
 
 			if (typeof value === 'string') {
 				return value;
