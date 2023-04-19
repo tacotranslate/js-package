@@ -2,7 +2,7 @@ import process from 'node:process';
 import {type GetServerSidePropsContext} from 'next';
 import tacoTranslate from './tacotranslate';
 
-export default async function getServerSideProps(
+export default async function customGetServerSideProps(
 	context: GetServerSidePropsContext
 ) {
 	const {

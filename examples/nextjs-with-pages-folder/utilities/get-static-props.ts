@@ -2,7 +2,7 @@ import process from 'node:process';
 import {type GetStaticPropsContext} from 'next';
 import tacoTranslate from './tacotranslate';
 
-export default async function getStaticProps(
+export default async function customGetStaticProps(
 	path: string,
 	{
 		locale = process.env.TACOTRANSLATE_PROJECT_LOCALE,
