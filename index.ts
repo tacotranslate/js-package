@@ -12,10 +12,13 @@ export const createEntry = (entry: VerboseEntry): Entry => ({
 export const getEntryKey = (entry: Entry) =>
 	entry.i ? `${entry.i}:${entry.s}` : entry.s;
 
+export const patchDefaultString = (string: string) =>
+	string.replace(/\[{3}.*?]{3}/g, (match) => match.slice(3, -3));
+
 export const getEntryFromTranslations = (
 	entry: Entry,
 	translations: Translations
-) => translations[getEntryKey(entry)] ?? entry.s;
+) => translations[getEntryKey(entry)] ?? patchDefaultString(entry.s);
 
 export const locales = [
 	['af', 'Afrikaans'],
@@ -106,9 +109,6 @@ export type Localizations = Record<string, Record<Locale, Translations>>;
 const defaultApiUrl =
 	process.env.TACOTRANSLATE_API_URL ?? 'https://api.tacotranslate.com';
 const maxUrlLength = 2048;
-
-export const patchDefaultString = (string: string) =>
-	string.replace(/\[{3}.*?]{3}/g, (match) => match.slice(3, -3));
 
 export type GetTranslationsParameters = {
 	apiUrl: string;
