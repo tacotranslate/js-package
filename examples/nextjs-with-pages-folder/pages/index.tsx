@@ -43,7 +43,7 @@ function Page({locales: supportedLocales}: PageProperties) {
 				<meta
 					name="description"
 					content={translate(
-						'With TacoTranslate, you can automatically localize your React applications to any language within minutes. Example with TacoTranslate to internationalize a Next.js app using the pages/ folder.'
+						'With TacoTranslate, you can automatically localize your React applications to any language within minutes. Example with TacoTranslate to internationalize a Next.js app using the [[[pages/]]] folder.'
 					)}
 				/>
 				<meta property="og:image" content={opengraphImageUrl} />
