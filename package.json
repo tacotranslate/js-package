@@ -83,7 +83,7 @@
 			},
 			{
 				"files": [
-					"./examples/create-react-app/**/*"
+					"./examples/create-react-app-client-side/**/*"
 				],
 				"rules": {
 					"@typescript-eslint/consistent-type-definitions": 0

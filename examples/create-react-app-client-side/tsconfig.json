@@ -16,10 +16,6 @@
 		"jsx": "preserve",
 		"moduleResolution": "node"
 	},
-	"include": [
-		"**/*.d.ts",
-		"**/*.ts",
-		"**/*.tsx"
-	],
+	"include": ["**/*.ts", "**/*.tsx"],
 	"exclude": ["node_modules"]
 }
