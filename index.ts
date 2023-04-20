@@ -139,7 +139,7 @@ async function getTranslations({
 	locale,
 	entries,
 	origin,
-	timeout = 2000,
+	timeout = 10_000,
 }: GetTranslationsParameters): Promise<Translations> {
 	return new Promise((resolve, reject) => {
 		const requests = [];
