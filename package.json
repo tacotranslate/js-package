@@ -80,6 +80,14 @@
 					"@typescript-eslint/consistent-type-definitions": 0,
 					"no-unused-vars": 0
 				}
+			},
+			{
+				"files": [
+					"./examples/create-react-app/**/*"
+				],
+				"rules": {
+					"@typescript-eslint/consistent-type-definitions": 0
+				}
 			}
 		]
 	}
