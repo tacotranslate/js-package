@@ -16,12 +16,7 @@ function Page({children}: {children: ReactElement}) {
 	const {isRightToLeft} = useTacoTranslate();
 
 	useEffect(() => {
-		if (typeof window !== 'undefined') {
-			document.documentElement.setAttribute(
-				'dir',
-				isRightToLeft ? 'rtl' : 'ltr'
-			);
-		}
+		document.documentElement.setAttribute('dir', isRightToLeft ? 'rtl' : 'ltr');
 	}, [isRightToLeft]);
 
 	return children;

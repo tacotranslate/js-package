@@ -2,7 +2,7 @@ import React from 'react';
 import Document, {Html, Head, Main, NextScript} from 'next/document';
 import {rightToLeftLocaleCodes} from 'tacotranslate';
 
-class CustomDocument extends Document {
+export default class CustomDocument extends Document {
 	render() {
 		const {locale = process.env.TACOTRANSLATE_PROJECT_LOCALE} =
 			this.props.__NEXT_DATA__;
@@ -19,5 +19,3 @@ class CustomDocument extends Document {
 		);
 	}
 }
-
-export default CustomDocument;

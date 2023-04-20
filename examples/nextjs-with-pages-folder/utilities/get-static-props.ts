@@ -1,4 +1,3 @@
-import process from 'node:process';
 import {type GetStaticPropsContext} from 'next';
 import tacoTranslate from './tacotranslate';
 

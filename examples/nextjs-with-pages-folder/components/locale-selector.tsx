@@ -7,7 +7,10 @@ type LocaleSelectorProperties = {
 	options: Locale[];
 };
 
-function LocaleSelector({initialLocale, options}: LocaleSelectorProperties) {
+export default function LocaleSelector({
+	initialLocale,
+	options,
+}: LocaleSelectorProperties) {
 	const router = useRouter();
 	const [currentInput, setCurrentInput] = useState(initialLocale);
 
@@ -44,5 +47,3 @@ function LocaleSelector({initialLocale, options}: LocaleSelectorProperties) {
 		</select>
 	);
 }
-
-export default LocaleSelector;

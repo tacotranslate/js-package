@@ -1,5 +1,4 @@
 export type TacoTranslateError = Error & {code?: string; type?: string};
-
 export type Entry = {i?: string; s: string; l?: Locale};
 export type Translations = Record<string, string>;
 
@@ -195,7 +194,9 @@ async function getTranslations({
 							for (const error of data.errors) {
 								console.error(
 									new Error(
-										`<TacoTranslate> encountered an error when doing a \`getTranslations\` request: ${error.message}`
+										`<TacoTranslate> encountered an error when doing a \`getTranslations\` request:${
+											error.code ? ` (${error.code})` : ''
+										} ${error.message}`
 									)
 								);
 							}

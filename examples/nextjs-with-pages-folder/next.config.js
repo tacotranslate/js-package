@@ -1,4 +1,3 @@
-const process = require('node:process');
 const {default: createTacoTranslateClient} = require('tacotranslate');
 
 module.exports = async () => {

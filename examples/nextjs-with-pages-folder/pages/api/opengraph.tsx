@@ -21,7 +21,7 @@ export default async function handler(request: NextRequest) {
 
 	const translations = await tacoTranslate
 		.getTranslations({
-			origin: `tacotranslate.com/api/opengraph`,
+			origin: `${process.env.WEBSITE_URL ?? 'localhost:3000'}/api/opengraph`,
 			locale,
 			entries,
 		})

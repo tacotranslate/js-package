@@ -4,7 +4,7 @@ type WrapperProperties = {
 	children: ReactNode;
 };
 
-function Wrapper({children}: WrapperProperties) {
+export default function Wrapper({children}: WrapperProperties) {
 	return (
 		<div style={{width: '100%', height: '100%', display: 'flex', flex: 1}}>
 			<div
@@ -19,5 +19,3 @@ function Wrapper({children}: WrapperProperties) {
 		</div>
 	);
 }
-
-export default Wrapper;

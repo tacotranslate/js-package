@@ -19,7 +19,11 @@ type PageProperties = {
 	locales: Locale[];
 };
 
-function Page({locales: supportedLocales}: PageProperties) {
+export async function getStaticProps(context: GetStaticPropsContext) {
+	return customGetStaticProps('/', context);
+}
+
+export default function Page({locales: supportedLocales}: PageProperties) {
 	const {locale, language} = useTacoTranslate();
 	const Translate = useTranslate();
 	const translate = useTranslateString();
@@ -88,9 +92,3 @@ function Page({locales: supportedLocales}: PageProperties) {
 		</Wrapper>
 	);
 }
-
-export async function getStaticProps(context: GetStaticPropsContext) {
-	return customGetStaticProps('/', context);
-}
-
-export default Page;
