@@ -62,6 +62,14 @@ test('get translations from translateEntries', async () => {
 	expect(t(text)).toEqual(translations[translationKey]);
 });
 
+test('get missing translation from translateEntries', async () => {
+	const client = createClient({projectLocale: 'en'});
+	const text = createEntry({string: 'missing'});
+	const t = await translateEntries(client, {origin: '*', locale: 'es'}, [text]);
+
+	expect(t(text)).toEqual('missing');
+});
+
 test('get translations from translateEntries with variables', async () => {
 	const translationKey = 'Hello, {{name}}!';
 	const client = createClient({projectLocale: 'en'});
@@ -69,4 +77,12 @@ test('get translations from translateEntries with variables', async () => {
 	const t = await translateEntries(client, {origin: '*', locale: 'es'}, [text]);
 
 	expect(t(text, {name: 'Pablo'})).toEqual('Hallo, Pablo!');
+});
+
+test('get missing translation from translateEntries with variables', async () => {
+	const client = createClient({projectLocale: 'en'});
+	const text = createEntry({string: 'missing {{name}}'});
+	const t = await translateEntries(client, {origin: '*', locale: 'es'}, [text]);
+
+	expect(t(text, {name: 'Pablo'})).toEqual('missing Pablo');
 });

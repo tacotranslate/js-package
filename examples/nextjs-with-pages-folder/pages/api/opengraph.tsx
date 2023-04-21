@@ -1,34 +1,35 @@
 import React from 'react';
 import {ImageResponse} from '@vercel/og';
 import {type NextRequest} from 'next/server';
-import {createEntry, getEntryFromTranslations} from 'tacotranslate';
+import {createEntry, translateEntries} from 'tacotranslate';
 import tacoTranslate from '../../utilities/tacotranslate';
 
 export const config = {
 	runtime: 'edge',
 };
 
+const emoji = ['😄', '🥳', '😎', '👍', '🤟'];
+const emojiLength = emoji.length;
+
+function getRandomEmoji() {
+	return emoji[Math.floor(Math.random() * emojiLength)];
+}
+
 export default async function handler(request: NextRequest) {
 	const {searchParams} = new URL(request.url);
 	const locale = searchParams.get('locale') ?? 'en';
-	const title = 'Next.js with [[[pages/]]] folder example';
-	const description = 'Localize your apps from and to any language today!';
+	const title = createEntry({
+		string: 'Next.js with [[[pages/]]] folder example',
+	});
 
-	const entries = [
-		createEntry({string: title}),
-		createEntry({string: description}),
-	];
+	const description = createEntry({
+		string: 'Localize your apps from and to any language today! {{emoji}}',
+	});
 
-	const translations = await tacoTranslate
-		.getTranslations({
-			origin: `${process.env.WEBSITE_URL ?? 'localhost:3000'}/api/opengraph`,
-			locale,
-			entries,
-		})
-		.catch((error) => {
-			console.error(error);
-			return {};
-		});
+	const translations = await translateEntries(tacoTranslate, {origin, locale}, [
+		title,
+		description,
+	]);
 
 	return new ImageResponse(
 		(
@@ -67,8 +68,9 @@ export default async function handler(request: NextRequest) {
 							color: '#fff',
 						}}
 					>
-						{getEntryFromTranslations(entries[0], translations)}
+						{translations(title)}
 					</div>
+
 					<div
 						style={{
 							fontSize: 40,
@@ -78,7 +80,7 @@ export default async function handler(request: NextRequest) {
 							color: 'rgba(255,255,255,0.9)',
 						}}
 					>
-						{getEntryFromTranslations(entries[1], translations)}
+						{translations(description, {emoji: getRandomEmoji()})}
 					</div>
 				</div>
 
