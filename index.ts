@@ -14,10 +14,33 @@ export const getEntryKey = (entry: Entry) =>
 export const patchDefaultString = (string: string) =>
 	string.replace(/\[{3}.*?]{3}/g, (match) => match.slice(3, -3));
 
-export const getEntryFromTranslations = (
-	entry: Entry,
-	translations: Translations
-) => translations[getEntryKey(entry)] ?? patchDefaultString(entry.s);
+export type TemplateVariables = Record<string, string>;
+
+/**
+ * Transform a string template
+ * @param {string} input - the input string
+ * @param {object} object - the template object
+ *
+ * @returns {string} the transformed output
+ **/
+export const template = (input = '', object: TemplateVariables = {}) =>
+	input.replace(/{{[\w.]+}}/g, (templateIdentifier) => {
+		const identifier = templateIdentifier.slice(2, -2);
+
+		try {
+			const value = object[identifier];
+
+			if (typeof value === 'string') {
+				return value;
+			}
+		} catch (error: unknown) {
+			if (process.env.NODE_ENV === 'development') {
+				console.error(error);
+			}
+		}
+
+		return '';
+	});
 
 export const locales = [
 	['af', 'Afrikaans'],
@@ -338,33 +361,30 @@ const createTacoTranslateClient = ({
 
 export default createTacoTranslateClient;
 
-export type TranslateOptions = {
-	id?: string;
-	variables?: Record<string, string>;
-};
+export const getEntryFromTranslations = (
+	entry: Entry,
+	translations: Translations
+) => translations[getEntryKey(entry)] ?? patchDefaultString(entry.s);
 
-/**
- * Transform a string template
- * @param {string} input - the input string
- * @param {object} object - the template object
- *
- * @returns {string} the transformed output
- **/
-export const template = (input = '', object: Record<string, string> = {}) =>
-	input.replace(/{{[\w.]+}}/g, (templateIdentifier) => {
-		const identifier = templateIdentifier.slice(2, -2);
+export async function translateEntries(
+	client: ReturnType<typeof createTacoTranslateClient>,
+	{origin, locale}: Pick<ClientGetTranslationsParameters, 'origin' | 'locale'>,
+	entries: Entry[]
+) {
+	const translations = await client
+		.getTranslations({origin, locale, entries})
+		.catch((error) => {
+			console.error(error);
+			return {};
+		});
 
-		try {
-			const value = object[identifier];
+	return (entry: Entry, variables?: TemplateVariables) => {
+		const result = getEntryFromTranslations(entry, translations);
 
-			if (typeof value === 'string') {
-				return value;
-			}
-		} catch (error: unknown) {
-			if (process.env.NODE_ENV === 'development') {
-				console.error(error);
-			}
+		if (variables) {
+			return template(result, variables);
 		}
 
-		return '';
-	});
+		return result;
+	};
+}

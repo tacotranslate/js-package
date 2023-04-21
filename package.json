@@ -88,6 +88,14 @@
 				"rules": {
 					"@typescript-eslint/consistent-type-definitions": 0
 				}
+			},
+			{
+				"files": [
+					"./clean.js"
+				],
+				"rules": {
+					"unicorn/prefer-top-level-await": 0
+				}
 			}
 		]
 	}

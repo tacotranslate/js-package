@@ -15,17 +15,15 @@ import {
 	type Language,
 	type Locale,
 	type Localizations,
-	type TranslateOptions,
 	type Translations,
-} from '.';
-import type createTacoTranslateClient from '.';
-import {
 	getEntryKey,
 	locales,
 	patchDefaultString,
 	rightToLeftLocaleCodes,
 	template,
+	type TemplateVariables,
 } from '.';
+import type createTacoTranslateClient from '.';
 
 export type TranslationContextProperties = {
 	origin?: string;
@@ -75,6 +73,11 @@ export const useTacoTranslate = () => {
 	}
 
 	return context;
+};
+
+export type TranslateOptions = {
+	id?: string;
+	variables?: TemplateVariables;
 };
 
 export type TranslateComponentProperties = HTMLAttributes<HTMLSpanElement> &
