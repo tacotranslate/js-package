@@ -1,4 +1,5 @@
 {
+	"private": true,
 	"main": "src/index.js",
 	"scripts": {
 		"start": "dotenv -e .env -e .env.development react-scripts start",
