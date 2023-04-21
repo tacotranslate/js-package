@@ -26,10 +26,14 @@ export default async function handler(request: NextRequest) {
 		string: 'Localize your apps from and to any language today! {{emoji}}',
 	});
 
-	const translations = await translateEntries(tacoTranslate, {origin, locale}, [
-		title,
-		description,
-	]);
+	const translations = await translateEntries(
+		tacoTranslate,
+		{
+			origin: `${process.env.WEBSITE_URL ?? 'localhost:3000'}/api/opengraph`,
+			locale,
+		},
+		[title, description]
+	);
 
 	return new ImageResponse(
 		(
