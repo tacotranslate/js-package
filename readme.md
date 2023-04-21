@@ -1,6 +1,6 @@
 # TacoTranslate
 
-![https://npmjs.com/package/tacotranslate](https://img.shields.io/npm/v/tacotranslate) ![https://github.com/tacotranslate/npm-package](https://img.shields.io/github/actions/workflow/status/tacotranslate/npm-package/tests.yml)
+![https://npmjs.com/package/tacotranslate](https://img.shields.io/npm/v/tacotranslate) ![https://github.com/tacotranslate/js-package](https://img.shields.io/github/actions/workflow/status/tacotranslate/js-package/tests.yml)
 
 Take your React application to new markets automatically with AI-powered and contextually aware translations. [Visit TacoTranslate.com](https://tacotranslate.com) for more information, and to create an account for free!
 
@@ -14,7 +14,7 @@ npm install tacotranslate
 
 ## Usage
 
-Check out [our examples folder on GitHub](https://github.com/tacotranslate/npm-package/tree/test/examples/) to learn more.
+Check out [our examples folder on GitHub](https://github.com/tacotranslate/js-package/tree/test/examples/) to learn more.
 
 ```jsx
 import createTacoTranslateClient from 'tacotranslate';
@@ -42,7 +42,7 @@ TacoTranslate automatically translates your React application to any of our curr
 
 ### Setting up your project
 
-Your application needs to be wrapped inside a `<TranslationProvider>` that is fed the properties `client` and `locale`. For Next.js, we recommend doing this inside `_app.js`. Check out [our examples folder on GitHub](https://github.com/tacotranslate/npm-package/tree/test/examples/) for more information.
+Your application needs to be wrapped inside a `<TranslationProvider>` that is fed the properties `client` and `locale`. For Next.js, we recommend doing this inside `_app.js`. Check out [our examples folder on GitHub](https://github.com/tacotranslate/js-package/tree/test/examples/) for more information.
 
 [Visit TacoTranslate.com](https://tacotranslate.com) to create an API key and translate to 1 language for free.
 
@@ -285,7 +285,7 @@ const tacoTranslate = createTacoTranslateClient({
 - **`client`**
   	- `client` is a TacoTranslate client from the `createTacoTranslateClient` function that is provided an object with `apiKey`.
 - **`locale`**
- 	- `locale` is the langauge code of the language you are translating to. Refer to the exported `locales` object (from the `tacotranslate` package), or [visit the GitHub repository](https://github.com/tacotranslate/npm-package/blob/test/index.tsx) to see it in code.
+ 	- `locale` is the langauge code of the language you are translating to. Refer to the exported `locales` object (from the `tacotranslate` package), or [visit the GitHub repository](https://github.com/tacotranslate/js-package/blob/test/index.tsx) to see it in code.
 
 In addition to those properties, `<TranslationProvider>` can also be fed the following:
 
@@ -295,7 +295,7 @@ In addition to those properties, `<TranslationProvider>` can also be fed the fol
     	```jsx
     	<TranslationProvider origin="tacotranslate.com/contact" />
     	```
-  	- Check out [our `nextjs-app` example on GitHub](https://github.com/tacotranslate/npm-package/blob/test/examples/nextjs-app/pages/index.jsx) to see it used in code.
+  	- Check out [our `nextjs-app` example on GitHub](https://github.com/tacotranslate/js-package/blob/test/examples/nextjs-app/pages/index.jsx) to see it used in code.
 - **`translations`** (optional)
   	- An object with a list of initial translations to prevent a client side request when the page loads. Useful when rendering on the server. You can request a list of translations for the current URL (origin) by using `getTranslations` from a `client`.
 
@@ -325,13 +325,13 @@ In addition to those properties, `<TranslationProvider>` can also be fed the fol
 
 This function, retrieved from the `client` object, is useful when rendering your application from the server. The returned `translations` object can be fed into `<TranslationProvider>`, avoiding a client side request, and immediately displaying the correct language to your user.
 
-For Next.js, setting this up is really easy with `getServerSideProps` or `getStaticProps`. Check out [our `nextjs-app` example](https://github.com/tacotranslate/npm-package/tree/test/examples/nextjs-app) to see it used in a server rendered application. 
+For Next.js, setting this up is really easy with `getServerSideProps` or `getStaticProps`. Check out [our `nextjs-app` example](https://github.com/tacotranslate/js-package/tree/test/examples/nextjs-app) to see it used in a server rendered application. 
 
 ### `getLocales`
 
 This function, also from the `client` object, can be used to retrieve a list of the locale codes supported by your project. **The first locale code in this list is the project locale.**
 
-Check out [our `nextjs-app` example](https://github.com/tacotranslate/npm-package/tree/test/examples/nextjs-app) to see it used in a server rendered application. 
+Check out [our `nextjs-app` example](https://github.com/tacotranslate/js-package/tree/test/examples/nextjs-app) to see it used in a server rendered application. 
 
 ### Acting on errors
 
