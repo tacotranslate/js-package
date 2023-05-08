@@ -1,11 +1,13 @@
 import {useEffect} from 'react';
-import {useTacoTranslate, useTranslateString} from 'tacotranslate/react';
+import {useTacoTranslate, useTranslation} from 'tacotranslate/react';
 
 export default function Head() {
 	const {locale, isRightToLeft} = useTacoTranslate();
-	const translate = useTranslateString();
-	const title = translate('[[[Create React App]]] example with TacoTranslate');
-	const description = translate(
+	const title = useTranslation(
+		'[[[Create React App]]] example with TacoTranslate'
+	);
+
+	const description = useTranslation(
 		'With TacoTranslate, you can automatically localize your React applications to any language within minutes. Example with TacoTranslate to internationalize a [[[Create React App]]].'
 	);
 

@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react';
-import {useTacoTranslate, useTranslate} from 'tacotranslate/react';
+import {useTacoTranslate, Translate} from 'tacotranslate/react';
 import {type Locale} from 'tacotranslate';
 import Wrapper from '../components/wrapper';
 import Head from '../components/head';
@@ -21,7 +21,6 @@ export default function Page({
 	onLocaleChange,
 }: PageProperties) {
 	const {language} = useTacoTranslate();
-	const Translate = useTranslate();
 	const handleLocaleChange = useCallback(
 		(value: string) => {
 			onLocaleChange(value);
