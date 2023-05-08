@@ -6,7 +6,8 @@ export default async function customGetServerSideProps(
 ) {
 	const {
 		resolvedUrl,
-		locale = process.env.TACOTRANSLATE_PROJECT_LOCALE,
+		locale = process.env.TACOTRANSLATE_PROJECT_LOCALE ??
+			process.env.TACOTRANSLATE_DEFAULT_LOCALE,
 		locales,
 	} = context;
 

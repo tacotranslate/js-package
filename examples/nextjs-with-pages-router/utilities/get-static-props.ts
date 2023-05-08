@@ -4,7 +4,8 @@ import tacoTranslate from './tacotranslate';
 export default async function customGetStaticProps(
 	path: string,
 	{
-		locale = process.env.TACOTRANSLATE_PROJECT_LOCALE,
+		locale = process.env.TACOTRANSLATE_PROJECT_LOCALE ??
+			process.env.TACOTRANSLATE_DEFAULT_LOCALE,
 		locales,
 	}: GetStaticPropsContext
 ) {

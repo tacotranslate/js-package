@@ -11,6 +11,7 @@ export default class CustomDocument extends Document {
 		return (
 			<Html dir={direction}>
 				<Head />
+
 				<body>
 					<Main />
 					<NextScript />
