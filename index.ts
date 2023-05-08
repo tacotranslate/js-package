@@ -128,8 +128,7 @@ export type Locale = (typeof locales)[number][0];
 export type Language = (typeof locales)[number][1];
 export type Localizations = Record<string, Record<Locale, Translations>>;
 
-const defaultApiUrl =
-	process.env.TACOTRANSLATE_API_URL ?? 'https://api.tacotranslate.com';
+const defaultApiUrl = 'https://api.tacotranslate.com';
 const maxUrlLength = 2048;
 
 export type GetTranslationsParameters = {

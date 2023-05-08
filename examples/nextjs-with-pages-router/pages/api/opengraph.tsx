@@ -17,9 +17,10 @@ function getRandomEmoji() {
 
 export default async function handler(request: NextRequest) {
 	const {searchParams} = new URL(request.url);
-	const locale = searchParams.get('locale') ?? 'en';
+	const locale =
+		searchParams.get('locale') ?? process.env.TACOTRANSLATE_DEFAULT_LOCALE;
 	const title = createEntry({
-		string: 'Next.js with [[[pages/]]] folder example',
+		string: 'Example with the Next.js [[[pages/]]] router and TacoTranslate',
 	});
 
 	const description = createEntry({

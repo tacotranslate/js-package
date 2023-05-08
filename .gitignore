@@ -3,6 +3,6 @@
 node_modules
 coverage
 index.js
-react.js
 index.d.ts
-react.d.ts
+react/index.js
+react/index.d.ts

@@ -4,16 +4,6 @@ import createTacoTranslateClient from 'tacotranslate';
 import {TranslationProvider} from 'tacotranslate/react';
 import Page from './pages';
 
-declare global {
-	// eslint-disable-next-line no-unused-vars
-	interface Window {
-		TACOTRANSLATE?: {
-			locales?: string[];
-			translations?: Record<string, string>;
-		};
-	}
-}
-
 const tacoTranslate = createTacoTranslateClient({
 	apiKey:
 		process.env.REACT_APP_TACOTRANSLATE_SECRET_API_KEY ??
@@ -55,7 +45,6 @@ function App() {
 			client={tacoTranslate}
 			locale={locale}
 			origin={process.env.REACT_APP_WEBSITE_URL}
-			translations={window.TACOTRANSLATE?.translations}
 		>
 			<Page
 				isLoading={isLoading}

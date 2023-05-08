@@ -1,3 +1,5 @@
+'use client';
+
 import React, {
 	createContext,
 	type HTMLAttributes,
@@ -22,8 +24,8 @@ import {
 	rightToLeftLocaleCodes,
 	template,
 	type TemplateVariables,
-} from '.';
-import type createTacoTranslateClient from '.';
+} from '..';
+import type createTacoTranslateClient from '..';
 
 export type TranslationContextProperties = {
 	origin?: string;
@@ -40,16 +42,12 @@ export type TacoTranslateContextProperties = TranslationContextProperties & {
 	isRightToLeft?: boolean;
 	entries: Entry[];
 	createEntry: (entry: Entry) => void;
-	Translate: typeof Translate;
-	translate: typeof useTranslateStringFunction;
 	error?: Error;
 };
 
 const initialContext: TacoTranslateContextProperties = {
 	entries: [],
 	createEntry: () => undefined,
-	Translate,
-	translate: (inputString: string) => inputString,
 };
 
 const TacoTranslateContext =
@@ -88,7 +86,7 @@ export type TranslateComponentProperties = HTMLAttributes<HTMLSpanElement> &
 		useDangerouslySetInnerHTML?: boolean;
 	};
 
-function useTranslateStringFunction(
+export function useTranslation(
 	inputString: string,
 	options?: TranslateOptions
 ) {
@@ -156,7 +154,7 @@ function useTranslateStringFunction(
 	return output;
 }
 
-function Translate({
+export function Translate({
 	id,
 	string,
 	variables,
@@ -171,7 +169,7 @@ function Translate({
 			? contextUseDangerouslySetInnerHtml ?? false
 			: componentUseDangerouslySetInnerHtml ?? false;
 
-	const output = useTranslateStringFunction(string, {id, variables});
+	const output = useTranslation(string, {id, variables});
 	const sanitized = useMemo(
 		() =>
 			useDangerouslySetInnerHtml
@@ -191,16 +189,6 @@ function Translate({
 
 	return createElement(as, parameters, output);
 }
-
-export const useTranslateString = () => {
-	const {translate} = useTacoTranslate();
-	return translate;
-};
-
-export const useTranslate = () => {
-	const {Translate} = useTacoTranslate();
-	return Translate;
-};
 
 export const useLocale = () => {
 	const {locale} = useTacoTranslate();
@@ -371,8 +359,6 @@ export function TranslationProvider(
 			entries,
 			translations,
 			createEntry,
-			Translate,
-			translate: useTranslateStringFunction,
 			error,
 		}),
 		[

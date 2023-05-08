@@ -18,12 +18,11 @@ Check out [our examples folder on GitHub](https://github.com/tacotranslate/js-pa
 
 ```jsx
 import createTacoTranslateClient from 'tacotranslate';
-import {useTranslate, TranslationProvider} from 'tacotranslate/react';
+import {Translate, TranslationProvider} from 'tacotranslate/react';
 
 const tacoTranslate = createTacoTranslateClient({apiKey: '1234567890'});
 
 function Page() {
-	const Translate = useTranslate();
 	return <Translate string="Hello, world!" />;
 }
 
@@ -67,10 +66,9 @@ export default function App() {
 Now, inside a component, simply import the `useTranslate` hook. **And that’s it!**
 
 ```jsx
-import {useTranslate} from 'tacotranslate/react';
+import {Translate} from 'tacotranslate/react';
 
 export default function Component() {
-	const Translate = useTranslate();
 	return <Translate string="Hello, world!" />;
 }
 ```
@@ -85,7 +83,6 @@ By default, TacoTranslate will use `dangerouslySetInnerHTML` to render strings. 
 
 ```jsx
 export default function Component() {
-	const Translate = useTranslate();
 	return <Translate string="Hello, world!" useDangerouslySetInnerHTML={false} />;
 }
 ```
@@ -127,8 +124,10 @@ This will improve the user experience of people using screen readers or similar 
 If your application supports both left to right and right to left languages, you should implement the applicable styling. The current reading direction can be retrieved from the context, like this:
 
 ```jsx
+import {Translate} from 'tacotranslate/react';
+
 function Page() {
-	const {Translate, isLeftToRight, isRightToLeft} = useTacoTranslate();
+	const {isLeftToRight, isRightToLeft} = useTacoTranslate();
 	
 	return (
 		<html dir={isRightToLeft ? 'rtl' : 'ltr'}>
@@ -143,8 +142,10 @@ function Page() {
 When loading translations on the client side (for example when the locale changes), you can display a loader (or anything else you’d like) by looking at the `isLoading` property from `useTacoTranslate` like this:
 
 ```jsx
+import {Translate} from 'tacotranslate/react';
+
 function Component() {
-	const {Translate, isLoading} = useTacoTranslate();
+	const {isLoading} = useTacoTranslate();
 	
 	return (
 		<div>
@@ -165,10 +166,10 @@ function Component() {
 Sometimes, your translations will include variables, such as usernames, that we don’t want to translate. Nor do we want to generate separate strings for every occurrence. With TacoTranslate, implementing support for that is simple:
 
 ```jsx
-function Component() {
-	const Translate = useTranslate();
-	const name = 'Juan';
+import {Translate} from 'tacotranslate/react';
 
+function Component() {
+	const name = 'Juan';
 	return <Translate string="Hello, {{name}}!" variables={{name}} />;
 }
 ```
@@ -178,8 +179,9 @@ On `<Translate>`, you can provide an object of values that will replace mustache
 **NOTE**: Be careful when rendering untrusted data. Ideally, you would [disable `dangerouslySetInnerHTML`](#opting-out-of-dangerouslysetinnerhtml) with untrusted variables, like this:
 
 ```jsx
+import {Translate} from 'tacotranslate/react';
+
 function Component() {
-	const Translate = useTranslate();
 	const untrustedData = getUntrustedData();
 
 	return (
@@ -199,8 +201,9 @@ It’s worth noting, however, that TacoTranslate always sanitizes strings throug
 Currently, the best way to deal with plural labels or variants is to check the value programmatically, and then changing the output based on it.
 
 ```jsx
+import {Translate} from 'tacotranslate/react';
+
 function PhotoCount() {
-	const Translate = useTranslate();
 	const count = 1;
 	
 	return (
@@ -219,17 +222,15 @@ function PhotoCount() {
 
 ### Translating strings
 
-To translate strings directly instead of through a React component, you can import the `useTranslateString` hook. For example, use this to set the page `<title>`.
+To translate strings directly instead of through a React component, you can import the `useTranslation` hook. For example, use this to set the page `<title>`.
 
 ```jsx
-import {useTranslateString} from 'tacotranslate/react';
+import {useTranslation} from 'tacotranslate/react';
 
 export default function Head() {
-	const translate = useTranslateString();
-	
 	return (
 		<head>
-			<title>{translate('My page title')}</title>
+			<title>{useTranslation('My page title')}</title>
 		</head>
 	);
 }
@@ -238,12 +239,12 @@ export default function Head() {
 Both `id` and `variables` can be set in an options object as the second parameter, like this:
 
 ```jsx
-function Page() {
-	const translate = useTranslateString();
+import {useTranslation} from 'tacotranslate/react';
 
+function Page() {
 	return (
 		<head>
-			<title>{translate('Visitor count: {{count}}', {count: 123})}</title>
+			<title>{useTranslation('Visitor count: {{count}}', {count: 123})}</title>
 		</head>
 	);
 }
@@ -252,11 +253,10 @@ function Page() {
 String translations can also be assigned to variables, and used in (for example) hooks:
 
 ```jsx
-function Page() {
-	const Translate = useTranslate();
-	const translate = useTranslateString();
-	const message = translate('Something happened!');
+import {useTranslation, Translate} from 'tacotranslate/react';
 
+function Page() {
+	const message = useTranslation('Something happened!');
 	const handleClick = useCallback(() => {
 		alert(message);
 	}, [message]);
@@ -295,7 +295,7 @@ In addition to those properties, `<TranslationProvider>` can also be fed the fol
     	```jsx
     	<TranslationProvider origin="tacotranslate.com/contact" />
     	```
-  	- Check out [our `nextjs-app` example on GitHub](https://github.com/tacotranslate/js-package/blob/test/examples/nextjs-app/pages/index.jsx) to see it used in code.
+  	- Check out [our `nextjs-with-pages-router` example on GitHub](https://github.com/tacotranslate/js-package/blob/test/examples/nextjs-with-pages-router/pages/index.jsx) to see it used in code.
 - **`translations`** (optional)
   	- An object with a list of initial translations to prevent a client side request when the page loads. Useful when rendering on the server. You can request a list of translations for the current URL (origin) by using `getTranslations` from a `client`.
 
@@ -325,13 +325,13 @@ In addition to those properties, `<TranslationProvider>` can also be fed the fol
 
 This function, retrieved from the `client` object, is useful when rendering your application from the server. The returned `translations` object can be fed into `<TranslationProvider>`, avoiding a client side request, and immediately displaying the correct language to your user.
 
-For Next.js, setting this up is really easy with `getServerSideProps` or `getStaticProps`. Check out [our `nextjs-app` example](https://github.com/tacotranslate/js-package/tree/test/examples/nextjs-app) to see it used in a server rendered application. 
+For Next.js, setting this up is really easy with `getServerSideProps` or `getStaticProps`. Check out [our `nextjs-with-pages-router` example](https://github.com/tacotranslate/js-package/tree/test/examples/nextjs-with-pages-router) to see it used in a server rendered application. 
 
 ### `getLocales`
 
 This function, also from the `client` object, can be used to retrieve a list of the locale codes supported by your project. **The first locale code in this list is the project locale.**
 
-Check out [our `nextjs-app` example](https://github.com/tacotranslate/js-package/tree/test/examples/nextjs-app) to see it used in a server rendered application. 
+Check out [our `nextjs-with-pages-router` example](https://github.com/tacotranslate/js-package/tree/test/examples/nextjs-with-pages-router) to see it used in a server rendered application. 
 
 ### Acting on errors
 

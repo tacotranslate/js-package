@@ -32,7 +32,7 @@ export default function Page({locales: supportedLocales}: PageProperties) {
 		process.env.WEBSITE_URL
 			? `https://${process.env.WEBSITE_URL}`
 			: 'http://localhost:3000'
-	}/api/opengraph?locale=${locale ?? 'en'}`;
+	}/api/opengraph?locale=${locale ?? process.env.TACOTRANSLATE_DEFAULT_LOCALE}`;
 
 	return (
 		<Wrapper>
@@ -40,16 +40,17 @@ export default function Page({locales: supportedLocales}: PageProperties) {
 				<meta property="og:locale" content={locale} />
 				<title>
 					{translate(
-						'Next.js with [[[pages/]]] folder example with TacoTranslate'
+						'Example of Next.js with [[[pages/]]] router and TacoTranslate'
 					)}
 				</title>
 
 				<meta
 					name="description"
 					content={translate(
-						'With TacoTranslate, you can automatically localize your React applications to any language within minutes. Example with TacoTranslate to internationalize a Next.js app using the [[[pages/]]] folder.'
+						'With TacoTranslate, you can automatically localize your React applications to any language within minutes. Example of internationalizing a Next.js app using the [[[pages/]]] router and TacoTranslate.'
 					)}
 				/>
+
 				<meta property="og:image" content={opengraphImageUrl} />
 			</Head>
 

@@ -6,7 +6,7 @@ type WrapperProperties = {
 
 export default function Wrapper({children}: WrapperProperties) {
 	return (
-		<div style={{width: '100%', height: '100%', display: 'flex', flex: 1}}>
+		<main style={{width: '100%', height: '100%', display: 'flex', flex: 1}}>
 			<div
 				style={{
 					maxWidth: '600px',
@@ -16,6 +16,6 @@ export default function Wrapper({children}: WrapperProperties) {
 			>
 				{children}
 			</div>
-		</div>
+		</main>
 	);
 }

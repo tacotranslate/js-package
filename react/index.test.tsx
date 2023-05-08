@@ -3,20 +3,25 @@ import {render, screen, waitFor} from '@testing-library/react';
 // eslint-disable-next-line import/no-unassigned-import
 import '@testing-library/jest-dom';
 import {act} from 'react-dom/test-utils';
-import {TranslationProvider, useTacoTranslate, useTranslate} from './react';
 import {
 	type CreateTacoTranslateClientParameters,
 	type Translations,
 	localeCodes,
 	type ClientGetTranslationsParameters,
 	type Entry,
+} from '..';
+import {
+	TranslationProvider,
+	useTacoTranslate,
+	useTranslation,
+	Translate,
 } from '.';
 
 const translations: Translations = {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	'some_text_id': 'Hello, there!',
 	'Hello, world!': 'Hallo, verden!',
-	'Hello, {{name}}!': 'Hallo, {{name}}!',
+	'Hello, [[[{{name}}]]]!': 'Hallo, {{name}}!',
 };
 
 async function getTranslations(): Promise<Translations> {
@@ -88,8 +93,6 @@ test('missing translations should be fetched', async () => {
 		const client = createClient();
 
 		function Component() {
-			const Translate = useTranslate();
-
 			return (
 				<div role="text">
 					<Translate string="Hello!" />
@@ -130,8 +133,6 @@ test('present translations should not be fetched', async () => {
 		const client = createClient();
 
 		function Component() {
-			const Translate = useTranslate();
-
 			return (
 				<div role="text">
 					<Translate string="Hello, world!" />
@@ -160,8 +161,6 @@ test('translations should be replaced', async () => {
 
 	await act(() => {
 		function Component() {
-			const Translate = useTranslate();
-
 			return (
 				<div role="text">
 					<Translate string={textContent} />
@@ -181,13 +180,81 @@ test('translations should be replaced', async () => {
 	expect(screen.getByRole('text').textContent).toBe(translations[textContent]);
 });
 
+test('string translations should be replaced', async () => {
+	const textContent = 'Hello, world!';
+
+	await act(() => {
+		function Component() {
+			return <div role="text">{useTranslation(textContent)}</div>;
+		}
+
+		return render(
+			<TranslationProvider client={client} locale="no">
+				<Component />
+			</TranslationProvider>
+		);
+	});
+
+	await waitFor(() => screen.getByRole('text'));
+
+	expect(screen.getByRole('text').textContent).toBe(translations[textContent]);
+});
+
+test('string translations with variables should be replaced', async () => {
+	const textContent = 'Hello, {{name}}!';
+	const name = 'Pedro';
+
+	await act(() => {
+		function Component() {
+			return (
+				<div role="text">
+					{useTranslation(textContent, {variables: {name}})}
+				</div>
+			);
+		}
+
+		return render(
+			<TranslationProvider client={client} locale="no">
+				<Component />
+			</TranslationProvider>
+		);
+	});
+
+	await waitFor(() => screen.getByRole('text'));
+
+	expect(screen.getByRole('text').textContent).toBe(`Hallo, ${name}!`);
+});
+
+test('string translations with variables should be replaced when translations injected', async () => {
+	const textContent = 'Hello, {{name}}!';
+	const name = 'Pedro';
+
+	await act(() => {
+		function Component() {
+			return (
+				<div role="text">
+					{useTranslation(textContent, {variables: {name}})}
+				</div>
+			);
+		}
+
+		return render(
+			<TranslationProvider client={client} locale="no">
+				<Component />
+			</TranslationProvider>
+		);
+	});
+
+	await waitFor(() => screen.getByRole('text'));
+
+	expect(screen.getByRole('text').textContent).toBe(`Hallo, ${name}!`);
+});
+
 test('should render html if useDangerouslySetInnerHTML is not set on the component nor context', async () => {
 	const textContent = 'Hello, world! <b>testing</b>';
 
 	await act(() => {
 		function Component() {
-			const Translate = useTranslate();
-
 			return (
 				<div role="text">
 					<Translate string={textContent} />
@@ -211,8 +278,6 @@ test('should not render html if useDangerouslySetInnerHTML is false on the compo
 
 	await act(() => {
 		function Component() {
-			const Translate = useTranslate();
-
 			return (
 				<div role="text">
 					<Translate string={textContent} useDangerouslySetInnerHTML={false} />
@@ -236,8 +301,6 @@ test('should not render html if useDangerouslySetInnerHTML is false on the conte
 
 	await act(() => {
 		function Component() {
-			const Translate = useTranslate();
-
 			return (
 				<div role="text">
 					<Translate string={textContent} />
@@ -265,8 +328,6 @@ test('should render html if useDangerouslySetInnerHTML is false on the context, 
 
 	await act(() => {
 		function Component() {
-			const Translate = useTranslate();
-
 			return (
 				<div role="text">
 					<Translate useDangerouslySetInnerHTML string={textContent} />
@@ -295,8 +356,6 @@ test('variables should be replaced', async () => {
 
 	await act(() => {
 		function Component() {
-			const Translate = useTranslate();
-
 			return (
 				<div role="text">
 					<Translate string={textContent} variables={{name}} />
@@ -313,7 +372,32 @@ test('variables should be replaced', async () => {
 
 	await waitFor(() => screen.getByRole('text'));
 
-	expect(screen.getByRole('text').textContent).toBe(`Hello, ${name}!`);
+	expect(screen.getByRole('text').textContent).toBe(`Hallo, ${name}!`);
+});
+
+test('variables should be replaced when translations are injected', async () => {
+	const textContent = 'Hello, {{name}}!';
+	const name = 'Pedro';
+
+	await act(() => {
+		function Component() {
+			return (
+				<div role="text">
+					<Translate string={textContent} variables={{name}} />
+				</div>
+			);
+		}
+
+		return render(
+			<TranslationProvider client={client} locale="no">
+				<Component />
+			</TranslationProvider>
+		);
+	});
+
+	await waitFor(() => screen.getByRole('text'));
+
+	expect(screen.getByRole('text').textContent).toBe(`Hallo, ${name}!`);
 });
 
 test('unmatched variables should be removed', async () => {
@@ -321,8 +405,6 @@ test('unmatched variables should be removed', async () => {
 
 	await act(() => {
 		function Component() {
-			const Translate = useTranslate();
-
 			return (
 				<div role="text">
 					<Translate string={textContent} variables={{something: 'test'}} />
@@ -339,7 +421,7 @@ test('unmatched variables should be removed', async () => {
 
 	await waitFor(() => screen.getByRole('text'));
 
-	expect(screen.getByRole('text').textContent).toBe('Hello, !');
+	expect(screen.getByRole('text').textContent).toBe('Hallo, !');
 });
 
 test('ids should be supported', async () => {
@@ -347,8 +429,6 @@ test('ids should be supported', async () => {
 
 	await act(() => {
 		function Component() {
-			const Translate = useTranslate();
-
 			return (
 				<div role="text">
 					<Translate id="some_text_id" string={textContent} />
@@ -374,8 +454,6 @@ test('the locale should be set', async () => {
 	await act(() => {
 		function Component() {
 			const tacoTranslate = useTacoTranslate();
-			const {Translate} = tacoTranslate;
-
 			locale = tacoTranslate.locale ?? '';
 
 			return <Translate string="Hello, world!" />;
@@ -397,8 +475,6 @@ test('the langauge should be set', async () => {
 	await act(() => {
 		function Component() {
 			const tacoTranslate = useTacoTranslate();
-			const {Translate} = tacoTranslate;
-
 			language = tacoTranslate.language ?? '';
 
 			return <Translate string="Hello, world!" />;
@@ -420,8 +496,6 @@ test('left to right should be true when applicable', async () => {
 	await act(() => {
 		function Component() {
 			const tacoTranslate = useTacoTranslate();
-			const {Translate} = tacoTranslate;
-
 			isLeftToRight = tacoTranslate.isLeftToRight ?? false;
 
 			return <Translate string="Hello, world!" />;
@@ -443,8 +517,6 @@ test('right to left should be true when applicable', async () => {
 	await act(() => {
 		function Component() {
 			const tacoTranslate = useTacoTranslate();
-			const {Translate} = tacoTranslate;
-
 			isRightToLeft = tacoTranslate.isRightToLeft ?? false;
 
 			return <Translate string="Hello, world!" />;
@@ -466,8 +538,6 @@ test('error should be set when encountered', async () => {
 	await act(() => {
 		function Component() {
 			const tacoTranslate = useTacoTranslate();
-			const {Translate} = tacoTranslate;
-
 			error = tacoTranslate.error;
 
 			return <Translate string="Hello, world!" />;
@@ -489,7 +559,6 @@ test('isLoading should be set when loading', async () => {
 	await act(() => {
 		function Component() {
 			const tacoTranslate = useTacoTranslate();
-			const {Translate} = tacoTranslate;
 
 			if (isLoading !== true) {
 				isLoading = tacoTranslate.isLoading;

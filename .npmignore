@@ -9,7 +9,7 @@ jest.config.js
 jest.setup.js
 index.ts
 index.test.ts
-react.tsx
-react.test.tsx
+react/index.tsx
+react/index.test.tsx
 tsconfig.json
 tsconfig.build.json

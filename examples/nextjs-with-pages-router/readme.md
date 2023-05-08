@@ -1,6 +1,6 @@
-# TacoTranslate in a Next.js app with the `pages/` folder
+# TacoTranslate in a Next.js app with the `pages/` router
 
-See this example live at [nextjs-pages-folder-demo.tacotranslate.com](https://nextjs-pages-folder-demo.tacotranslate.com).
+See this example live at [nextjs-pages-router-demo.tacotranslate.com](https://nextjs-pages-router-demo.tacotranslate.com).
 
 ## Running this example
 
