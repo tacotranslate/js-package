@@ -171,10 +171,7 @@ export function Translate({
 
 	const output = useTranslation(string, {id, variables});
 	const sanitized = useMemo(
-		() =>
-			useDangerouslySetInnerHtml
-				? sanitize(output)
-				: output,
+		() => (useDangerouslySetInnerHtml ? sanitize(output) : output),
 		[useDangerouslySetInnerHtml, output]
 	);
 
