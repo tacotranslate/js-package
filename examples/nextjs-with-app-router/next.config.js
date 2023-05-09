@@ -4,9 +4,12 @@ module.exports = async () => {
 	const publicApiKey = process.env.TACOTRANSLATE_PUBLIC_API_KEY;
 	const secretApiKey = process.env.TACOTRANSLATE_SECRET_API_KEY;
 	const {getLocales} = createTacoTranslateClient({apiKey: secretApiKey});
-	const locales = await getLocales();
-	const [projectLocale] = locales;
+	const locales = await getLocales().catch((error) => {
+		console.error(error);
+		return [process.env.TACOTRANSLATE_DEFAULT_LOCALE];
+	});
 
+	const [projectLocale] = locales;
 	const isProduction =
 		process.env.TACOTRANSLATE_ENV === 'production' ||
 		process.env.VERCEL_ENV === 'production' ||

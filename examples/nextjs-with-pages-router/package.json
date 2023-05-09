@@ -11,7 +11,7 @@
 		"@vercel/og": "^0.5.4",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"tacotranslate": "^1.0.0-beta.57"
+		"tacotranslate": "^1.0.0-beta.58"
 	},
 	"devDependencies": {
 		"eslint-config-next": "13.4.1",
