@@ -70,9 +70,9 @@ type MetadataProperties = {
 	params: Parameters;
 };
 
-export const path = '/';
-export const revalidate = 60;
+const path = '/';
 
+export const revalidate = 60;
 export async function generateMetadata({params: {locale}}: MetadataProperties) {
 	return customGenerateMetadata(locale, path);
 }
