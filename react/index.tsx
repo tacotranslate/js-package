@@ -11,7 +11,7 @@ import React, {
 	useState,
 	createElement,
 } from 'react';
-import {sanitize} from 'isomorphic-dompurify';
+import sanitize from 'sanitize-html';
 import {
 	type Entry,
 	type Language,
@@ -173,8 +173,7 @@ export function Translate({
 	const sanitized = useMemo(
 		() =>
 			useDangerouslySetInnerHtml
-				? // eslint-disable-next-line @typescript-eslint/naming-convention
-				  sanitize(output, {USE_PROFILES: {html: true}})
+				? sanitize(output)
 				: output,
 		[useDangerouslySetInnerHtml, output]
 	);
