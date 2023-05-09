@@ -70,14 +70,15 @@ type MetadataProperties = {
 	params: Parameters;
 };
 
+export const path = '/';
 export const revalidate = 60;
 
 export async function generateMetadata({params: {locale}}: MetadataProperties) {
-	return customGenerateMetadata(locale, '/');
+	return customGenerateMetadata(locale, path);
 }
 
 export default async function Page({params: {locale}}: {params: Parameters}) {
-	const origin = getOrigin('/');
+	const origin = getOrigin(path);
 	const translations = await getTranslations({locale, origin});
 
 	return (
