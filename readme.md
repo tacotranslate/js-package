@@ -37,13 +37,13 @@ export default App;
 
 ## Documentation
 
-TacoTranslate automatically translates your React application to any of our currently 75 supported language in minutes. It’s really easy to set up, and makes translation management a breeze. Say adiós to JSON-files, and learn to love a language request from your customers!
+TacoTranslate automatically translates your React application to any of our currently 75 supported languages in minutes. It’s really easy to set up, and makes translation management a breeze. Say adiós to JSON-files, and learn to love a language request from your customers!
 
 ### Setting up your project
 
 Your application needs to be wrapped inside a `<TranslationProvider>` that is fed the properties `client` and `locale`. For Next.js, we recommend doing this inside `_app.js`. Check out [our examples folder on GitHub](https://github.com/tacotranslate/js-package/tree/test/examples/) for more information.
 
-[Visit TacoTranslate.com](https://tacotranslate.com) to create an API key and translate to 1 language for free.
+[Visit TacoTranslate.com](https://tacotranslate.com) to create API keys and translate to 1 language for free.
 
 ```jsx
 import createTacoTranslateClient from 'tacotranslate';
@@ -63,7 +63,7 @@ export default function App() {
 }
 ```
 
-Now, inside a component, simply import the `useTranslate` hook. **And that’s it!**
+Now, inside a component, simply use the `Translate` component. **And that’s it!**
 
 ```jsx
 import {Translate} from 'tacotranslate/react';
@@ -305,7 +305,7 @@ In addition to those properties, `<TranslationProvider>` can also be fed the fol
 
 ### `<Translate>`
 
-`<Translate>` is a component retrieved from the `useTranslate` hook inside your app. It can be fed the following properties:
+`<Translate>` is a component imported from `tacotranslate/react`. It can be fed the following properties:
 
 - **`string`**
 	- The text to translate. Needs to be written in the same language as your project `locale`. 
