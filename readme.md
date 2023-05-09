@@ -4,7 +4,7 @@
 
 Take your React application to new markets automatically with AI-powered and contextually aware translations. [Visit TacoTranslate.com](https://tacotranslate.com) for more information, and to create an account for free!
 
-The only production dependenies are React and [Isomporphic DOMPurify](https://www.npmjs.com/package/isomorphic-dompurify) – a module that prevents against XSS attacks within your strings.
+The only production dependenies are React and [sanitize-html](https://www.npmjs.com/package/sanitize-html) – a module that prevents against XSS attacks within your strings.
 
 ## Install [from npm](https://www.npmjs.com/package/tacotranslate)
 
@@ -101,7 +101,7 @@ export default function App() {
 }
 ```
 
-It is worth noting that strings are ran through [Isomporphic DOMPurify](https://www.npmjs.com/package/isomorphic-dompurify) before being rendered using `dangerouslySetInnerHTML`, a module that will prevent against XSS attacks within your strings.
+It is worth noting that strings are ran through [sanitize-html](https://www.npmjs.com/package/sanitize-html) before being rendered using `dangerouslySetInnerHTML`, a module that will prevent against XSS attacks within your strings.
 
 ### Opting out of translation
 
@@ -194,7 +194,7 @@ function Component() {
 }
 ```
 
-It’s worth noting, however, that TacoTranslate always sanitizes strings through [Isomporphic DOMPurify](https://www.npmjs.com/package/isomorphic-dompurify) before rendering anything.
+It’s worth noting, however, that TacoTranslate always sanitizes strings through [sanitize-html](https://www.npmjs.com/package/sanitize-html) before rendering anything.
 
 #### Dealing with variants, eg. numbers with plural labels
 
@@ -490,7 +490,7 @@ If you’re using Jest, you might get an error stating `ReferenceError: TextEnco
 	};
 	```
 
-[Read more here.](https://github.com/kkomelin/isomorphic-dompurify/issues/91)
+[Read more here.](https://github.com/kkomelin/sanitize-html/issues/91)
 
 ### Supported languages
 
