@@ -114,7 +114,7 @@ If you have segments like names or similar that you do not want to translate, yo
 TacoTranslate will then preserve that text as-is. If you’re borrowing words from other languages in your strings, such as the Spanish "¡Hola!" that we like using, we strongly recommend labelling the string with it, like this:
 
 ```jsx
-<Translate string={`<span lang="es">[[[Hola]]]</span>, world! Welcome to TacoTranslate.`} />
+<Translate string={`[[[<span lang="es">Hola</span>]]], world! Welcome to TacoTranslate.`} />
 ```
 
 This will improve the user experience of people using screen readers or similar tools to browse the web.
