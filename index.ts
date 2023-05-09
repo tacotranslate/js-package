@@ -350,12 +350,7 @@ const createTacoTranslateClient = ({
 			  })
 			: {},
 	getLocales: async () =>
-		isEnabled
-			? getLocales({apiUrl, apiKey}).catch((error) => {
-					console.error(error);
-					return localeCodes;
-			  })
-			: localeCodes,
+		isEnabled ? getLocales({apiUrl, apiKey}) : localeCodes,
 });
 
 export default createTacoTranslateClient;
