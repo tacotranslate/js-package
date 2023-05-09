@@ -244,7 +244,11 @@ import {useTranslation} from 'tacotranslate/react';
 function Page() {
 	return (
 		<head>
-			<title>{useTranslation('Visitor count: {{count}}', {count: 123})}</title>
+			<title>
+				{useTranslation('Visitor count: {{count}}', {
+					variables: {count: 123}
+				})}
+			</title>
 		</head>
 	);
 }
