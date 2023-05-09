@@ -7,7 +7,6 @@ export type Parameters = {
 	locale: string;
 };
 
-// eslint-disable-next-line  unicorn/prevent-abbreviations
 export async function generateStaticParams() {
 	const locales = await getLocales();
 	return locales.map((locale) => ({locale}));

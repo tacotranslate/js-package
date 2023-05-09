@@ -91,6 +91,14 @@
 			},
 			{
 				"files": [
+					"./examples/nextjs-with-app-router/**/*"
+				],
+				"rules": {
+					"unicorn/prevent-abbreviations": 0
+				}
+			},
+			{
+				"files": [
 					"./clean.js"
 				],
 				"rules": {
