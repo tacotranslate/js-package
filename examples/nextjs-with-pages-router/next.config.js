@@ -19,7 +19,7 @@ module.exports = async () => {
 	return {
 		env: {
 			TACOTRANSLATE_API_KEY: isProduction ? publicApiKey : secretApiKey,
-			TACOTRANSLATE_PROJECT_LOCALE: projectLocale,
+			TACOTRANSLATE_PROJECT_LOCALE: isProduction ? projectLocale : undefined,
 			WEBSITE_URL: process.env.WEBSITE_URL,
 		},
 		i18n: {
