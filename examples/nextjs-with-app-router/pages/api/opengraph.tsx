@@ -38,7 +38,7 @@ export default async function handler(request: NextRequest) {
 		(
 			<div
 				style={{
-					background: 'linear-gradient(180deg, #31167C 0%, #651A9F 100%)',
+					background: 'linear-gradient(180deg, #3502C3 0%, #3502C3 30%, #5305D1 100%)',
 					width: '100%',
 					height: '100%',
 					display: 'flex',
