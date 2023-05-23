@@ -15,8 +15,10 @@ type PageProperties = {
 	locales: Locale[];
 };
 
+const path = '/';
+
 export async function getStaticProps(context: GetStaticPropsContext) {
-	return customGetStaticProps('/', context);
+	return customGetStaticProps(path, context);
 }
 
 export default function Page({locales: supportedLocales}: PageProperties) {

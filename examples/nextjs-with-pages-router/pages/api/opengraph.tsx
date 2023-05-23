@@ -40,7 +40,8 @@ export default async function handler(request: NextRequest) {
 		(
 			<div
 				style={{
-					background: 'linear-gradient(180deg, #3502C3 0%, #3502C3 30%, #5305D1 100%)',
+					background:
+						'linear-gradient(180deg, #3502C3 0%, #3502C3 30%, #5305D1 100%)',
 					width: '100%',
 					height: '100%',
 					display: 'flex',
@@ -50,7 +51,7 @@ export default async function handler(request: NextRequest) {
 					justifyContent: 'center',
 					flexDirection: 'column',
 					boxSizing: 'border-box',
-					gap: '30px'
+					gap: '30px',
 				}}
 			>
 				<div

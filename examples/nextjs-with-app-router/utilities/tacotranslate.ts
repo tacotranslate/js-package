@@ -1,4 +1,6 @@
-import createTacoTranslateClient, {ClientGetTranslationsParameters} from 'tacotranslate';
+import createTacoTranslateClient, {
+	ClientGetTranslationsParameters,
+} from 'tacotranslate';
 
 const tacoTranslate = createTacoTranslateClient({
 	apiKey:
@@ -31,7 +33,9 @@ export async function getLocales() {
 	return locales;
 }
 
-export async function getTranslations(parameters: ClientGetTranslationsParameters) {
+export async function getTranslations(
+	parameters: ClientGetTranslationsParameters
+) {
 	const translations = await tacoTranslate
 		.getTranslations(parameters)
 		.catch((error) => {
