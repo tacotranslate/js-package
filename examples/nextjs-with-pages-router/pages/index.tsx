@@ -35,14 +35,14 @@ export default function Page({locales: supportedLocales}: PageProperties) {
 				<meta property="og:locale" content={locale} />
 				<title>
 					{useTranslation(
-						'Example of Next.js with [[[pages/]]] router and TacoTranslate'
+						'Example of Next.js with [[[Pages Router]]] and TacoTranslate'
 					)}
 				</title>
 
 				<meta
 					name="description"
 					content={useTranslation(
-						'With TacoTranslate, you can automatically localize your React applications to any language within minutes. Example of internationalizing a Next.js app using the [[[pages/]]] router and TacoTranslate.'
+						'With TacoTranslate, you can automatically localize your React applications to any language within minutes. Example of internationalizing a Next.js app using the [[[Pages Router]]] and TacoTranslate.'
 					)}
 				/>
 

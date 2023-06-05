@@ -20,7 +20,7 @@ export default async function handler(request: NextRequest) {
 	const locale =
 		searchParams.get('locale') ?? process.env.TACOTRANSLATE_DEFAULT_LOCALE;
 	const title = createEntry({
-		string: 'Example of Next.js with [[[pages/]]] router and TacoTranslate',
+		string: 'Example of Next.js with [[[Pages Router]]] and TacoTranslate',
 	});
 
 	const description = createEntry({
