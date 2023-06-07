@@ -1,5 +1,5 @@
 import createTacoTranslateClient, {
-	ClientGetTranslationsParameters,
+	type ClientGetTranslationsParameters,
 } from 'tacotranslate';
 
 const tacoTranslate = createTacoTranslateClient({
