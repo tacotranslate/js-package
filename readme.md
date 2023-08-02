@@ -213,7 +213,7 @@ function PhotoCount() {
 			count === 1 ? (
 				<Translate string="You have 1 photo."/> 
 			) : (
-				<Translate string="You have {{count}} photos."/>
+				<Translate string="You have {{count}} photos." variables={{count}}/>
 			)
 		)
 	);
