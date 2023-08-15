@@ -101,7 +101,12 @@ export function useTranslation(
 			throw new TypeError('<TacoTranslate> `string` must be a string.');
 		} else if (inputString.length > 1500) {
 			throw new TypeError(
-				`<TacoTranslate> \`string\` is too long at ${inputString.length}. Max length is 1500 characters. Please split the string across multiple <TacoTranslate> components/functions.`
+				`<TacoTranslate> \`string\` is too long at ${
+					inputString.length
+				}. Max length is 1500 characters. Please split the string across multiple <TacoTranslate> components/functions: \`${inputString.slice(
+					0,
+					100
+				)}...\``
 			);
 		}
 
@@ -116,11 +121,11 @@ export function useTranslation(
 				throw new TypeError('<TacoTranslate> `id` must be a string.');
 			} else if (id.length > 50) {
 				throw new TypeError(
-					`<TacoTranslate> \`id\` is too long at ${id.length}. Max length is 50 characters.`
+					`<TacoTranslate> \`id\` is too long at ${id.length}. Max length is 50 characters: \`${id}\``
 				);
 			} else if (!/^[a-zA-Z_][a-z\d\-_]*$/.test(id)) {
 				throw new TypeError(
-					`<TacoTranslate> \`id\` format is invalid. Must satisfy \`[a-zA-Z_][a-z0-9\\-_]*\`.`
+					`<TacoTranslate> \`id\` format is invalid. Must satisfy \`[a-zA-Z_][a-z0-9\\-_]*\`: \`${id}\``
 				);
 			}
 		}
