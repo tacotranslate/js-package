@@ -448,6 +448,30 @@ test('ids should be supported', async () => {
 	expect(screen.getByRole('text').textContent).toBe(translations.some_text_id);
 });
 
+test('id with capital letters should be supported', async () => {
+	const textContent = 'Hello, there!';
+
+	await act(() => {
+		function Component() {
+			return (
+				<div role="text">
+					<Translate id="SOME_TEST_ID" string={textContent} />
+				</div>
+			);
+		}
+
+		return render(
+			<TranslationProvider client={client} locale="no">
+				<Component />
+			</TranslationProvider>
+		);
+	});
+
+	await waitFor(() => screen.getByRole('text'));
+
+	expect(screen.getByRole('text').textContent).toBe(translations.some_text_id);
+});
+
 test('invalid ids should throw', () => {
 	// eslint-disable-next-line @typescript-eslint/promise-function-async
 	expect(() =>

@@ -123,9 +123,9 @@ export function useTranslation(
 				throw new TypeError(
 					`<TacoTranslate> \`id\` is too long at ${id.length}. Max length is 50 characters: \`${id}\``
 				);
-			} else if (!/^[a-zA-Z_][a-z\d\-_]*$/.test(id)) {
+			} else if (!/^[a-z_][\w-]*$/i.test(id)) {
 				throw new TypeError(
-					`<TacoTranslate> \`id\` format is invalid. Must satisfy \`[a-zA-Z_][a-z0-9\\-_]*\`: \`${id}\``
+					`<TacoTranslate> \`id\` format is invalid. Must satisfy \`/^[a-z_][\\w-]*$/i\`: \`${id}\``
 				);
 			}
 		}
