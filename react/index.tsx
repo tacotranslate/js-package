@@ -93,7 +93,10 @@ export function useTranslation(
 	const {id, variables} = options ?? {};
 	const {translations, locale, createEntry} = useTacoTranslate();
 
-	if (process.env.NODE_ENV === 'development') {
+	if (
+		process.env.NODE_ENV === 'development' ||
+		process.env.NODE_ENV === 'test'
+	) {
 		if (typeof inputString !== 'string') {
 			throw new TypeError('<TacoTranslate> `string` must be a string.');
 		} else if (inputString.length > 1500) {

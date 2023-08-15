@@ -448,6 +448,31 @@ test('ids should be supported', async () => {
 	expect(screen.getByRole('text').textContent).toBe(translations.some_text_id);
 });
 
+test('invalid IDs should throw', async () => {
+	let error: Error | undefined;
+
+	await act(() => {
+		function Component() {
+			const tacoTranslate = useTacoTranslate();
+			error = tacoTranslate.error;
+
+			return <Translate id="-" string="Hello, world!" />;
+		}
+
+		return render(
+			<TranslationProvider client={client} locale="no">
+				<Component />
+			</TranslationProvider>
+		);
+	});
+
+	expect(error).toBeInstanceOf(Error);
+
+	if (error) {
+		expect(error.message).toContain('`id` format is invalid');
+	}
+});
+
 test('the locale should be set', async () => {
 	let locale = '';
 
