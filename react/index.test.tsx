@@ -448,8 +448,9 @@ test('ids should be supported', async () => {
 	expect(screen.getByRole('text').textContent).toBe(translations.some_text_id);
 });
 
-test('invalid ids should throw', async () => {
-	expect(async () =>
+test('invalid ids should throw', () => {
+	// eslint-disable-next-line @typescript-eslint/promise-function-async
+	expect(() =>
 		act(() => {
 			function Component() {
 				return <Translate id="-" string="Hello, world!" />;
