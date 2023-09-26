@@ -360,8 +360,10 @@ export const getEntryFromTranslations = (
 	translations: Translations
 ) => translations[getEntryKey(entry)] ?? patchDefaultString(entry.s);
 
+export type TacoTranslateClient = ReturnType<typeof createTacoTranslateClient>
+
 export async function translateEntries(
-	client: ReturnType<typeof createTacoTranslateClient>,
+	client: TacoTranslateClient,
 	{origin, locale}: Pick<ClientGetTranslationsParameters, 'origin' | 'locale'>,
 	entries: Entry[]
 ) {
