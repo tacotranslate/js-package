@@ -24,7 +24,7 @@ import {
 	rightToLeftLocaleCodes,
 	template,
 	type TemplateVariables,
-	TacoTranslateClient,
+	type TacoTranslateClient,
 } from '..';
 
 export type TranslationContextProperties = {
