@@ -24,12 +24,12 @@ import {
 	rightToLeftLocaleCodes,
 	template,
 	type TemplateVariables,
+	TacoTranslateClient,
 } from '..';
-import type createTacoTranslateClient from '..';
 
 export type TranslationContextProperties = {
 	origin?: string;
-	client?: ReturnType<typeof createTacoTranslateClient>;
+	client?: TacoTranslateClient;
 	locale?: Locale;
 	translations?: Translations;
 	useDangerouslySetInnerHTML?: boolean;
