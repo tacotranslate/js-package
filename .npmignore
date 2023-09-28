@@ -11,5 +11,7 @@ index.ts
 index.test.ts
 react/index.tsx
 react/index.test.tsx
+next/index.ts
+next/link/index.tsx
 tsconfig.json
 tsconfig.build.json

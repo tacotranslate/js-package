@@ -126,6 +126,69 @@ export const rightToLeftLocaleCodes = ['ar', 'ha', 'he', 'ps', 'fa', 'ur'];
 
 export type Locale = (typeof locales)[number][0];
 export type Language = (typeof locales)[number][1];
+
+const localeToCountryCodeMap = {
+	'af': 'za',
+	'am': 'et',
+	'ar': 'sa',
+	'bn': 'bd',
+	'bs': 'ba',
+	'ca': 'es',
+	'cs': 'cz',
+	'cy': 'gb',
+	'da': 'dk',
+	'el': 'gr',
+	'en': 'us',
+	'es-mx': 'mx',
+	'et': 'ee',
+	'fa': 'ir',
+	'fa-af': 'af',
+	'fr-ca': 'ca',
+	'ga': 'ie',
+	'gu': 'in',
+	'ha': 'ng',
+	'he': 'il',
+	'hi': 'in',
+	'hy': 'am',
+	'ja': 'jp',
+	'ka': 'ge',
+	'kk': 'kz',
+	'kn': 'in',
+	'ko': 'kr',
+	'lt': 'lt',
+	'ml': 'in',
+	'mr': 'in',
+	'ms': 'my',
+	'pa': 'in',
+	'ps': 'af',
+	'pt': 'br',
+	'pt-pt': 'pt',
+	'si': 'lk',
+	'sl': 'si',
+	'sq': 'al',
+	'sr': 'rs',
+	'sv': 'se',
+	'sw': 'ke',
+	'ta': 'in',
+	'te': 'in',
+	'th': 'th',
+	'tr': 'tr',
+	'tl': 'ph',
+	'uk': 'ua',
+	'ur': 'pk',
+	'uz': 'uz',
+	'vi': 'vn',
+	'zh': 'cn',
+	'zh-tw': 'tw',
+};
+
+export function localeToCountryCode(locale: Locale) {
+	return (
+		localeToCountryCodeMap[locale as keyof typeof localeToCountryCodeMap] ??
+		locale
+	);
+}
+
 export type Localizations = Record<string, Record<Locale, Translations>>;
 
 const defaultApiUrl = 'https://api.tacotranslate.com';

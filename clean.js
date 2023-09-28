@@ -4,6 +4,10 @@ const config = require('./tsconfig.build.json');
 const promises = [];
 
 for (const file of config.include) {
+	if (file.endsWith('.d.ts')) {
+		continue;
+	}
+
 	const typeFile = file.replace(/\.tsx?$/, '.d.ts');
 
 	promises.push(

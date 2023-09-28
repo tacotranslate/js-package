@@ -30,8 +30,14 @@
 		"sanitize-html": "^2.10.0"
 	},
 	"peerDependencies": {
+		"next": "^13.5.3",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
+	},
+	"peerDependenciesMeta": {
+		"next": {
+			"optional": true
+		}
 	},
 	"devDependencies": {
 		"@testing-library/jest-dom": "^5.16.5",
