@@ -20,7 +20,6 @@ export default async function Page() {
 
 			<div>
 				<Translate string="Hello, world!" />{' '}
-				
 				<Link href="/">
 					<Translate string="Go back." />
 				</Link>
