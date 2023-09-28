@@ -101,7 +101,8 @@
 					"./examples/nextjs-with-app-router/**/*"
 				],
 				"rules": {
-					"unicorn/prevent-abbreviations": 0
+					"unicorn/prevent-abbreviations": 0,
+					"@typescript-eslint/naming-convention": 0
 				}
 			},
 			{

@@ -74,16 +74,16 @@ export const useTacoTranslate = () => {
 };
 
 export type TranslateOptions = {
-	id?: string;
-	variables?: TemplateVariables;
+	readonly id?: string;
+	readonly variables?: TemplateVariables;
 };
 
 export type TranslateComponentProperties = HTMLAttributes<HTMLSpanElement> &
 	TranslateOptions & {
-		as?: keyof HTMLElementTagNameMap;
-		string: string;
+		readonly as?: keyof HTMLElementTagNameMap;
+		readonly string: string;
 		// eslint-disable-next-line react/boolean-prop-naming
-		useDangerouslySetInnerHTML?: boolean;
+		readonly useDangerouslySetInnerHTML?: boolean;
 	};
 
 export function useTranslation(
