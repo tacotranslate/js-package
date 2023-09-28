@@ -1,4 +1,10 @@
 {
 	"extends": "./tsconfig.json",
-	"include": ["./index.ts", "./react/index.tsx", "./next/process.d.ts", "./next/index.ts", "./next/link/index.tsx"]
+	"include": [
+		"./index.ts",
+		"./react/index.tsx",
+		"./next/process.d.ts",
+		"./next/index.ts",
+		"./next/link/index.tsx"
+	]
 }
