@@ -9,7 +9,7 @@
 	"homepage": "https://tacotranslate.com",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/tacotranslate/js-package.git"
+		"url": "git+https://github.com/tacotranslate/js-package.git"
 	},
 	"bugs": {
 		"url": "https://github.com/tacotranslate/js-package/issues",
