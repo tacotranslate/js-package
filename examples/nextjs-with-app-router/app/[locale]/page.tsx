@@ -20,7 +20,7 @@ export default async function Page() {
 				<LocaleSelector />
 
 				<Link href="/hello-world">
-					<Translate string="View Hello World." />
+					<Translate string="Go forwards." />
 				</Link>
 			</div>
 
