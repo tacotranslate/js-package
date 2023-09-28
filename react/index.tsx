@@ -199,6 +199,11 @@ export const useLocale = () => {
 	return locale;
 };
 
+export const useLanguage = () => {
+	const {language} = useTacoTranslate();
+	return language;
+};
+
 export function TranslationProvider(
 	properties: TranslationContextProperties & {
 		children: ReactNode;
