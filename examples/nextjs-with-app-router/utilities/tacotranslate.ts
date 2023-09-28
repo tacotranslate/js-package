@@ -1,47 +1,25 @@
-import createTacoTranslateClient, {
-	type ClientGetTranslationsParameters,
-} from 'tacotranslate';
+import createTacoTranslateClient from 'tacotranslate';
+
+export const defaultLocale =
+	process.env.TACOTRANSLATE_PROJECT_LOCALE ??
+	process.env.TACOTRANSLATE_DEFAULT_LOCALE;
 
 const tacoTranslate = createTacoTranslateClient({
 	apiKey:
 		process.env.TACOTRANSLATE_SECRET_API_KEY ??
 		process.env.TACOTRANSLATE_PUBLIC_API_KEY ??
 		process.env.TACOTRANSLATE_API_KEY,
-	projectLocale: process.env.TACOTRANSLATE_PROJECT_LOCALE,
+	projectLocale:
+		process.env.TACOTRANSLATE_IS_PRODUCTION === 'true'
+			? defaultLocale
+			: undefined,
 });
 
 export default tacoTranslate;
 
-export function getOrigin(path: string) {
-	let origin = `localhost:3000${path}`;
-
-	if (process.env.WEBSITE_URL) {
-		origin = `${process.env.WEBSITE_URL}${path}`;
-	} else if (process.env.VERCEL_URL) {
-		origin = `${process.env.VERCEL_URL}${path}`;
-	}
-
-	return origin;
-}
-
 export async function getLocales() {
-	const locales = await tacoTranslate.getLocales().catch((error) => {
+	return tacoTranslate.getLocales().catch((error) => {
 		console.error(error);
-		return [];
+		return [defaultLocale];
 	});
-
-	return locales;
-}
-
-export async function getTranslations(
-	parameters: ClientGetTranslationsParameters
-) {
-	const translations = await tacoTranslate
-		.getTranslations(parameters)
-		.catch((error) => {
-			console.error(error);
-			return {};
-		});
-
-	return translations;
 }

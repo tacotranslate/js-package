@@ -12,7 +12,7 @@ const fontFamilyStyles = {
 };
 
 type PageProperties = {
-	locales: Locale[];
+	readonly locales: Locale[];
 };
 
 const path = '/';

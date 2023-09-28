@@ -13,15 +13,16 @@ module.exports = async () => {
 	const isProduction =
 		process.env.TACOTRANSLATE_ENV === 'production' ||
 		process.env.VERCEL_ENV === 'production' ||
-		(!(process.env.TACOTRANSLATE_ENV || process.VERCEL_ENV) &&
+		(!(process.env.TACOTRANSLATE_ENV || process.env.VERCEL_ENV) &&
 			process.env.NODE_ENV === 'production');
 
 	return {
 		env: {
 			TACOTRANSLATE_API_KEY: isProduction ? publicApiKey : secretApiKey,
-			TACOTRANSLATE_PROJECT_LOCALE: isProduction ? projectLocale : undefined,
+			TACOTRANSLATE_PROJECT_LOCALE: projectLocale,
 			TACOTRANSLATE_PROJECT_LOCALES: locales,
-			WEBSITE_URL: process.env.WEBSITE_URL,
+			TACOTRANSLATE_IS_PRODUCTION: isProduction,
+			TACOTRANSLATE_WEBSITE_URL: process.env.TACOTRANSLATE_WEBSITE_URL,
 		},
 	};
 };

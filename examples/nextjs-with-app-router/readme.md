@@ -1,10 +1,19 @@
-# TacoTranslate in a Next.js app with the `app/` router
+# TacoTranslate in a Next.js app with the App Router
 
 See this example live at [nextjs-app-router-demo.tacotranslate.com](https://nextjs-app-router-demo.tacotranslate.com).
 
+## Features
+
+- Automatic cutting-edge AI powered translation to 75 languages
+- Server side rendered pages and translations
+- Locale selector with automatic client-side translation fetching
+- Dynamic OpenGraph image per page with automatic translations
+- Built-in support for RTL languages
+- No JSON files or variable naming: Source strings within the code
+
 ## Running this example
 
-First, replace `TACOTRANSLATE_SECRET_API_KEY`, `TACOTRANSLATE_PUBLIC_API_KEY`, and `WEBSITE_URL` in `.env` with your own. Then, run these commands:
+First, replace `TACOTRANSLATE_SECRET_API_KEY`, `TACOTRANSLATE_PUBLIC_API_KEY`, and `TACOTRNSLATE_WEBSITE_URL` in `.env` with your own. Then, run these commands:
 
 ```
 npm install

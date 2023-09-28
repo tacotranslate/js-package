@@ -3,8 +3,8 @@ import {type Locale, locales} from 'tacotranslate';
 import {useLocale} from 'tacotranslate/react';
 
 type LocaleSelectorProperties = {
-	options: Locale[];
-	onChange: (locale: string) => void;
+	readonly options: Locale[];
+	readonly onChange: (locale: string) => void;
 };
 
 export default function LocaleSelector({

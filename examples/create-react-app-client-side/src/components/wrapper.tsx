@@ -1,7 +1,7 @@
 import React, {type ReactNode} from 'react';
 
 type WrapperProperties = {
-	children: ReactNode;
+	readonly children: ReactNode;
 };
 
 export default function Wrapper({children}: WrapperProperties) {

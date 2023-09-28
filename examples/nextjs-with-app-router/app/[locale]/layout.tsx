@@ -1,7 +1,10 @@
 import React, {type ReactNode} from 'react';
 import {rightToLeftLocaleCodes} from 'tacotranslate';
+import {getOrigin} from 'tacotranslate/next';
 import './global.css';
-import {getLocales} from '@/utilities/tacotranslate';
+import CustomTranslationProvider from '@/components/translation-provider';
+import tacoTranslate, {getLocales} from '@/utilities/tacotranslate';
+import {customGenerateMetadata} from '@/utilities/generate-metadata';
 
 export type Parameters = {
 	locale: string;
@@ -12,19 +15,43 @@ export async function generateStaticParams() {
 	return locales.map((locale) => ({locale}));
 }
 
-type RootLayoutParameters = {
+type MetadataProperties = {
 	params: Parameters;
-	children: ReactNode;
 };
 
-export default function RootLayout({children, params}: RootLayoutParameters) {
-	const direction = rightToLeftLocaleCodes.includes(params.locale)
-		? 'rtl'
-		: 'ltr';
+export async function generateMetadata({params: {locale}}: MetadataProperties) {
+	return customGenerateMetadata(locale);
+}
+
+type RootLayoutParameters = {
+	readonly params: Parameters;
+	readonly children: ReactNode;
+};
+
+export default async function RootLayout({
+	children,
+	params: {locale},
+}: RootLayoutParameters) {
+	const origin = getOrigin();
+	const direction = rightToLeftLocaleCodes.includes(locale) ? 'rtl' : 'ltr';
+	const translations = await tacoTranslate
+		.getTranslations({locale, origin})
+		.catch((error) => {
+			console.error(error);
+			return {};
+		});
 
 	return (
-		<html lang={params.locale} dir={direction}>
-			<body>{children}</body>
+		<html lang={locale} dir={direction}>
+			<body>
+				<CustomTranslationProvider
+					locale={locale}
+					origin={origin}
+					translations={translations}
+				>
+					<div id="content">{children}</div>
+				</CustomTranslationProvider>
+			</body>
 		</html>
 	);
 }

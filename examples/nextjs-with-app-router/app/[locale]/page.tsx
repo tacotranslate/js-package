@@ -1,32 +1,28 @@
+'use client';
+
 import React from 'react';
-import {locales, type Locale} from 'tacotranslate';
-import {Translate} from 'tacotranslate/react';
-import {type Parameters} from './layout';
-import {getOrigin, getTranslations} from '@/utilities/tacotranslate';
-import {customGenerateMetadata} from '@/utilities/generate-metadata';
-import CustomTranslationProvider from '@/utilities/translation-provider';
-import Wrapper from '@/utilities/wrapper';
-import LocaleSelector from '@/utilities/locale-selector';
+import {Translate, useTacoTranslate} from 'tacotranslate/react';
+import Link from 'tacotranslate/next/link';
+import LocaleSelector from '@/components/locale-selector';
 
 const fontFamilyStyles = {
 	fontFamily: 'sans-serif',
 };
 
-function Contents({locale}: {locale: Locale}) {
-	const [, language] = locales.find(([code]) => code === locale) ?? [];
-	const options = process.env.TACOTRANSLATE_PROJECT_LOCALES.map(
-		(locale) => locale
-	);
-
-	const opengraphImageUrl = `${
-		process.env.WEBSITE_URL
-			? `https://${process.env.WEBSITE_URL}`
-			: 'http://localhost:3000'
-	}/api/opengraph?locale=${locale}`;
+export const revalidate = 60;
+export default async function Page() {
+	const {locale = '', language} = useTacoTranslate();
+	const opengraphImageUrl = `/api/opengraph?locale=${locale}`;
 
 	return (
-		<Wrapper>
-			<LocaleSelector initialLocale={locale} options={options} />
+		<>
+			<div style={{display: 'flex', gap: '16px'}}>
+				<LocaleSelector />
+
+				<Link href="/hello-world">
+					<Translate string="View Hello World." />
+				</Link>
+			</div>
 
 			<h1 style={fontFamilyStyles}>
 				<Translate
@@ -62,32 +58,6 @@ function Contents({locale}: {locale: Locale}) {
 					style={{width: '100%', height: 'auto', marginTop: '2em', border: 0}}
 				/>
 			</a>
-		</Wrapper>
-	);
-}
-
-type MetadataProperties = {
-	params: Parameters;
-};
-
-const path = '/';
-
-export const revalidate = 60;
-export async function generateMetadata({params: {locale}}: MetadataProperties) {
-	return customGenerateMetadata(locale, path);
-}
-
-export default async function Page({params: {locale}}: {params: Parameters}) {
-	const origin = getOrigin(path);
-	const translations = await getTranslations({locale, origin});
-
-	return (
-		<CustomTranslationProvider
-			locale={locale}
-			origin={origin}
-			translations={translations}
-		>
-			<Contents locale={locale} />
-		</CustomTranslationProvider>
+		</>
 	);
 }

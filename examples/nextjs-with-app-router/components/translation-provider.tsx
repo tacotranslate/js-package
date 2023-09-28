@@ -1,16 +1,11 @@
 'use client';
 
 import React, {type ReactNode} from 'react';
-import createTacoTranslateClient from 'tacotranslate';
 import {
 	type TranslationContextProperties,
 	TranslationProvider,
 } from 'tacotranslate/react';
-
-const tacoTranslate = createTacoTranslateClient({
-	apiKey: process.env.TACOTRANSLATE_API_KEY,
-	projectLocale: process.env.TACOTRANSLATE_PROJECT_LOCALE,
-});
+import tacoTranslate from '@/utilities/tacotranslate';
 
 export default function CustomTranslationProvider({
 	locale,
@@ -18,7 +13,7 @@ export default function CustomTranslationProvider({
 	translations,
 	children,
 }: TranslationContextProperties & {
-	children: ReactNode;
+	readonly children: ReactNode;
 }) {
 	return (
 		<TranslationProvider

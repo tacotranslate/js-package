@@ -1,8 +1,8 @@
 import React from 'react';
-import {ImageResponse} from '@vercel/og';
-import {type NextRequest} from 'next/server';
+import {ImageResponse, type NextRequest} from 'next/server';
 import {createEntry, translateEntries} from 'tacotranslate';
-import tacoTranslate from '@/utilities/tacotranslate';
+import {getOrigin} from 'tacotranslate/next';
+import tacoTranslate, {defaultLocale} from '@/utilities/tacotranslate';
 
 export const runtime = 'edge';
 
@@ -13,12 +13,12 @@ function getRandomEmoji() {
 	return emoji[Math.floor(Math.random() * emojiLength)];
 }
 
-export default async function handler(request: NextRequest) {
+export async function GET(request: NextRequest) {
 	const {searchParams} = new URL(request.url);
-	const locale =
-		searchParams.get('locale') ?? process.env.TACOTRANSLATE_DEFAULT_LOCALE;
+	const locale = searchParams.get('locale') ?? defaultLocale;
+
 	const title = createEntry({
-		string: 'Example with the Next.js [[[app/]]] router and TacoTranslate',
+		string: 'Example with the Next.js [[[App Router]]] and TacoTranslate.',
 	});
 
 	const description = createEntry({
@@ -28,7 +28,7 @@ export default async function handler(request: NextRequest) {
 	const translations = await translateEntries(
 		tacoTranslate,
 		{
-			origin: `${process.env.WEBSITE_URL ?? 'localhost:3000'}/api/opengraph`,
+			origin: getOrigin(),
 			locale,
 		},
 		[title, description]
@@ -68,9 +68,10 @@ export default async function handler(request: NextRequest) {
 						style={{
 							fontSize: 60,
 							fontWeight: '600',
-							lineHeight: '1em',
+							lineHeight: '1.15em',
 							letterSpacing: '-0.025em',
 							color: '#fff',
+							textShadow: '0 2px 5px rgba(0,0,0,0.2)',
 						}}
 					>
 						{translations(title)}
@@ -83,19 +84,12 @@ export default async function handler(request: NextRequest) {
 							lineHeight: '1em',
 							letterSpacing: '-0.025em',
 							color: 'rgba(255,255,255,0.9)',
+							textShadow: '0 2px 5px rgba(0,0,0,0.2)',
 						}}
 					>
 						{translations(description, {emoji: getRandomEmoji()})}
 					</div>
 				</div>
-
-				<img
-					src="https://tacotranslate.com/static/logotype.png"
-					alt="TacoTranslate"
-					width="539"
-					height="55"
-					style={{width: `${539 * 0.65}px`, height: `${55 * 0.65}px`}}
-				/>
 			</div>
 		),
 		{

@@ -10,9 +10,9 @@ const fontFamilyStyles = {
 };
 
 type PageProperties = {
-	isLoading: boolean;
-	locales: Locale[];
-	onLocaleChange: (locale: string) => void;
+	readonly isLoading: boolean;
+	readonly locales: Locale[];
+	readonly onLocaleChange: (locale: string) => void;
 };
 
 export default function Page({

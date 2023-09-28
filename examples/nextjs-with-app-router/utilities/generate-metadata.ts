@@ -1,21 +1,28 @@
 import {type Locale, createEntry, translateEntries} from 'tacotranslate';
+import {
+	getAbsoluteOriginPath,
+	getOrigin,
+	getWebsiteUrl,
+} from 'tacotranslate/next';
 import tacoTranslate, {getLocales} from './tacotranslate';
 
 type GenerateMetadataOptions = {
 	title?: string;
 	description?: string;
+	openGraph?: {
+		title?: string;
+		description?: string;
+	};
 };
 
 export async function customGenerateMetadata(
 	locale: Locale,
-	path: string,
 	options?: GenerateMetadataOptions
 ) {
-	const locales = await getLocales();
 	const title = createEntry({
 		string:
 			options?.title ??
-			'Example of Next.js with [[[app/]]] router and TacoTranslate',
+			'Example of Next.js with [[[App Router]]] and TacoTranslate',
 	});
 
 	const description = createEntry({
@@ -24,25 +31,21 @@ export async function customGenerateMetadata(
 			'With TacoTranslate, you can automatically localize your React applications to any language within minutes. Example of internationalizing a Next.js app using the [[[app/]]] router and TacoTranslate.',
 	});
 
-	const defaultBase = 'localhost:3000';
-	const metadataBase = process.env.WEBSITE_URL
-		? `https://${process.env.WEBSITE_URL}`
-		: `http://${defaultBase}`;
-
-	const origin = `${process.env.WEBSITE_URL ?? defaultBase}/${path}`;
-	const translations = await translateEntries(tacoTranslate, {origin, locale}, [
-		title,
-		description,
+	const origin = getOrigin();
+	const [translations, locales] = await Promise.all([
+		translateEntries(tacoTranslate, {origin, locale}, [title, description]),
+		getLocales(),
 	]);
 
+	const absolutePath = getAbsoluteOriginPath();
 	const languages: Record<string, string> = {};
 
 	for (const locale of locales) {
-		languages[locale] = `/${locale}/${path}`;
+		languages[locale] = `/${locale}/${absolutePath}`;
 	}
 
 	return {
-		metadataBase: new URL(`${metadataBase}/${path}`),
+		metadataBase: getWebsiteUrl().origin,
 		title: translations(title),
 		description: translations(description),
 		alternates: {
@@ -54,7 +57,7 @@ export async function customGenerateMetadata(
 			locale,
 			images: [
 				{
-					url: `/api/opengraph?locale=${locale}`,
+					url: `/opengraph?locale=${locale}`,
 					width: 1200,
 					height: 600,
 				},
