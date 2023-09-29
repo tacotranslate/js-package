@@ -28,7 +28,7 @@ export async function customGenerateMetadata(
 	const description = createEntry({
 		string:
 			options?.description ??
-			'With TacoTranslate, you can automatically localize your React applications to any language within minutes. Example of internationalizing a Next.js app using the [[[app/]]] router and TacoTranslate.',
+			'With TacoTranslate, you can automatically localize your React applications to any language within minutes. Example of internationalizing a Next.js project using the [[[App Router]]] and TacoTranslate.',
 	});
 
 	const origin = getOrigin();
