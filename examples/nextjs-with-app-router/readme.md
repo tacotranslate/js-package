@@ -1,6 +1,6 @@
 # TacoTranslate in a Next.js app with the App Router
 
-See this example live at [nextjs-app-router-demo.tacotranslate.com](https://nextjs-app-router-demo.tacotranslate.com).
+To learn how to implement TacoTranslate into your own application, please refer to [this guide on tacotranslate.com](https://tacotranslate.com/blog/how-to-implement-internationalization-in-a-nextjs-application-thats-using-the-app-router). You can see this example live at [nextjs-app-router-demo.tacotranslate.com](https://nextjs-app-router-demo.tacotranslate.com). 
 
 ## Features
 
