@@ -6,14 +6,14 @@ import CustomTranslationProvider from '@/components/translation-provider';
 import tacoTranslate, {getLocales} from '@/utilities/tacotranslate';
 import {customGenerateMetadata} from '@/utilities/generate-metadata';
 
-export type Parameters = {
-	locale: string;
-};
-
 export async function generateStaticParams() {
 	const locales = await getLocales();
 	return locales.map((locale) => ({locale}));
 }
+
+type Parameters = {
+	locale: string;
+};
 
 type MetadataProperties = {
 	params: Parameters;
