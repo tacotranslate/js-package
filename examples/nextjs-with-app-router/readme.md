@@ -26,4 +26,4 @@ Follow the instructions in the terminal.
 
 You can create API keys for your project at [tacotranslate.com](https://tacotranslate.com/). Each project should have **at least two**: One for development & preview environments with `read/write` permissions, and one for production with `read` permissions. Your backend (if protected) could always use a secret API key.
 
-You’ll find an example of backend usage inside [`/app/api/opengraph/route.tsx`](/app/api/opengraph/route.tsx), that also demonstrates how to set up dynamic OpenGraph images with on-demand localization.
+You’ll find an example of backend usage inside [`app/api/opengraph/route.tsx`](app/api/opengraph/route.tsx), that also demonstrates how to set up dynamic OpenGraph images with on-demand localization.
