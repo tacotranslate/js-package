@@ -29,8 +29,8 @@ type RootLayoutParameters = {
 };
 
 export default async function RootLayout({
-	children,
 	params: {locale},
+	children,
 }: RootLayoutParameters) {
 	const origin = getOrigin();
 	const direction = rightToLeftLocaleCodes.includes(locale) ? 'rtl' : 'ltr';
