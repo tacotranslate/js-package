@@ -324,11 +324,11 @@ export function TranslationProvider(
 							setIsLoading(false);
 						});
 				}
-			} else {
+			} else if (currentLocale !== locale) {
 				setCurrentLocale(locale);
 			}
 		}
-	}, [client, currentOrigin, entries, isLoading, locale]);
+	}, [client, currentOrigin, entries, isLoading, currentLocale, locale]);
 
 	const patchedLocalizations = useMemo(
 		() =>
