@@ -51,7 +51,7 @@ import {TranslationProvider} from 'tacotranslate/react';
 
 const tacoTranslate = createTacoTranslateClient({
 	apiKey: '1234567890',
-	projectLocale: 'en'
+	projectLocale: 'en',
 });
 
 export default function App() {
@@ -83,7 +83,9 @@ By default, TacoTranslate will use `dangerouslySetInnerHTML` to render strings. 
 
 ```jsx
 export default function Component() {
-	return <Translate string="Hello, world!" useDangerouslySetInnerHTML={false} />;
+	return (
+		<Translate string="Hello, world!" useDangerouslySetInnerHTML={false} />
+	);
 }
 ```
 
@@ -94,7 +96,11 @@ This will enforce not using `dangerouslySetInnerHTML` on all `<Translate>` compo
 ```jsx
 export default function App() {
 	return (
-		<TranslationProvider client={tacoTranslate} locale="es" useDangerouslySetInnerHTML={false}>
+		<TranslationProvider
+			client={tacoTranslate}
+			locale="es"
+			useDangerouslySetInnerHTML={false}
+		>
 			...
 		</TranslationProvider>
 	);
@@ -114,7 +120,9 @@ If you have segments like names or similar that you do not want to translate, yo
 TacoTranslate will then preserve that text as-is. If you’re borrowing words from other languages in your strings, such as the Spanish "¡Hola!" that we like using, we strongly recommend labelling the string with it, like this:
 
 ```jsx
-<Translate string={`[[[<span lang="es">Hola</span>]]], world! Welcome to TacoTranslate.`} />
+<Translate
+	string={`[[[<span lang="es">Hola</span>]]], world! Welcome to TacoTranslate.`}
+/>
 ```
 
 This will improve the user experience of people using screen readers or similar tools to browse the web.
@@ -128,7 +136,7 @@ import {Translate} from 'tacotranslate/react';
 
 function Page() {
 	const {isLeftToRight, isRightToLeft} = useTacoTranslate();
-	
+
 	return (
 		<html dir={isRightToLeft ? 'rtl' : 'ltr'}>
 			<Translate string="Hello, world!" />
@@ -146,16 +154,14 @@ import {Translate} from 'tacotranslate/react';
 
 function Component() {
 	const {isLoading} = useTacoTranslate();
-	
+
 	return (
 		<div>
 			<div>
 				<Translate string="Hello, world!" />
 			</div>
-			
-			{isLoading ? (
-				<span>Loading...</span>
-			) : null}
+
+			{isLoading ? <span>Loading...</span> : null}
 		</div>
 	);
 }
@@ -185,10 +191,10 @@ function Component() {
 	const untrustedData = getUntrustedData();
 
 	return (
-		<Translate 
-			string="Hello, {{untrustedData}}!" 
-			variables={{untrustedData}} 
-			useDangerouslySetInnerHTML={false} 
+		<Translate
+			string="Hello, {{untrustedData}}!"
+			variables={{untrustedData}}
+			useDangerouslySetInnerHTML={false}
 		/>
 	);
 }
@@ -205,17 +211,13 @@ import {Translate} from 'tacotranslate/react';
 
 function PhotoCount() {
 	const count = 1;
-	
-	return (
-		count === 0 ? (
-			<Translate string="You have no photos."/> 
-		) : (
-			count === 1 ? (
-				<Translate string="You have 1 photo."/> 
-			) : (
-				<Translate string="You have {{count}} photos." variables={{count}}/>
-			)
-		)
+
+	return count === 0 ? (
+		<Translate string="You have no photos." />
+	) : count === 1 ? (
+		<Translate string="You have 1 photo." />
+	) : (
+		<Translate string="You have {{count}} photos." variables={{count}} />
 	);
 }
 ```
@@ -246,7 +248,7 @@ function Page() {
 		<head>
 			<title>
 				{useTranslation('Visitor count: {{count}}', {
-					variables: {count: 123}
+					variables: {count: 123},
 				})}
 			</title>
 		</head>
@@ -267,7 +269,7 @@ function Page() {
 
 	return (
 		<button onClick={handleClick}>
-			<Translate string="Click me!"/>
+			<Translate string="Click me!" />
 		</button>
 	);
 }
@@ -279,67 +281,62 @@ TacoTranslate will request translation of all the strings in your application, e
 
 ```jsx
 const tacoTranslate = createTacoTranslateClient({
-	apiKey: '1234567890', 
-	projectLocale: 'es'
+	apiKey: '1234567890',
+	projectLocale: 'es',
 });
 ```
 
 ### `<TranslationProvider>`
 
-- **`client`**
-  	- `client` is a TacoTranslate client from the `createTacoTranslateClient` function that is provided an object with `apiKey`.
+- **`client`** - `client` is a TacoTranslate client from the `createTacoTranslateClient` function that is provided an object with `apiKey`.
 - **`locale`**
- 	- `locale` is the langauge code of the language you are translating to. Refer to the exported `locales` object (from the `tacotranslate` package), or [visit the GitHub repository](https://github.com/tacotranslate/js-package/blob/test/index.tsx) to see it in code.
+  - `locale` is the langauge code of the language you are translating to. Refer to the exported `locales` object (from the `tacotranslate` package), or [visit the GitHub repository](https://github.com/tacotranslate/js-package/blob/test/index.tsx) to see it in code.
 
 In addition to those properties, `<TranslationProvider>` can also be fed the following:
 
-- **`origin`** (optional)
-  	- An identifier pointing to the current page or view – such as an URL. This is useful for server side rendering, where you’d want to request all the translations for the current page. If not set, TacoTranslate infers the current URL by running `window.location.host + window.location.pathname`.
-  	- For example:
-    	```jsx
-    	<TranslationProvider origin="tacotranslate.com/contact" />
-    	```
-  	- Check out [our `nextjs-with-pages-router` example on GitHub](https://github.com/tacotranslate/js-package/blob/test/examples/nextjs-with-pages-router/pages/index.jsx) to see it used in code.
-- **`translations`** (optional)
-  	- An object with a list of initial translations to prevent a client side request when the page loads. Useful when rendering on the server. You can request a list of translations for the current URL (origin) by using `getTranslations` from a `client`.
+- **`origin`** (optional) - An identifier pointing to the current page or view – such as an URL. This is useful for server side rendering, where you’d want to request all the translations for the current page. If not set, TacoTranslate infers the current URL by running `window.location.host + window.location.pathname`. - For example:
+  `jsx
+<TranslationProvider origin="tacotranslate.com/contact" />
+` - Check out [our `nextjs-with-pages-router` example on GitHub](https://github.com/tacotranslate/js-package/blob/test/examples/nextjs-with-pages-router/pages/index.jsx) to see it used in code.
+- **`translations`** (optional) - An object with a list of initial translations to prevent a client side request when the page loads. Useful when rendering on the server. You can request a list of translations for the current URL (origin) by using `getTranslations` from a `client`.
 
 ### `<Translate>`
 
 `<Translate>` is a component imported from `tacotranslate/react`. It can be fed the following properties:
 
 - **`string`**
-	- The text to translate. Needs to be written in the same language as your project `locale`. 
+  - The text to translate. Needs to be written in the same language as your project `locale`.
 - **`id`** (optional)
-	- A translation ID. This is optional, but can be helpful for translating the same string into multiple, differing outputs in other languages. Then, later, [inside our web application](https://tacotranslate.com), you can edit the automatic translation.
-	- For example:
-		```jsx
-		<>
-			<Translate id="login-header" string="Login" />
-			<Translate id="login-footer" string="Login" />
-		</>
-		```
+  - A translation ID. This is optional, but can be helpful for translating the same string into multiple, differing outputs in other languages. Then, later, [inside our web application](https://tacotranslate.com), you can edit the automatic translation.
+  - For example:
+    ```jsx
+    <>
+    	<Translate id="login-header" string="Login" />
+    	<Translate id="login-footer" string="Login" />
+    </>
+    ```
 - **`variables`** (optional)
-	- An object containing key-value pairs that will replace mustache-style template tags, like `{{name}}`, in your strings. The variable names must satisfy a regular expression of `\w.`.
-	- For example: 
-		```jsx
-		<Translate string="Hello, {{name}}!" variables={{name: 'Pedro'}} />
-		```
+  - An object containing key-value pairs that will replace mustache-style template tags, like `{{name}}`, in your strings. The variable names must satisfy a regular expression of `\w.`.
+  - For example:
+    ```jsx
+    <Translate string="Hello, {{name}}!" variables={{name: 'Pedro'}} />
+    ```
 
 ### `getTranslations`
 
 This function, retrieved from the `client` object, is useful when rendering your application from the server. The returned `translations` object can be fed into `<TranslationProvider>`, avoiding a client side request, and immediately displaying the correct language to your user.
 
-For Next.js, setting this up is really easy with `getServerSideProps` or `getStaticProps`. Check out [our `nextjs-with-pages-router` example](https://github.com/tacotranslate/js-package/tree/test/examples/nextjs-with-pages-router) to see it used in a server rendered application. 
+For Next.js, setting this up is really easy with `getServerSideProps` or `getStaticProps`. Check out [our `nextjs-with-pages-router` example](https://github.com/tacotranslate/js-package/tree/test/examples/nextjs-with-pages-router) to see it used in a server rendered application.
 
 ### `getLocales`
 
 This function, also from the `client` object, can be used to retrieve a list of the locale codes supported by your project. **The first locale code in this list is the project locale.**
 
-Check out [our `nextjs-with-pages-router` example](https://github.com/tacotranslate/js-package/tree/test/examples/nextjs-with-pages-router) to see it used in a server rendered application. 
+Check out [our `nextjs-with-pages-router` example](https://github.com/tacotranslate/js-package/tree/test/examples/nextjs-with-pages-router) to see it used in a server rendered application.
 
 ### Acting on errors
 
-The `useTacoTranslate` hook includes an `error` object that will be populated with a JavaScript `Error` when an error occurs. Errors may be network errors, or errors thrown from the API. 
+The `useTacoTranslate` hook includes an `error` object that will be populated with a JavaScript `Error` when an error occurs. Errors may be network errors, or errors thrown from the API.
 
 Errors are always logged to the console during local development (`process.env.NODE_ENV === 'development'`).
 
@@ -366,7 +363,7 @@ To prevent requests towards TacoTranslate APIs while still using the `Translate`
 ```jsx
 const tacoTranslate = createTacoTranslateClient({
 	apiKey: '1234567890',
-	isEnabled: false
+	isEnabled: false,
 });
 ```
 
@@ -419,7 +416,7 @@ const createCustomClient =
 			isEnabled && locale !== projectLocale
 				? getTranslations({locale, entries, origin})
 				: {},
-		getLocales: async () => ['en', 'es']
+		getLocales: async () => ['en', 'es'],
 	});
 
 const customClient = createCustomClient({projectLocale: 'es'});
@@ -444,6 +441,32 @@ The return data of `getTranslations` should look similar to this:
 
 Left hand side is the original string, or `ID:ORIGINAL_STRING` if ID is set (the pair separated by a colon). Right hand side is the replacement.
 
+If you wish to change how TacoTranslate resolves the left hand side key, you can set `getTranslationKey` when creating a custom client, like this:
+
+```tsx
+const createCustomClient = ({
+	projectLocale,
+	isEnabled = true,
+}: Pick<
+	CreateTacoTranslateClientParameters,
+	'projectLocale' | 'isEnabled'
+>) => ({
+	getTranslations: async ({
+		locale,
+		entries,
+		origin,
+	}: ClientGetTranslationsParameters) =>
+		isEnabled && locale !== projectLocale
+			? getTranslations({locale, entries, origin})
+			: {},
+	getTranslationKey: (entry: Entry) =>
+		entry.i ? `${entry.i}:${entry.s}` : entry.s,
+	getLocales: async () => ['en', 'es'],
+});
+```
+
+The default translation key resolution is, as above, `` id ? `${id}:${string}` : string ``.
+
 `entries` are an array of objects containing properties `i` for `id`, `s` for `string`, and `l` for locale.
 
 Also, a `getLocales` function is required. It should return an array of strings representing the locale codes of the languages you are supporting.
@@ -459,13 +482,13 @@ npm uninstall tacotranslate
 Then, within all your files, remove any TacoTranslate imports and hooks. For example, using a regular expression, your IDE could replace `<Translate>` with the original string like so:
 
 - Replace:
-	```
-	<Translate\s(?:.*?)string="([^"]*?)"(?:.*?)\/>
-	```
-- With: 
-	```
-	"$1"
-	```
+  ```
+  <Translate\s(?:.*?)string="([^"]*?)"(?:.*?)\/>
+  ```
+- With:
+  ```
+  "$1"
+  ```
 
 ### Known issues
 
@@ -473,22 +496,22 @@ If you’re using Jest, you might get an error stating `ReferenceError: TextEnco
 
 1. Create or edit `jest.setup.js`:
 
-	```js
-	const {TextEncoder, TextDecoder} = require('node:util');
+   ```js
+   const {TextEncoder, TextDecoder} = require('node:util');
 
-	global.TextEncoder = TextEncoder;
-	global.TextDecoder = TextDecoder;
-	```
+   global.TextEncoder = TextEncoder;
+   global.TextDecoder = TextDecoder;
+   ```
 
 2. Include the setup file in the `setupFiles` array within `jest.config.js`:
 
-	```js
-	module.exports = {
-		preset: 'ts-jest',
-		testEnvironment: 'jsdom',
-		setupFiles: ['./jest.setup.js']
-	};
-	```
+   ```js
+   module.exports = {
+   	preset: 'ts-jest',
+   	testEnvironment: 'jsdom',
+   	setupFiles: ['./jest.setup.js'],
+   };
+   ```
 
 [Read more here.](https://github.com/kkomelin/sanitize-html/issues/91)
 
@@ -496,80 +519,80 @@ If you’re using Jest, you might get an error stating `ReferenceError: TextEnco
 
 TacoTranslate currently supports translation between the following 75 languages:
 
-| Language | Locale code |
-| -------- | ----------- |
-| Afrikaans | af |
-| Albanian | sq |
-| Amharic | am |
-| Arabic | ar |
-| Armenian | hy |
-| Azerbaijani | az |
-| Bengali | bn |
-| Bosnian | bs |
-| Bulgarian | bg |
-| Catalan | ca |
-| Chinese (Simplified) | zh |
-| Chinese (Traditional) | zh-tw |
-| Croatian | hr |
-| Czech | cs |
-| Danish | da |
-| Dari | fa-af |
-| Dutch | nl |
-| English | en |
-| Estonian | et |
-| Farsi (Persian) | fa |
-| Filipino, Tagalog | tl |
-| Finnish | fi |
-| French | fr |
-| French (Canada) | fr-ca |
-| Georgian | ka |
-| German | de |
-| Greek | el |
-| Gujarati | gu |
-| Haitian Creole | ht |
-| Hausa | ha |
-| Hebrew | he |
-| Hindi | hi |
-| Hungarian | hu |
-| Icelandic | is |
-| Indonesian | id |
-| Irish | ga |
-| Italian | it |
-| Japanese | ja |
-| Kannada | kn |
-| Kazakh | kk |
-| Korean | ko |
-| Latvian | lv |
-| Lithuanian | lt |
-| Macedonian | mk |
-| Malay | ms |
-| Malayalam | ml |
-| Maltese | mt |
-| Marathi | mr |
-| Mongolian | mn |
-| Norwegian (Bokmål) | no |
-| Pashto | ps |
-| Polish | pl |
-| Portuguese (Brazil) | pt |
-| Portuguese (Portugal) | pt-pt |
-| Punjabi | pa |
-| Romanian | ro |
-| Russian | ru |
-| Serbian | sr |
-| Sinhala | si |
-| Slovak | sk |
-| Slovenian | sl |
-| Somali | so |
-| Spanish | es |
-| Spanish (Mexico) | es-mx |
-| Swahili | sw |
-| Swedish | sv |
-| Tamil | ta |
-| Telugu | te |
-| Thai | th |
-| Turkish | tr |
-| Ukrainian | uk |
-| Urdu | ur |
-| Uzbek | uz |
-| Vietnamese | vi |
-| Welsh | cy |
+| Language              | Locale code |
+| --------------------- | ----------- |
+| Afrikaans             | af          |
+| Albanian              | sq          |
+| Amharic               | am          |
+| Arabic                | ar          |
+| Armenian              | hy          |
+| Azerbaijani           | az          |
+| Bengali               | bn          |
+| Bosnian               | bs          |
+| Bulgarian             | bg          |
+| Catalan               | ca          |
+| Chinese (Simplified)  | zh          |
+| Chinese (Traditional) | zh-tw       |
+| Croatian              | hr          |
+| Czech                 | cs          |
+| Danish                | da          |
+| Dari                  | fa-af       |
+| Dutch                 | nl          |
+| English               | en          |
+| Estonian              | et          |
+| Farsi (Persian)       | fa          |
+| Filipino, Tagalog     | tl          |
+| Finnish               | fi          |
+| French                | fr          |
+| French (Canada)       | fr-ca       |
+| Georgian              | ka          |
+| German                | de          |
+| Greek                 | el          |
+| Gujarati              | gu          |
+| Haitian Creole        | ht          |
+| Hausa                 | ha          |
+| Hebrew                | he          |
+| Hindi                 | hi          |
+| Hungarian             | hu          |
+| Icelandic             | is          |
+| Indonesian            | id          |
+| Irish                 | ga          |
+| Italian               | it          |
+| Japanese              | ja          |
+| Kannada               | kn          |
+| Kazakh                | kk          |
+| Korean                | ko          |
+| Latvian               | lv          |
+| Lithuanian            | lt          |
+| Macedonian            | mk          |
+| Malay                 | ms          |
+| Malayalam             | ml          |
+| Maltese               | mt          |
+| Marathi               | mr          |
+| Mongolian             | mn          |
+| Norwegian (Bokmål)    | no          |
+| Pashto                | ps          |
+| Polish                | pl          |
+| Portuguese (Brazil)   | pt          |
+| Portuguese (Portugal) | pt-pt       |
+| Punjabi               | pa          |
+| Romanian              | ro          |
+| Russian               | ru          |
+| Serbian               | sr          |
+| Sinhala               | si          |
+| Slovak                | sk          |
+| Slovenian             | sl          |
+| Somali                | so          |
+| Spanish               | es          |
+| Spanish (Mexico)      | es-mx       |
+| Swahili               | sw          |
+| Swedish               | sv          |
+| Tamil                 | ta          |
+| Telugu                | te          |
+| Thai                  | th          |
+| Turkish               | tr          |
+| Ukrainian             | uk          |
+| Urdu                  | ur          |
+| Uzbek                 | uz          |
+| Vietnamese            | vi          |
+| Welsh                 | cy          |

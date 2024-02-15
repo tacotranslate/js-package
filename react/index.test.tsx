@@ -156,6 +156,47 @@ test('present translations should not be fetched', async () => {
 	expect(JSON.stringify(fetchedEntries)).toBe('[{"s":"Another string."}]');
 });
 
+test('get translations using a custom translation key', async () => {
+	const fetchedEntries: Entry[] = [];
+
+	await act(async () => {
+		const createClient = () => ({
+			async getTranslations({entries}: ClientGetTranslationsParameters) {
+				if (entries) {
+					fetchedEntries.push(...entries);
+				}
+
+				return {};
+			},
+			getTranslationKey: (entry: Entry) => entry.i ?? 'hello',
+			getLocales: async () => localeCodes,
+		});
+
+		const client = createClient();
+
+		function Component() {
+			return (
+				<div role="text">
+					<Translate id="hello1" string="Hello, world!" />
+				</div>
+			);
+		}
+
+		return render(
+			<TranslationProvider
+				client={client}
+				locale="no"
+				translations={{hello1: 'Hallo, verden!'}}
+			>
+				<Component />
+			</TranslationProvider>
+		);
+	});
+
+	await waitFor(() => screen.getByRole('text'));
+	expect(screen.getByRole('text').textContent).toBe('Hallo, verden!');
+});
+
 test('translations should be replaced', async () => {
 	const textContent = 'Hello, world!';
 

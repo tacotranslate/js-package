@@ -91,7 +91,7 @@ export function useTranslation(
 	options?: TranslateOptions
 ) {
 	const {id, variables} = options ?? {};
-	const {translations, locale, createEntry} = useTacoTranslate();
+	const {client, translations, locale, createEntry} = useTacoTranslate();
 
 	if (
 		process.env.NODE_ENV === 'development' ||
@@ -142,7 +142,16 @@ export function useTranslation(
 		return inputString;
 	}, [variables, inputString]);
 
-	const translation = translations?.[id ? `${id}:${string}` : string];
+	const entry = useMemo(
+		() => ({i: id, s: string, l: locale}),
+		[id, string, locale]
+	);
+
+	const translation = useMemo(
+		() => translations?.[getEntryKey(entry, client)],
+		[translations, entry, client]
+	);
+
 	const output = useMemo(() => {
 		const value = translation ?? patchDefaultString(string);
 
@@ -155,9 +164,9 @@ export function useTranslation(
 
 	useEffect(() => {
 		if (!translation && createEntry) {
-			createEntry({i: id, s: string, l: locale});
+			createEntry(entry);
 		}
-	}, [translation, createEntry, id, string, locale]);
+	}, [translation, createEntry, entry]);
 
 	return output;
 }

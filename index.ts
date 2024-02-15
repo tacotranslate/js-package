@@ -8,8 +8,12 @@ export const createEntry = (entry: VerboseEntry): Entry => ({
 	s: entry.string,
 });
 
-export const getEntryKey = (entry: Entry) =>
-	entry.i ? `${entry.i}:${entry.s}` : entry.s;
+export const getEntryKey = (entry: Entry, client?: TacoTranslateClient) =>
+	client?.getTranslationKey
+		? client.getTranslationKey(entry)
+		: entry.i
+		? `${entry.i}:${entry.s}`
+		: entry.s;
 
 export const patchDefaultString = (string: string) =>
 	string.replace(/\[{3}.*?]{3}/g, (match) => match.slice(3, -3));
@@ -420,10 +424,13 @@ export default createTacoTranslateClient;
 
 export const getEntryFromTranslations = (
 	entry: Entry,
-	translations: Translations
-) => translations[getEntryKey(entry)] ?? patchDefaultString(entry.s);
+	translations: Translations,
+	client?: TacoTranslateClient
+) => translations[getEntryKey(entry, client)] ?? patchDefaultString(entry.s);
 
-export type TacoTranslateClient = ReturnType<typeof createTacoTranslateClient>;
+export type TacoTranslateClient = ReturnType<
+	typeof createTacoTranslateClient
+> & {getTranslationKey?: (entry: Entry) => string};
 
 export async function translateEntries(
 	client: TacoTranslateClient,
@@ -438,7 +445,7 @@ export async function translateEntries(
 		});
 
 	return (entry: Entry, variables?: TemplateVariables) => {
-		const result = getEntryFromTranslations(entry, translations);
+		const result = getEntryFromTranslations(entry, translations, client);
 
 		if (variables) {
 			return template(result, variables);
