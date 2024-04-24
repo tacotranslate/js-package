@@ -60,7 +60,7 @@ export async function middleware(
 	request: NextRequest,
 	options?: MiddlewareOptions
 ) {
-	const {pathname} = request.nextUrl;
+	const {pathname, search} = request.nextUrl;
 	const locales = await client.getLocales().catch((error) => {
 		console.error(error);
 		return [process.env.TACOTRANSLATE_DEFAULT_LOCALE];
@@ -74,7 +74,7 @@ export async function middleware(
 			const pathnameWithoutLocale = `/${pathname
 				.split('/')
 				.slice(2)
-				.join('/')}`;
+				.join('/')}${search}`;
 
 			const response = NextResponse.redirect(
 				new URL(pathnameWithoutLocale, request.url)
@@ -100,13 +100,13 @@ export async function middleware(
 				preferredLocale !== projectLocale
 			) {
 				return NextResponse.redirect(
-					new URL(`/${preferredLocale}${pathname}`, request.url)
+					new URL(`/${preferredLocale}${pathname}${search}`, request.url)
 				);
 			}
 		}
 
 		return NextResponse.rewrite(
-			new URL(`/${projectLocale}${pathname}`, request.url)
+			new URL(`/${projectLocale}${pathname}${search}`, request.url)
 		);
 	}
 }
