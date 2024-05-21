@@ -14,7 +14,7 @@ npm install tacotranslate
 
 ## Usage
 
-Check out [our examples folder on GitHub](https://github.com/tacotranslate/js-package/tree/test/examples/) to learn more.
+Check out [our examples folder on GitHub](https://github.com/tacotranslate/js-package/tree/master/examples/) to learn more.
 
 ```jsx
 import createTacoTranslateClient from 'tacotranslate';
