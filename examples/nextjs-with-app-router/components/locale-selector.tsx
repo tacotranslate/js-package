@@ -36,10 +36,16 @@ export default function LocaleSelector() {
 		[pathname, locale, router]
 	);
 
-	const options = useMemo(
-		() => process.env.TACOTRANSLATE_PROJECT_LOCALES.map((locale) => locale),
-		[]
-	);
+	const options = useMemo(() => {
+		try {
+			return (
+				JSON.parse(process.env.TACOTRANSLATE_PROJECT_LOCALES) as string[]
+			).map((locale) => locale);
+		} catch (error) {
+			console.error(error);
+			return [process.env.TACOTRANSLATE_PROJECT_LOCALE];
+		}
+	}, []);
 
 	return (
 		<select value={currentInput} onChange={handleChange}>

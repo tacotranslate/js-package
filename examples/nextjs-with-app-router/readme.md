@@ -4,6 +4,7 @@ To learn how to implement TacoTranslate into your own application, please refer 
 
 ## Features
 
+- Uses the Next.js App Router
 - Automatic cutting-edge AI powered translation to 75 languages
 - Server side rendered pages and translations
 - Locale selector with automatic client-side translation fetching
@@ -13,7 +14,7 @@ To learn how to implement TacoTranslate into your own application, please refer 
 
 ## Running this example
 
-First, replace `TACOTRANSLATE_SECRET_API_KEY`, `TACOTRANSLATE_PUBLIC_API_KEY`, and `TACOTRNSLATE_WEBSITE_URL` in `.env` with your own. Then, run these commands:
+First, replace `TACOTRANSLATE_ORIGIN`, `TACOTRANSLATE_SECRET_API_KEY`, and `TACOTRANSLATE_PUBLIC_API_KEY` in `.env` with your own. Then, run these commands:
 
 ```
 npm install

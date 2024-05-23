@@ -8,17 +8,17 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
-		"next": "^13.5.3",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
-		"tacotranslate": "^1.1.4"
+		"next": "^14.2.3",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
+		"tacotranslate": "^2.0.0"
 	},
 	"devDependencies": {
-		"@types/node": "^20.7.1",
-		"@types/react": "^18.2.23",
-		"@types/react-dom": "^18.2.8",
+		"@types/node": "^20.12.12",
+		"@types/react": "^18.3.3",
+		"@types/react-dom": "^18.3.0",
 		"eslint": "^8.50.0",
-		"eslint-config-next": "^13.5.3",
+		"eslint-config-next": "^14.2.3",
 		"typescript": "^5.2.2"
 	}
 }

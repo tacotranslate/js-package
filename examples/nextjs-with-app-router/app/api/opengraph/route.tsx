@@ -1,8 +1,12 @@
 import React from 'react';
-import {ImageResponse, type NextRequest} from 'next/server';
-import {createEntry, translateEntries} from 'tacotranslate';
-import {getOrigin} from 'tacotranslate/next';
-import tacoTranslate, {defaultLocale} from '@/utilities/tacotranslate';
+import {ImageResponse} from 'next/og';
+import {
+	createEntry,
+	isRightToLeftLocaleCode,
+	translateEntries,
+} from 'tacotranslate';
+import {type NextRequest} from 'next/server';
+import tacoTranslate from '@/utilities/tacotranslate';
 
 export const runtime = 'edge';
 
@@ -15,10 +19,11 @@ function getRandomEmoji() {
 
 export async function GET(request: NextRequest) {
 	const {searchParams} = new URL(request.url);
-	const locale = searchParams.get('locale') ?? defaultLocale;
+	const locale =
+		searchParams.get('locale') ?? process.env.TACOTRANSLATE_DEFAULT_LOCALE;
 
 	const title = createEntry({
-		string: 'Example with the Next.js [[[App Router]]] and TacoTranslate.',
+		string: 'Example of Next.js with [[[App Router]]] and TacoTranslate.',
 	});
 
 	const description = createEntry({
@@ -27,12 +32,13 @@ export async function GET(request: NextRequest) {
 
 	const translations = await translateEntries(
 		tacoTranslate,
-		{
-			origin: getOrigin(),
-			locale,
-		},
+		{origin: 'opengraph', locale},
 		[title, description]
 	);
+
+	const isRightToLeft = isRightToLeftLocaleCode(locale);
+	const direction = isRightToLeft ? 'right' : 'left';
+	const alignment = isRightToLeft ? 'flex-end' : 'flex-start';
 
 	return new ImageResponse(
 		(
@@ -44,21 +50,29 @@ export async function GET(request: NextRequest) {
 					height: '100%',
 					display: 'flex',
 					padding: '60px',
-					textAlign: 'center',
-					alignItems: 'center',
+					textAlign: direction,
+					alignItems: alignment,
 					justifyContent: 'center',
 					flexDirection: 'column',
 					boxSizing: 'border-box',
 					gap: '30px',
 				}}
 			>
+				<img
+					src="https://tacotranslate.com/static/logotype.png"
+					alt="TacoTranslate"
+					width="539"
+					height="55"
+					style={{width: `${539 * 0.65}px`, height: `${55 * 0.65}px`}}
+				/>
+
 				<div
 					lang={locale}
 					style={{
 						flex: 1,
 						display: 'flex',
-						textAlign: 'center',
-						alignItems: 'center',
+						textAlign: direction,
+						alignItems: alignment,
 						justifyContent: 'center',
 						flexDirection: 'column',
 						gap: '46px',
@@ -68,10 +82,9 @@ export async function GET(request: NextRequest) {
 						style={{
 							fontSize: 60,
 							fontWeight: '600',
-							lineHeight: '1.15em',
+							lineHeight: '1em',
 							letterSpacing: '-0.025em',
 							color: '#fff',
-							textShadow: '0 2px 5px rgba(0,0,0,0.2)',
 						}}
 					>
 						{translations(title)}
@@ -84,7 +97,6 @@ export async function GET(request: NextRequest) {
 							lineHeight: '1em',
 							letterSpacing: '-0.025em',
 							color: 'rgba(255,255,255,0.9)',
-							textShadow: '0 2px 5px rgba(0,0,0,0.2)',
 						}}
 					>
 						{translations(description, {emoji: getRandomEmoji()})}
