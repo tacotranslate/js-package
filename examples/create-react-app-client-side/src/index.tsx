@@ -27,24 +27,17 @@ function App() {
 	const [supportedLocales, setSupportedLocales] = useState([locale]);
 
 	useEffect(() => {
-		void tacoTranslate
-			.getLocales()
-			.then((locales) => {
-				setSupportedLocales(locales);
-			})
-			.catch((error) => {
-				console.error(error);
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
+		void tacoTranslate.getLocales().then((locales) => {
+			setSupportedLocales(locales);
+			setIsLoading(false);
+		});
 	}, []);
 
 	return (
 		<TranslationProvider
 			client={tacoTranslate}
 			locale={locale}
-			origin={process.env.REACT_APP_WEBSITE_URL}
+			origin={process.env.REACT_APP_TACOTRANSLATE_ORIGIN}
 		>
 			<Page
 				isLoading={isLoading}
