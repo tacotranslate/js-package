@@ -131,6 +131,10 @@ export const rightToLeftLocaleCodes = ['ar', 'ha', 'he', 'ps', 'fa', 'ur'];
 export type Locale = (typeof locales)[number][0];
 export type Language = (typeof locales)[number][1];
 
+export function isRightToLeftLocaleCode(locale: Locale) {
+	return rightToLeftLocaleCodes.includes(locale);
+}
+
 const localeToCountryCodeMap = {
 	'af': 'za',
 	'am': 'et',
@@ -206,6 +210,8 @@ export type GetTranslationsParameters = {
 	entries?: Entry[];
 	origin?: string;
 	timeout?: number;
+	/** @default false */
+	throwOnError?: boolean;
 };
 
 type GetTranslationsResponse =
@@ -228,6 +234,7 @@ async function getTranslations({
 	entries,
 	origin,
 	timeout = 10_000,
+	throwOnError = false,
 }: GetTranslationsParameters): Promise<Translations> {
 	return new Promise((resolve, reject) => {
 		const requests = [];
@@ -269,6 +276,7 @@ async function getTranslations({
 						locale,
 						entries: excludedEntries,
 						origin,
+						throwOnError: true,
 					})
 				);
 			}
@@ -307,7 +315,15 @@ async function getTranslations({
 
 		let hasTimedOut = false;
 		const timeoutInstance = setTimeout(() => {
-			reject(new Error('<TacoTranslate> `getTranslations` timeout.'));
+			const error = new Error('<TacoTranslate> `getTranslations` timeout.');
+
+			if (throwOnError) {
+				reject(error);
+			} else {
+				console.error(error);
+				resolve({});
+			}
+
 			hasTimedOut = true;
 		}, timeout);
 
@@ -322,7 +338,12 @@ async function getTranslations({
 			})
 			.catch((error) => {
 				if (!hasTimedOut) {
-					reject(error);
+					if (throwOnError) {
+						reject(error);
+					} else {
+						console.error(error);
+						resolve({});
+					}
 				}
 			});
 	});
@@ -332,6 +353,8 @@ export type GetLocalesParameters = {
 	apiUrl: string;
 	apiKey: string;
 	timeout?: number;
+	/** @default false */
+	throwOnError?: boolean;
 };
 
 type GetLocalesResponse =
@@ -348,12 +371,21 @@ async function getLocales({
 	apiUrl = defaultApiUrl,
 	apiKey,
 	timeout = 2000,
+	throwOnError = false,
 }: GetLocalesParameters): Promise<Locale[]> {
 	return new Promise((resolve, reject) => {
 		const url = `${apiUrl}/api/v1/l?a=${apiKey}`;
 		let hasTimedOut = false;
 		const timeoutInstance = setTimeout(() => {
-			reject(new Error('<TacoTranslate> `getLocales` timeout.'));
+			const error = new Error('<TacoTranslate> `getLocales` timeout.');
+
+			if (throwOnError) {
+				reject(error);
+			} else {
+				console.error(error);
+				resolve([process.env.TACOTRANSLATE_DEFAULT_LOCALE]);
+			}
+
 			hasTimedOut = true;
 		}, timeout);
 
@@ -376,7 +408,12 @@ async function getLocales({
 			})
 			.catch((error) => {
 				if (!hasTimedOut) {
-					reject(error);
+					if (throwOnError) {
+						reject(error);
+					} else {
+						console.error(error);
+						resolve([process.env.TACOTRANSLATE_DEFAULT_LOCALE]);
+					}
 				}
 			});
 	});
@@ -393,6 +430,7 @@ export type ClientGetTranslationsParameters = {
 	locale: Locale;
 	entries?: Entry[];
 	origin?: string;
+	throwOnError?: boolean;
 };
 
 const createTacoTranslateClient = ({
@@ -405,6 +443,7 @@ const createTacoTranslateClient = ({
 		locale,
 		entries,
 		origin,
+		throwOnError,
 	}: ClientGetTranslationsParameters) =>
 		isEnabled && locale !== projectLocale
 			? getTranslations({
@@ -414,10 +453,11 @@ const createTacoTranslateClient = ({
 					projectLocale,
 					entries,
 					origin,
+					throwOnError,
 			  })
 			: {},
-	getLocales: async () =>
-		isEnabled ? getLocales({apiUrl, apiKey}) : localeCodes,
+	getLocales: async (options?: Pick<GetLocalesParameters, 'throwOnError'>) =>
+		isEnabled ? getLocales({...options, apiUrl, apiKey}) : localeCodes,
 });
 
 export default createTacoTranslateClient;
@@ -437,12 +477,7 @@ export async function translateEntries(
 	{origin, locale}: Pick<ClientGetTranslationsParameters, 'origin' | 'locale'>,
 	entries: Entry[]
 ) {
-	const translations = await client
-		.getTranslations({origin, locale, entries})
-		.catch((error) => {
-			console.error(error);
-			return {};
-		});
+	const translations = await client.getTranslations({origin, locale, entries});
 
 	return (entry: Entry, variables?: TemplateVariables) => {
 		const result = getEntryFromTranslations(entry, translations, client);

@@ -1,59 +1,40 @@
-import {headers} from 'next/headers';
 import {type NextRequest, NextResponse} from 'next/server';
 import {type TacoTranslateClient} from '..';
-
-export function getWebsiteUrl() {
-	const headersMap = headers();
-	const forwardedProtocol = headersMap.get('x-forwarded-proto') ?? 'http';
-
-	let url = `${forwardedProtocol}://localhost:3000`;
-
-	if (process.env.TACOTRANSLATE_WEBSITE_URL) {
-		url = `${forwardedProtocol}://${process.env.TACOTRANSLATE_WEBSITE_URL}`;
-	} else if (process.env.WEBSITE_URL) {
-		url = `${forwardedProtocol}://${process.env.WEBSITE_URL}`;
-	} else if (process.env.VERCEL_URL) {
-		url = `${forwardedProtocol}://${process.env.VERCEL_URL}`;
-	} else {
-		const forwardedHost = headersMap.get('x-forwarded-host');
-
-		if (forwardedHost) {
-			url = `${forwardedProtocol}://${forwardedHost}`;
-		}
-	}
-
-	return new URL(url);
-}
-
-export function getAbsolutePath() {
-	return headers().get('x-invoke-path');
-}
-
-export function getAbsoluteOriginPath() {
-	const absolutePath = getAbsolutePath();
-	return `/${absolutePath ? absolutePath.split('/').slice(2).join('/') : ''}`;
-}
-
-export function getDynamicPath() {
-	return headers().get('x-invoke-output');
-}
-
-export function getDynamicOriginPath() {
-	const dynamicPath = getDynamicPath();
-	return dynamicPath ? dynamicPath.replace(/^\/\[locale](\/|$)/, '/') : '/';
-}
-
-export function getOrigin() {
-	return `${getWebsiteUrl().host}${getDynamicOriginPath()}`;
-}
 
 function pathnameHasLocale(pathname: string, locale: string) {
 	return pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`;
 }
 
 type MiddlewareOptions = {
+	/** @default 'locale' */
 	localeCookieName?: string;
+	/** How often the list of project locales are updated, in milliseconds
+	 * @default 60_000 (1 minute) */
+	localeCacheLifetime?: number;
 };
+
+let locales: string[];
+let localesCacheTimestamp = 0;
+
+async function cachedGetLocales(
+	client: TacoTranslateClient,
+	options?: Pick<MiddlewareOptions, 'localeCacheLifetime'>
+) {
+	const currentTimestamp = Date.now();
+
+	if (
+		locales &&
+		localesCacheTimestamp + (options?.localeCacheLifetime ?? 60_000) >
+			currentTimestamp
+	) {
+		return locales;
+	}
+
+	localesCacheTimestamp = currentTimestamp;
+	locales = await client.getLocales();
+
+	return locales;
+}
 
 export async function middleware(
 	client: TacoTranslateClient,
@@ -61,9 +42,8 @@ export async function middleware(
 	options?: MiddlewareOptions
 ) {
 	const {pathname, search} = request.nextUrl;
-	const locales = await client.getLocales().catch((error) => {
-		console.error(error);
-		return [process.env.TACOTRANSLATE_DEFAULT_LOCALE];
+	const locales = await cachedGetLocales(client, {
+		localeCacheLifetime: options?.localeCacheLifetime,
 	});
 
 	const localeCookieName = options?.localeCookieName ?? 'locale';

@@ -1,6 +1,6 @@
 {
 	"name": "tacotranslate",
-	"description": "Automatically translate your React application in minutes",
+	"description": "Automatically translate your React application to any language",
 	"version": "1.2.1",
 	"main": "index.js",
 	"types": "index.d.ts",
@@ -27,7 +27,7 @@
 		"prepublishOnly": "npm run build && npm run test && npm run format:check && npm run typescript:check && npm run lint"
 	},
 	"dependencies": {
-		"sanitize-html": "^2.10.0"
+		"sanitize-html": "^2.13.0"
 	},
 	"peerDependencies": {
 		"next": ">=13.x",

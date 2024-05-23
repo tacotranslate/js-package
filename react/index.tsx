@@ -21,7 +21,7 @@ import {
 	getEntryKey,
 	locales,
 	patchDefaultString,
-	rightToLeftLocaleCodes,
+	isRightToLeftLocaleCode,
 	template,
 	type TemplateVariables,
 	type TacoTranslateClient,
@@ -267,10 +267,7 @@ export function TranslationProvider(
 	}, []);
 
 	const isRightToLeft = useMemo(
-		() =>
-			currentLocale
-				? rightToLeftLocaleCodes.includes(currentLocale)
-				: undefined,
+		() => (currentLocale ? isRightToLeftLocaleCode(currentLocale) : undefined),
 		[currentLocale]
 	);
 
@@ -305,6 +302,7 @@ export function TranslationProvider(
 							locale,
 							entries: currentEntries,
 							origin: currentOrigin,
+							throwOnError: true,
 						})
 						.then((translations) => {
 							setLocalizations((previousLocalizations) => ({
