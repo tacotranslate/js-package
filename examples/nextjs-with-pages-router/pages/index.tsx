@@ -19,7 +19,7 @@ type PageProperties = {
 
 export default function Page({locales: supportedLocales}: PageProperties) {
 	const {locale, language} = useTacoTranslate();
-	const opengraphImageUrl = `/api/opengraph?locale=${locale}`;
+	const opengraphImageUrl = `/api/opengraph?locale=${locale ?? ''}`;
 
 	return (
 		<Wrapper>

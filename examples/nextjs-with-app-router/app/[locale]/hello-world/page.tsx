@@ -5,7 +5,7 @@ import {Translate} from 'tacotranslate/react';
 import Link from 'tacotranslate/next/link';
 import LocaleSelector from '@/components/locale-selector';
 
-export default async function Page() {
+export default function Page() {
 	return (
 		<div
 			style={{
