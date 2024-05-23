@@ -6,28 +6,13 @@ export default async function customGetServerSideProps(
 ) {
 	const {
 		resolvedUrl,
-		locale = process.env.TACOTRANSLATE_PROJECT_LOCALE ??
-			process.env.TACOTRANSLATE_DEFAULT_LOCALE,
+		locale = process.env.TACOTRANSLATE_DEFAULT_LOCALE,
 		locales,
 	} = context;
 
 	const [path] = resolvedUrl.split('?');
-	let origin = `localhost:3000${path}`;
-
-	if (context.req?.headers?.host) {
-		origin = `${context.req.headers.host}${path}`;
-	} else if (process.env.WEBSITE_URL) {
-		origin = `${process.env.WEBSITE_URL}${path}`;
-	} else if (process.env.VERCEL_URL) {
-		origin = `${process.env.VERCEL_URL}${path}`;
-	}
-
-	const translations = await tacoTranslate
-		.getTranslations({locale, origin})
-		.catch((error) => {
-			console.error(error);
-			return {};
-		});
+	const origin = process.env.TACOTRANSLATE_ORIGIN + path;
+	const translations = await tacoTranslate.getTranslations({locale, origin});
 
 	return {
 		props: {locale, locales, translations, origin},

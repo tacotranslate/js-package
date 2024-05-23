@@ -4,7 +4,7 @@ See this example live at [nextjs-pages-router-demo.tacotranslate.com](https://ne
 
 ## Running this example
 
-First, replace `TACOTRANSLATE_SECRET_API_KEY`, `TACOTRANSLATE_PUBLIC_API_KEY`, and `WEBSITE_URL` in `.env` with your own. Then, run these commands:
+First, replace `TACOTRANSLATE_ORIGIN`, `TACOTRANSLATE_SECRET_API_KEY`, and `TACOTRANSLATE_PUBLIC_API_KEY` in `.env` with your own. Then, run these commands:
 
 ```
 npm install

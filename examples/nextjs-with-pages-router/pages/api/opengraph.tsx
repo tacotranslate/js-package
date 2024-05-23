@@ -1,7 +1,11 @@
 import React from 'react';
 import {ImageResponse} from '@vercel/og';
 import {type NextRequest} from 'next/server';
-import {createEntry, translateEntries} from 'tacotranslate';
+import {
+	createEntry,
+	isRightToLeftLocaleCode,
+	translateEntries,
+} from 'tacotranslate';
 import tacoTranslate from '../../utilities/tacotranslate';
 
 export const config = {
@@ -19,6 +23,7 @@ export default async function handler(request: NextRequest) {
 	const {searchParams} = new URL(request.url);
 	const locale =
 		searchParams.get('locale') ?? process.env.TACOTRANSLATE_DEFAULT_LOCALE;
+
 	const title = createEntry({
 		string: 'Example of Next.js with [[[Pages Router]]] and TacoTranslate',
 	});
@@ -29,12 +34,13 @@ export default async function handler(request: NextRequest) {
 
 	const translations = await translateEntries(
 		tacoTranslate,
-		{
-			origin: `${process.env.WEBSITE_URL ?? 'localhost:3000'}/api/opengraph`,
-			locale,
-		},
+		{origin: 'opengraph', locale},
 		[title, description]
 	);
+
+	const isRightToLeft = isRightToLeftLocaleCode(locale);
+	const direction = isRightToLeft ? 'right' : 'left';
+	const alignment = isRightToLeft ? 'flex-end' : 'flex-start';
 
 	return new ImageResponse(
 		(
@@ -46,21 +52,29 @@ export default async function handler(request: NextRequest) {
 					height: '100%',
 					display: 'flex',
 					padding: '60px',
-					textAlign: 'center',
-					alignItems: 'center',
+					textAlign: direction,
+					alignItems: alignment,
 					justifyContent: 'center',
 					flexDirection: 'column',
 					boxSizing: 'border-box',
 					gap: '30px',
 				}}
 			>
+				<img
+					src="https://tacotranslate.com/static/logotype.png"
+					alt="TacoTranslate"
+					width="539"
+					height="55"
+					style={{width: `${539 * 0.65}px`, height: `${55 * 0.65}px`}}
+				/>
+
 				<div
 					lang={locale}
 					style={{
 						flex: 1,
 						display: 'flex',
-						textAlign: 'center',
-						alignItems: 'center',
+						textAlign: direction,
+						alignItems: alignment,
 						justifyContent: 'center',
 						flexDirection: 'column',
 						gap: '46px',
@@ -90,14 +104,6 @@ export default async function handler(request: NextRequest) {
 						{translations(description, {emoji: getRandomEmoji()})}
 					</div>
 				</div>
-
-				<img
-					src="https://tacotranslate.com/static/logotype.png"
-					alt="TacoTranslate"
-					width="539"
-					height="55"
-					style={{width: `${539 * 0.65}px`, height: `${55 * 0.65}px`}}
-				/>
 			</div>
 		),
 		{

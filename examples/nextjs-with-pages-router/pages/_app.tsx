@@ -23,12 +23,7 @@ function Page({children}: {children: ReactElement}) {
 }
 
 export default function App({Component, pageProps}: AppProps<PageProperties>) {
-	const {
-		origin,
-		locale = process.env.TACOTRANSLATE_PROJECT_LOCALE ??
-			process.env.TACOTRANSLATE_DEFAULT_LOCALE,
-		translations,
-	} = pageProps;
+	const {origin, locale, translations} = pageProps;
 
 	return (
 		<TranslationProvider

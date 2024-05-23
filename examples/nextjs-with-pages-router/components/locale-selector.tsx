@@ -13,16 +13,13 @@ export default function LocaleSelector({
 }: LocaleSelectorProperties) {
 	const router = useRouter();
 	const [currentInput, setCurrentInput] = useState(initialLocale);
-
 	const handleChange = useCallback(
 		(event: ChangeEvent<HTMLSelectElement>) => {
-			const locale = event.target.value;
-			setCurrentInput(locale);
-			document.cookie = `NEXT_LOCALE=${locale.toLowerCase()}; Max-Age=31560000; SameSite=Lax; Path=/;`;
-
-			void router.push(router.asPath, undefined, {
-				locale: locale.toLowerCase(),
-			});
+			const value = event.target.value;
+			const locale = value.toLowerCase();
+			setCurrentInput(value);
+			document.cookie = `NEXT_LOCALE=${locale}; Max-Age=31560000; SameSite=Lax; Path=/;`;
+			void router.push(router.asPath, undefined, {locale});
 		},
 		[router]
 	);

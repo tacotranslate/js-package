@@ -8,7 +8,8 @@ body,
 }
 
 html {
-	background: #fff;
+	background: #fafafa;
+	color: #000;
 	overflow-x: hidden;
 	overflow-y: scroll;
 	-webkit-font-smoothing: subpixel-antialiased;

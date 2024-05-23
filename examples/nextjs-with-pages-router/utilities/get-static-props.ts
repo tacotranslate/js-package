@@ -4,28 +4,15 @@ import tacoTranslate from './tacotranslate';
 export default async function customGetStaticProps(
 	path: string,
 	{
-		locale = process.env.TACOTRANSLATE_PROJECT_LOCALE ??
-			process.env.TACOTRANSLATE_DEFAULT_LOCALE,
+		locale = process.env.TACOTRANSLATE_DEFAULT_LOCALE,
 		locales,
 	}: GetStaticPropsContext
 ) {
-	let origin = `localhost:3000${path}`;
-
-	if (process.env.WEBSITE_URL) {
-		origin = `${process.env.WEBSITE_URL}${path}`;
-	} else if (process.env.VERCEL_URL) {
-		origin = `${process.env.VERCEL_URL}${path}`;
-	}
-
-	const translations = await tacoTranslate
-		.getTranslations({locale, origin})
-		.catch((error) => {
-			console.error(error);
-			return {};
-		});
+	const origin = process.env.TACOTRANSLATE_ORIGIN + path;
+	const translations = await tacoTranslate.getTranslations({locale, origin});
 
 	return {
 		props: {locale, locales, translations, origin},
-		revalidate: 10,
+		revalidate: 60,
 	};
 }
