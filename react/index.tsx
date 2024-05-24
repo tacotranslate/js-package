@@ -219,12 +219,19 @@ export function TranslationProvider(
 	}
 ) {
 	const {
+		client: parentClient,
+		locale: parentLocale,
+		translations: parentTranslations,
+		useDangerouslySetInnerHTML: parentUseDangerouslySetInnerHtml,
+	} = useTacoTranslate();
+
+	const {
 		origin,
-		client,
-		locale,
-		translations: inputTranslations,
+		client = parentClient,
+		locale = parentLocale,
+		translations: inputTranslations = parentTranslations,
 		// eslint-disable-next-line @typescript-eslint/naming-convention
-		useDangerouslySetInnerHTML = true,
+		useDangerouslySetInnerHTML = parentUseDangerouslySetInnerHtml ?? true,
 		children,
 	} = properties;
 
@@ -242,7 +249,7 @@ export function TranslationProvider(
 			return origin ?? '*';
 		}
 
-		return origin ?? window.location.host + window.location.pathname;
+		return origin ?? window.location.host;
 	});
 
 	if (origin) {
@@ -250,10 +257,10 @@ export function TranslationProvider(
 			setCurrentOrigin(origin);
 		}
 	} else if (typeof window !== 'undefined') {
-		const currentUrl = window.location.host + window.location.pathname;
+		const currentHost = window.location.host;
 
-		if (currentOrigin !== currentUrl) {
-			setCurrentOrigin(currentUrl);
+		if (currentOrigin !== currentHost) {
+			setCurrentOrigin(currentHost);
 		}
 	}
 
@@ -365,6 +372,7 @@ export function TranslationProvider(
 	const value = useMemo(
 		() => ({
 			client,
+			origin,
 			locale: currentLocale,
 			language: currentLanguage,
 			isLoading,
@@ -379,6 +387,7 @@ export function TranslationProvider(
 		}),
 		[
 			client,
+			origin,
 			currentLocale,
 			currentLanguage,
 			isLoading,

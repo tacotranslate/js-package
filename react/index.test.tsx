@@ -658,3 +658,89 @@ test('isLoading should be set when loading', async () => {
 
 	expect(isLoading).toBe(true);
 });
+
+test('get origin from child component', async () => {
+	let origin: string | undefined;
+
+	await act(() => {
+		function Component() {
+			const tacoTranslate = useTacoTranslate();
+			origin = tacoTranslate.origin;
+			return <Translate string="Hello, world!" />;
+		}
+
+		return render(
+			<TranslationProvider client={client} origin="test" locale="no">
+				<Component />
+			</TranslationProvider>
+		);
+	});
+
+	expect(origin).toBe('test');
+});
+
+test('allow multiple TranslationProviders', async () => {
+	let origin: string | undefined;
+
+	await act(() => {
+		function Component() {
+			const tacoTranslate = useTacoTranslate();
+			origin = tacoTranslate.origin;
+			return <Translate string="Hello, world!" />;
+		}
+
+		return render(
+			<TranslationProvider client={client} origin="test" locale="no">
+				<TranslationProvider origin="override">
+					<Component />
+				</TranslationProvider>
+			</TranslationProvider>
+		);
+	});
+
+	expect(origin).toBe('override');
+});
+
+test('allow multiple TranslationProviders, and get locale from parent', async () => {
+	let locale: string | undefined;
+
+	await act(() => {
+		function Component() {
+			const tacoTranslate = useTacoTranslate();
+			locale = tacoTranslate.locale;
+			return <Translate string="Hello, world!" />;
+		}
+
+		return render(
+			<TranslationProvider client={client} locale="no">
+				<TranslationProvider>
+					<Component />
+				</TranslationProvider>
+			</TranslationProvider>
+		);
+	});
+
+	expect(locale).toBe('no');
+});
+
+test('allow multiple TranslationProviders, and override locale', async () => {
+	let locale: string | undefined;
+
+	await act(() => {
+		function Component() {
+			const tacoTranslate = useTacoTranslate();
+			locale = tacoTranslate.locale;
+			return <Translate string="Hello, world!" />;
+		}
+
+		return render(
+			<TranslationProvider client={client} locale="no">
+				<TranslationProvider locale="es">
+					<Component />
+				</TranslationProvider>
+			</TranslationProvider>
+		);
+	});
+
+	expect(locale).toBe('es');
+});
