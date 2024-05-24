@@ -4,14 +4,8 @@ import tacoTranslate from './tacotranslate';
 export default async function customGetServerSideProps(
 	context: GetServerSidePropsContext
 ) {
-	const {
-		resolvedUrl,
-		locale = process.env.TACOTRANSLATE_DEFAULT_LOCALE,
-		locales,
-	} = context;
-
-	const [path] = resolvedUrl.split('?');
-	const origin = process.env.TACOTRANSLATE_ORIGIN + path;
+	const {locale = process.env.TACOTRANSLATE_DEFAULT_LOCALE, locales} = context;
+	const origin = process.env.TACOTRANSLATE_ORIGIN;
 	const translations = await tacoTranslate.getTranslations({locale, origin});
 
 	return {

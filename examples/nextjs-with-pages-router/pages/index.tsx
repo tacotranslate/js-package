@@ -8,7 +8,7 @@ import Wrapper from '../components/wrapper';
 import customGetStaticProps from '../utilities/get-static-props';
 
 export async function getStaticProps(context: GetStaticPropsContext) {
-	return customGetStaticProps('/', context);
+	return customGetStaticProps(context);
 }
 
 const fontFamilyStyles = {fontFamily: 'sans-serif'};
