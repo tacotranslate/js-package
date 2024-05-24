@@ -55,24 +55,7 @@ const TacoTranslateContext =
 
 const TranslationContext = createContext<TranslationContextProperties>({});
 
-export const useTacoTranslate = () => {
-	const context = useContext(TacoTranslateContext);
-
-	if (process.env.NODE_ENV === 'development') {
-		if (!context.client) {
-			throw new TypeError(
-				'<TacoTranslate> is unable to find required <TranslationProvider>. `client` is not set.'
-			);
-		} else if (!context.locale) {
-			throw new TypeError(
-				'<TacoTranslate> `locale` is required on <TranslationProvider>.'
-			);
-		}
-	}
-
-	return context;
-};
-
+export const useTacoTranslate = () => useContext(TacoTranslateContext);
 export type TranslateOptions = {
 	readonly id?: string;
 	readonly variables?: TemplateVariables;
