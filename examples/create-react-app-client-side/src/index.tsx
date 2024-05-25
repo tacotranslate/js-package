@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import createTacoTranslateClient from 'tacotranslate';
-import {TranslationProvider} from 'tacotranslate/react';
+import TacoTranslate from 'tacotranslate/react';
 import Page from './pages';
 
 const tacoTranslate = createTacoTranslateClient({
@@ -34,7 +34,7 @@ function App() {
 	}, []);
 
 	return (
-		<TranslationProvider
+		<TacoTranslate
 			client={tacoTranslate}
 			locale={locale}
 			origin={process.env.REACT_APP_TACOTRANSLATE_ORIGIN}
@@ -44,7 +44,7 @@ function App() {
 				locales={supportedLocales}
 				onLocaleChange={handleLocaleChange}
 			/>
-		</TranslationProvider>
+		</TacoTranslate>
 	);
 }
 
