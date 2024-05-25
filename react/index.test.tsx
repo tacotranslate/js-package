@@ -9,13 +9,10 @@ import {
 	localeCodes,
 	type ClientGetTranslationsParameters,
 	type Entry,
+	type ClientGetLocalizationsParameters,
+	type Localizations,
 } from '..';
-import {
-	TranslationProvider,
-	useTacoTranslate,
-	useTranslation,
-	Translate,
-} from '.';
+import {TacoTranslate, useTacoTranslate, useTranslation, Translate} from '.';
 
 const translations: Translations = {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -28,6 +25,10 @@ async function getTranslations(): Promise<Translations> {
 	return translations;
 }
 
+async function getLocalizations(): Promise<Localizations> {
+	return {};
+}
+
 const createClient = ({
 	projectLocale,
 	isEnabled = true,
@@ -37,6 +38,8 @@ const createClient = ({
 >) => ({
 	getTranslations: async ({locale}: ClientGetTranslationsParameters) =>
 		isEnabled && locale !== projectLocale ? getTranslations() : {},
+	getLocalizations: async ({locale}: ClientGetLocalizationsParameters) =>
+		isEnabled && locale !== projectLocale ? getLocalizations() : {},
 	getLocales: async () => localeCodes,
 });
 
@@ -56,6 +59,13 @@ const createErrorClient = ({
 
 		return {};
 	},
+	async getLocalizations({locale}: ClientGetLocalizationsParameters) {
+		if (isEnabled && locale !== projectLocale) {
+			throw new Error('Some error');
+		}
+
+		return {};
+	},
 	async getLocales() {
 		if (isEnabled) {
 			throw new Error('Some error');
@@ -69,9 +79,9 @@ const errorClient = createErrorClient({projectLocale: 'en'});
 
 test('renders the context', () => {
 	render(
-		<TranslationProvider client={client} locale="no">
+		<TacoTranslate client={client} locale="no">
 			<span>Hello, world!</span>
-		</TranslationProvider>
+		</TacoTranslate>
 	);
 });
 
@@ -85,6 +95,9 @@ test('missing translations should be fetched', async () => {
 					fetchedEntries.push(...entries);
 				}
 
+				return {};
+			},
+			async getLocalizations() {
 				return {};
 			},
 			getLocales: async () => localeCodes,
@@ -102,9 +115,9 @@ test('missing translations should be fetched', async () => {
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
+			<TacoTranslate client={client} locale="no">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -127,6 +140,9 @@ test('present translations should not be fetched', async () => {
 
 				return {};
 			},
+			async getLocalizations() {
+				return {};
+			},
 			getLocales: async () => localeCodes,
 		});
 
@@ -142,13 +158,13 @@ test('present translations should not be fetched', async () => {
 		}
 
 		return render(
-			<TranslationProvider
+			<TacoTranslate
 				client={client}
 				locale="no"
 				translations={{'Hello, world!': 'Hallo, verden!'}}
 			>
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -168,6 +184,9 @@ test('get translations using a custom translation key', async () => {
 
 				return {};
 			},
+			async getLocalizations() {
+				return {};
+			},
 			getTranslationKey: (entry: Entry) => entry.i ?? 'hello',
 			getLocales: async () => localeCodes,
 		});
@@ -183,13 +202,13 @@ test('get translations using a custom translation key', async () => {
 		}
 
 		return render(
-			<TranslationProvider
+			<TacoTranslate
 				client={client}
 				locale="no"
 				translations={{hello1: 'Hallo, verden!'}}
 			>
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -210,9 +229,9 @@ test('translations should be replaced', async () => {
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
+			<TacoTranslate client={client} locale="no">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -230,9 +249,9 @@ test('string translations should be replaced', async () => {
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
+			<TacoTranslate client={client} locale="no">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -255,9 +274,9 @@ test('string translations with variables should be replaced', async () => {
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
+			<TacoTranslate client={client} locale="no">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -280,9 +299,9 @@ test('string translations with variables should be replaced when translations in
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
+			<TacoTranslate client={client} locale="no">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -304,9 +323,9 @@ test('should render html if useDangerouslySetInnerHTML is not set on the compone
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
+			<TacoTranslate client={client} locale="no">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -327,9 +346,9 @@ test('should not render html if useDangerouslySetInnerHTML is false on the compo
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
+			<TacoTranslate client={client} locale="no">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -350,13 +369,13 @@ test('should not render html if useDangerouslySetInnerHTML is false on the conte
 		}
 
 		return render(
-			<TranslationProvider
+			<TacoTranslate
 				client={client}
 				locale="no"
 				useDangerouslySetInnerHTML={false}
 			>
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -377,13 +396,13 @@ test('should render html if useDangerouslySetInnerHTML is false on the context, 
 		}
 
 		return render(
-			<TranslationProvider
+			<TacoTranslate
 				client={client}
 				locale="no"
 				useDangerouslySetInnerHTML={false}
 			>
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -405,9 +424,9 @@ test('variables should be replaced', async () => {
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
+			<TacoTranslate client={client} locale="no">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -430,9 +449,9 @@ test('variables should be replaced when translations are injected', async () => 
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
+			<TacoTranslate client={client} locale="no">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -454,9 +473,9 @@ test('unmatched variables should be removed', async () => {
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
+			<TacoTranslate client={client} locale="no">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -478,9 +497,9 @@ test('ids should be supported', async () => {
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
+			<TacoTranslate client={client} locale="no">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -502,9 +521,9 @@ test('id with capital letters should be supported', async () => {
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
+			<TacoTranslate client={client} locale="no">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -522,9 +541,9 @@ test('invalid ids should throw', () => {
 			}
 
 			return render(
-				<TranslationProvider client={client} locale="no">
+				<TacoTranslate client={client} locale="no">
 					<Component />
-				</TranslationProvider>
+				</TacoTranslate>
 			);
 		})
 	).toThrow('`id` format is invalid');
@@ -542,9 +561,9 @@ test('the locale should be set', async () => {
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
+			<TacoTranslate client={client} locale="no">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -563,9 +582,9 @@ test('the langauge should be set', async () => {
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
+			<TacoTranslate client={client} locale="no">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -584,9 +603,9 @@ test('left to right should be true when applicable', async () => {
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
+			<TacoTranslate client={client} locale="no">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -605,9 +624,9 @@ test('right to left should be true when applicable', async () => {
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="ar">
+			<TacoTranslate client={client} locale="ar">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -626,9 +645,9 @@ test('error should be set when encountered', async () => {
 		}
 
 		return render(
-			<TranslationProvider client={errorClient} locale="ar">
+			<TacoTranslate client={errorClient} locale="ar">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -650,9 +669,9 @@ test('isLoading should be set when loading', async () => {
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
+			<TacoTranslate client={client} locale="no">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
@@ -670,16 +689,16 @@ test('get origin from child component', async () => {
 		}
 
 		return render(
-			<TranslationProvider client={client} origin="test" locale="no">
+			<TacoTranslate client={client} origin="test" locale="no">
 				<Component />
-			</TranslationProvider>
+			</TacoTranslate>
 		);
 	});
 
 	expect(origin).toBe('test');
 });
 
-test('allow multiple TranslationProviders', async () => {
+test('allow multiple TacoTranslates', async () => {
 	let origin: string | undefined;
 
 	await act(() => {
@@ -690,18 +709,18 @@ test('allow multiple TranslationProviders', async () => {
 		}
 
 		return render(
-			<TranslationProvider client={client} origin="test" locale="no">
-				<TranslationProvider origin="override">
+			<TacoTranslate client={client} origin="test" locale="no">
+				<TacoTranslate origin="override">
 					<Component />
-				</TranslationProvider>
-			</TranslationProvider>
+				</TacoTranslate>
+			</TacoTranslate>
 		);
 	});
 
 	expect(origin).toBe('override');
 });
 
-test('allow multiple TranslationProviders, and get locale from parent', async () => {
+test('allow multiple TacoTranslates, and get locale from parent', async () => {
 	let locale: string | undefined;
 
 	await act(() => {
@@ -712,18 +731,18 @@ test('allow multiple TranslationProviders, and get locale from parent', async ()
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
-				<TranslationProvider>
+			<TacoTranslate client={client} locale="no">
+				<TacoTranslate>
 					<Component />
-				</TranslationProvider>
-			</TranslationProvider>
+				</TacoTranslate>
+			</TacoTranslate>
 		);
 	});
 
 	expect(locale).toBe('no');
 });
 
-test('allow multiple TranslationProviders, and override locale', async () => {
+test('allow multiple TacoTranslates, and override locale', async () => {
 	let locale: string | undefined;
 
 	await act(() => {
@@ -734,13 +753,154 @@ test('allow multiple TranslationProviders, and override locale', async () => {
 		}
 
 		return render(
-			<TranslationProvider client={client} locale="no">
-				<TranslationProvider locale="es">
+			<TacoTranslate client={client} locale="no">
+				<TacoTranslate locale="es">
 					<Component />
-				</TranslationProvider>
-			</TranslationProvider>
+				</TacoTranslate>
+			</TacoTranslate>
 		);
 	});
 
 	expect(locale).toBe('es');
+});
+
+test('allow multiple TacoTranslates, and override locale, but get origin from parent', async () => {
+	let origin: string | undefined;
+
+	await act(() => {
+		function Component() {
+			const tacoTranslate = useTacoTranslate();
+			origin = tacoTranslate.origin;
+			return <Translate string="Hello, world!" />;
+		}
+
+		return render(
+			<TacoTranslate client={client} origin="test" locale="no">
+				<TacoTranslate locale="es">
+					<Component />
+				</TacoTranslate>
+			</TacoTranslate>
+		);
+	});
+
+	expect(origin).toBe('test');
+});
+
+test('get translations from the localization object', async () => {
+	const localizations = {test: {es: {input: 'output'}}};
+	let results: string | undefined;
+
+	await act(() => {
+		function Component() {
+			results = useTranslation('input');
+			return <Translate string="Hello, world!" />;
+		}
+
+		return render(
+			<TacoTranslate
+				client={client}
+				localizations={localizations}
+				origin="test"
+				locale="es"
+			>
+				<Component />
+			</TacoTranslate>
+		);
+	});
+
+	expect(results).toBe('output');
+});
+
+test('get translations from the translations object', async () => {
+	const translations = {input: 'output'};
+	let results: string | undefined;
+
+	await act(() => {
+		function Component() {
+			results = useTranslation('input');
+			return <Translate string="Hello, world!" />;
+		}
+
+		return render(
+			<TacoTranslate
+				client={client}
+				translations={translations}
+				origin="test"
+				locale="es"
+			>
+				<Component />
+			</TacoTranslate>
+		);
+	});
+
+	expect(results).toBe('output');
+});
+
+test('get translations from the parent localization object inside a child provider', async () => {
+	const localizations = {bar: {es: {input: 'output'}}};
+	let results: string | undefined;
+
+	await act(() => {
+		function Component() {
+			results = useTranslation('input');
+			return <Translate string="Hello, world!" />;
+		}
+
+		return render(
+			<TacoTranslate
+				client={client}
+				localizations={localizations}
+				origin="foo"
+				locale="no"
+			>
+				<TacoTranslate origin="bar" locale="es">
+					<Component />
+				</TacoTranslate>
+			</TacoTranslate>
+		);
+	});
+
+	expect(results).toBe('output');
+});
+
+test('get translations from the parent localization object inside multiple child providers', async () => {
+	const localizations = {
+		bar: {es: {input: '1'}},
+		baz: {en: {input: '2'}},
+		foo: {sv: {input: '3'}},
+	};
+
+	const results: string[] = [];
+
+	await act(() => {
+		function Component() {
+			results.push(useTranslation('input'));
+			return <Translate string="Hello, world!" />;
+		}
+
+		return render(
+			<TacoTranslate
+				client={client}
+				localizations={localizations}
+				origin="foo"
+				locale="no"
+			>
+				<TacoTranslate origin="baz" locale="en">
+					<Component />
+
+					<TacoTranslate origin="bar" locale="es">
+						<Component />
+					</TacoTranslate>
+				</TacoTranslate>
+
+				<TacoTranslate locale="sv">
+					<Component />
+				</TacoTranslate>
+			</TacoTranslate>
+		);
+	});
+
+	expect(results.includes('1')).toBe(true);
+	expect(results.includes('2')).toBe(true);
+	expect(results.includes('3')).toBe(true);
 });

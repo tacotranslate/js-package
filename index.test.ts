@@ -1,4 +1,5 @@
 import {
+	type ClientGetLocalizationsParameters,
 	type ClientGetTranslationsParameters,
 	type CreateTacoTranslateClientParameters,
 	type Translations,
@@ -21,6 +22,10 @@ async function getTranslations(): Promise<Translations> {
 	return translations;
 }
 
+async function getLocalizations() {
+	return {};
+}
+
 const createClient = ({
 	projectLocale,
 	isEnabled = true,
@@ -30,6 +35,8 @@ const createClient = ({
 >) => ({
 	getTranslations: async ({locale}: ClientGetTranslationsParameters) =>
 		isEnabled && locale !== projectLocale ? getTranslations() : {},
+	getLocalizations: async ({locale}: ClientGetLocalizationsParameters) =>
+		isEnabled && locale !== projectLocale ? getLocalizations() : {},
 	getLocales: async () => localeCodes,
 });
 

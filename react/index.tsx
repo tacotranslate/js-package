@@ -25,13 +25,15 @@ import {
 	template,
 	type TemplateVariables,
 	type TacoTranslateClient,
+	type Origin,
 } from '..';
 
 export type TranslationContextProperties = {
-	origin?: string;
 	client?: TacoTranslateClient;
+	origin?: Origin;
 	locale?: Locale;
 	translations?: Translations;
+	localizations?: Localizations;
 	useDangerouslySetInnerHTML?: boolean;
 };
 
@@ -196,22 +198,25 @@ export const useLanguage = () => {
 	return language;
 };
 
-export function TranslationProvider(
+export function TacoTranslate(
 	properties: TranslationContextProperties & {
 		children: ReactNode;
 	}
 ) {
 	const {
 		client: parentClient,
+		origin: parentOrigin,
 		locale: parentLocale,
+		localizations: parentLocalizations,
 		useDangerouslySetInnerHTML: parentUseDangerouslySetInnerHtml,
 	} = useTacoTranslate();
 
 	const {
-		origin,
 		client = parentClient,
+		origin = parentOrigin,
 		locale = parentLocale,
 		translations: inputTranslations,
+		localizations: inputLocalizations = parentLocalizations,
 		// eslint-disable-next-line @typescript-eslint/naming-convention
 		useDangerouslySetInnerHTML = parentUseDangerouslySetInnerHtml ?? true,
 		children,
@@ -246,8 +251,10 @@ export function TranslationProvider(
 		}
 	}
 
-	const [localizations, setLocalizations] = useState<Localizations>(() =>
-		locale ? {[currentOrigin]: {[locale]: inputTranslations ?? {}}} : {}
+	const [localizations, setLocalizations] = useState<Localizations>(
+		() =>
+			inputLocalizations ??
+			(locale ? {[currentOrigin]: {[locale]: inputTranslations ?? {}}} : {})
 	);
 
 	const createEntry = useCallback((inputEntry: Entry) => {
@@ -364,6 +371,7 @@ export function TranslationProvider(
 			useDangerouslySetInnerHTML,
 			entries,
 			translations,
+			localizations,
 			createEntry,
 			error,
 		}),
@@ -378,6 +386,7 @@ export function TranslationProvider(
 			useDangerouslySetInnerHTML,
 			entries,
 			translations,
+			localizations,
 			createEntry,
 			error,
 		]
@@ -391,3 +400,5 @@ export function TranslationProvider(
 		</TranslationContext.Provider>
 	);
 }
+
+export default TacoTranslate;

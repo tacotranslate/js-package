@@ -197,7 +197,8 @@ export function localeToCountryCode(locale: Locale) {
 	);
 }
 
-export type Localizations = Record<string, Record<Locale, Translations>>;
+export type Origin = string;
+export type Localizations = Record<Origin, Record<Locale, Translations>>;
 
 const defaultApiUrl = 'https://api.tacotranslate.com';
 const maxUrlLength = 2048;
@@ -208,7 +209,7 @@ export type GetTranslationsParameters = {
 	locale: Locale;
 	projectLocale?: Locale;
 	entries?: Entry[];
-	origin?: string;
+	origin?: Origin;
 	timeout?: number;
 	/** @default false */
 	throwOnError?: boolean;
@@ -429,7 +430,15 @@ export type CreateTacoTranslateClientParameters = {
 export type ClientGetTranslationsParameters = {
 	locale: Locale;
 	entries?: Entry[];
-	origin?: string;
+	origin?: Origin;
+	throwOnError?: boolean;
+};
+
+export type ClientGetLocalizationsParameters = {
+	locale?: Locale;
+	locales?: Locale[];
+	origin?: Origin;
+	origins?: Origin[];
 	throwOnError?: boolean;
 };
 
@@ -456,8 +465,59 @@ const createTacoTranslateClient = ({
 					throwOnError,
 			  })
 			: {},
+	async getLocalizations({
+		locale,
+		locales,
+		origin,
+		origins,
+		throwOnError,
+	}: ClientGetLocalizationsParameters) {
+		if (!isEnabled) {
+			return {};
+		}
+
+		const originsToFetch = origin ? [origin] : origins;
+		const localesToFetch = locale ? [locale] : locales;
+
+		if (!originsToFetch || !localesToFetch) {
+			return {};
+		}
+
+		const promises: Array<Promise<void>> = [];
+		const localizations: Localizations = {};
+
+		for (const origin of originsToFetch) {
+			for (const locale of localesToFetch) {
+				promises.push(
+					getTranslations({
+						apiUrl,
+						apiKey,
+						locale,
+						projectLocale,
+						origin,
+						throwOnError,
+					}).then((translations) => {
+						localizations[origin] = {
+							...localizations[origin],
+							[locale]: {
+								...localizations[origin][locale],
+								...translations,
+							},
+						};
+					})
+				);
+			}
+		}
+
+		await Promise.all(promises);
+		return localizations;
+	},
 	getLocales: async (options?: Pick<GetLocalesParameters, 'throwOnError'>) =>
-		isEnabled ? getLocales({...options, apiUrl, apiKey}) : localeCodes,
+		isEnabled
+			? getLocales({...options, apiUrl, apiKey})
+			: process.env.TACOTRANSLATE_DEFAULT_LOCALE
+			? [process.env.TACOTRANSLATE_DEFAULT_LOCALE]
+			: [],
 });
 
 export default createTacoTranslateClient;
