@@ -498,9 +498,9 @@ const createTacoTranslateClient = ({
 						throwOnError,
 					}).then((translations) => {
 						localizations[origin] = {
-							...localizations[origin],
+							...localizations?.[origin],
 							[locale]: {
-								...localizations[origin][locale],
+								...localizations[origin]?.[locale],
 								...translations,
 							},
 						};
