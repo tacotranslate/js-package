@@ -1,7 +1,7 @@
 import React, {type ReactElement, useEffect} from 'react';
 import {type AppProps} from 'next/app';
-import {type Locale, type Translations} from 'tacotranslate';
-import {TranslationProvider, useTacoTranslate} from 'tacotranslate/react';
+import {type Localizations, type Locale} from 'tacotranslate';
+import TacoTranslate, {useTacoTranslate} from 'tacotranslate/react';
 import tacoTranslate from '../utilities/tacotranslate';
 import '../global.css';
 
@@ -9,7 +9,7 @@ type PageProperties = {
 	origin: string;
 	locale: Locale;
 	locales: Locale[];
-	translations: Translations;
+	localizations: Localizations;
 };
 
 function Page({children}: {children: ReactElement}) {
@@ -23,18 +23,18 @@ function Page({children}: {children: ReactElement}) {
 }
 
 export default function App({Component, pageProps}: AppProps<PageProperties>) {
-	const {origin, locale, translations} = pageProps;
+	const {origin, locale, localizations} = pageProps;
 
 	return (
-		<TranslationProvider
-			origin={origin}
+		<TacoTranslate
 			client={tacoTranslate}
+			origin={origin}
 			locale={locale}
-			translations={translations}
+			localizations={localizations}
 		>
 			<Page>
 				<Component {...pageProps} />
 			</Page>
-		</TranslationProvider>
+		</TacoTranslate>
 	);
 }
