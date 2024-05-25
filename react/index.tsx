@@ -204,7 +204,6 @@ export function TranslationProvider(
 	const {
 		client: parentClient,
 		locale: parentLocale,
-		translations: parentTranslations,
 		useDangerouslySetInnerHTML: parentUseDangerouslySetInnerHtml,
 	} = useTacoTranslate();
 
@@ -212,7 +211,7 @@ export function TranslationProvider(
 		origin,
 		client = parentClient,
 		locale = parentLocale,
-		translations: inputTranslations = parentTranslations,
+		translations: inputTranslations,
 		// eslint-disable-next-line @typescript-eslint/naming-convention
 		useDangerouslySetInnerHTML = parentUseDangerouslySetInnerHtml ?? true,
 		children,
