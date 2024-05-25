@@ -3,11 +3,11 @@
 import React, {type ReactNode} from 'react';
 import {
 	type TranslationContextProperties,
-	TranslationProvider,
+	TacoTranslate as ImportedTacoTranslate,
 } from 'tacotranslate/react';
 import tacoTranslate from '@/utilities/tacotranslate';
 
-export default function CustomTranslationProvider({
+export default function TacoTranslate({
 	locale,
 	origin,
 	translations,
@@ -16,13 +16,13 @@ export default function CustomTranslationProvider({
 	readonly children: ReactNode;
 }) {
 	return (
-		<TranslationProvider
+		<ImportedTacoTranslate
 			client={tacoTranslate}
 			locale={locale}
 			origin={origin}
 			translations={translations}
 		>
 			{children}
-		</TranslationProvider>
+		</ImportedTacoTranslate>
 	);
 }

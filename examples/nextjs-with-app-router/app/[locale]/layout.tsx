@@ -1,8 +1,8 @@
 import React, {type ReactNode} from 'react';
 import {isRightToLeftLocaleCode} from 'tacotranslate';
 import './global.css';
-import CustomTranslationProvider from '@/components/translation-provider';
 import tacoTranslate from '@/utilities/tacotranslate';
+import TacoTranslate from '@/components/tacotranslate';
 import {customGenerateMetadata} from '@/utilities/generate-metadata';
 
 export async function generateStaticParams() {
@@ -38,13 +38,13 @@ export default async function RootLayout({
 	return (
 		<html lang={locale} dir={direction}>
 			<body>
-				<CustomTranslationProvider
+				<TacoTranslate
 					locale={locale}
 					origin={origin}
 					translations={translations}
 				>
 					<div id="content">{children}</div>
-				</CustomTranslationProvider>
+				</TacoTranslate>
 			</body>
 		</html>
 	);
