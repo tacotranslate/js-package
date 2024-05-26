@@ -3,6 +3,5 @@ declare namespace NodeJS {
 		TACOTRANSLATE_ORIGIN: string;
 		TACOTRANSLATE_API_KEY: string;
 		TACOTRANSLATE_DEFAULT_LOCALE: string;
-		TACOTRANSLATE_PROJECT_LOCALE: string;
 	}
 }
