@@ -251,6 +251,21 @@ export function TacoTranslate(
 		}
 	}
 
+	useEffect(() => {
+		if (
+			(process.env.NODE_ENV === 'development' ||
+				process.env.NODE_ENV === 'test') &&
+			inputLocalizations &&
+			origin &&
+			locale &&
+			!inputLocalizations[origin]?.[locale]
+		) {
+			console.warn(
+				`<TacoTranslate> Missing initial translations for origin \`${origin}\` in locale \`${locale}\`. Consider pre-fetching them on the server side. See https://tacotranslate.com/documentation/server-side-rendering.`
+			);
+		}
+	}, [inputLocalizations, origin, locale]);
+
 	const [localizations, setLocalizations] = useState<Localizations>(
 		() =>
 			inputLocalizations ??
