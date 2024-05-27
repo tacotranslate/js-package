@@ -224,21 +224,21 @@ export function TacoTranslate(
 
 	const [isLoading, setIsLoading] = useState<boolean>();
 	const [error, setError] = useState<Error>();
-	const [currentLocale, setCurrentLocale] = useState(locale ?? parentLocale);
 	const localeOrParentLocale = locale ?? parentLocale;
+	const [currentLocale, setCurrentLocale] = useState(localeOrParentLocale);
 
 	const currentLanguage: Language | undefined = useMemo(
 		() => locales.find(([localeCode]) => localeCode === currentLocale)?.[1],
 		[currentLocale]
 	);
 
-	const [entries, setEntries] = useState<Entry[]>([]);
+	const originOrParentOrigin = origin ?? parentOrigin;
 	const [currentOrigin, setCurrentOrigin] = useState(() => {
 		if (typeof window === 'undefined') {
-			return origin ?? parentOrigin ?? '*';
+			return originOrParentOrigin ?? '*';
 		}
 
-		return origin ?? parentOrigin ?? window.location.host;
+		return originOrParentOrigin ?? window.location.host;
 	});
 
 	if (origin) {
@@ -280,26 +280,7 @@ export function TacoTranslate(
 				: {})
 	);
 
-	useEffect(() => {
-		if (inputLocalizations) {
-			setLocalizations((previousLocalizations) => {
-				for (const [origin, locales] of Object.entries(inputLocalizations)) {
-					for (const [locale, translations] of Object.entries(locales)) {
-						previousLocalizations[origin] = {
-							...previousLocalizations?.[origin],
-							[locale]: {
-								...previousLocalizations?.[origin]?.[locale],
-								...translations,
-							},
-						};
-					}
-				}
-
-				return {...previousLocalizations};
-			});
-		}
-	}, [inputLocalizations]);
-
+	const [entries, setEntries] = useState<Entry[]>([]);
 	const createEntry = useCallback((inputEntry: Entry) => {
 		const {l, ...entry} = inputEntry;
 		setEntries((previousEntries) => [...previousEntries, entry]);
@@ -387,23 +368,27 @@ export function TacoTranslate(
 
 	const patchedLocalizations = useMemo(
 		() =>
-			origin && localeOrParentLocale
+			originOrParentOrigin && localeOrParentLocale
 				? {
 						...localizations,
 						...inputLocalizations,
-						[origin]: {
-							...localizations?.[origin],
-							...inputLocalizations?.[origin],
+						[originOrParentOrigin]: {
+							...localizations?.[originOrParentOrigin],
+							...inputLocalizations?.[originOrParentOrigin],
 							[localeOrParentLocale]: {
-								...localizations?.[origin]?.[localeOrParentLocale],
-								...inputLocalizations?.[origin]?.[localeOrParentLocale],
+								...localizations?.[originOrParentOrigin]?.[
+									localeOrParentLocale
+								],
+								...inputLocalizations?.[originOrParentOrigin]?.[
+									localeOrParentLocale
+								],
 								...inputTranslations,
 							},
 						},
 				  }
 				: localizations,
 		[
-			origin,
+			originOrParentOrigin,
 			localeOrParentLocale,
 			localizations,
 			inputTranslations,

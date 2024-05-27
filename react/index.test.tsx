@@ -991,17 +991,17 @@ test('allow adding new localizations during runtime', async () => {
 		function Page() {
 			const [state, setState] = useState(0);
 			const [localizations, setLocalizations] = useState<Localizations>({
-				bar: {es: {input: '1'}},
-				baz: {en: {input: '2'}},
+				bar: {es: {input: '2'}},
+				baz: {en: {input: '1'}},
 			});
 
 			useEffect(() => {
 				if (state === 0) {
 					setState(1);
 					setLocalizations({
-						foo: {sv: {input: '3'}},
+						foo: {sv: {input: '5'}},
 						bar: {es: {input: '4'}},
-						baz: {en: {input: '5'}},
+						baz: {en: {input: '3'}},
 					});
 				}
 			}, [state]);
@@ -1009,9 +1009,9 @@ test('allow adding new localizations during runtime', async () => {
 			useEffect(() => {
 				if (state === 1) {
 					setLocalizations({
-						foo: {sv: {input: '6'}},
+						foo: {sv: {input: '8'}},
 						bar: {es: {input: '7'}},
-						baz: {en: {input: '8'}},
+						baz: {en: {input: '6'}},
 					});
 				}
 			}, [state]);
@@ -1041,15 +1041,9 @@ test('allow adding new localizations during runtime', async () => {
 		return render(<Page />);
 	});
 
-	expect(results.includes('input')).toBe(true);
-	expect(results.includes('1')).toBe(true);
-	expect(results.includes('2')).toBe(true);
-	expect(results.includes('3')).toBe(true);
-	expect(results.includes('4')).toBe(true);
-	expect(results.includes('5')).toBe(true);
-	expect(results.includes('6')).toBe(true);
-	expect(results.includes('7')).toBe(true);
-	expect(results.includes('8')).toBe(true);
+	expect(JSON.stringify(results)).toBe(
+		'["1","2","input","3","4","5","6","7","8","6","7","8"]'
+	);
 });
 
 test('get updated localization during first render', async () => {
@@ -1087,7 +1081,7 @@ test('get updated localization during first render', async () => {
 		return render(<Page />);
 	});
 
-	expect(JSON.stringify(results)).toBe('["1","2","2"]');
+	expect(JSON.stringify(results)).toBe('["1","2"]');
 });
 
 test('get updated localization during first render in a child provider', async () => {
@@ -1127,7 +1121,7 @@ test('get updated localization during first render in a child provider', async (
 		return render(<Page />);
 	});
 
-	expect(JSON.stringify(results)).toBe('["1","2","2","2"]');
+	expect(JSON.stringify(results)).toBe('["1","2"]');
 });
 
 test('get updated localization during first render in multiple child providers', async () => {
@@ -1169,5 +1163,5 @@ test('get updated localization during first render in multiple child providers',
 		return render(<Page />);
 	});
 
-	expect(JSON.stringify(results)).toBe('["1","2","2","2","2"]');
+	expect(JSON.stringify(results)).toBe('["1","2"]');
 });
