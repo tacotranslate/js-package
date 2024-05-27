@@ -1052,7 +1052,7 @@ test('allow adding new localizations during runtime', async () => {
 	expect(results.includes('8')).toBe(true);
 });
 
-test.only('get updated localization during first render', async () => {
+test('get updated localization during first render', async () => {
 	const results: string[] = [];
 
 	await act(async () => {
