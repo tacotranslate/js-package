@@ -951,7 +951,7 @@ test('allow adding new localizations during runtime', async () => {
 
 		return render(<Page />);
 	});
-	
+
 	expect(results.includes('1')).toBe(true);
 	expect(results.includes('2')).toBe(true);
 	expect(results.includes('input')).toBe(true);
