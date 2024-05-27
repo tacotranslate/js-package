@@ -289,9 +289,9 @@ export function TacoTranslate(
 				for (const [origin, locales] of Object.entries(inputLocalizations)) {
 					for (const [locale, translations] of Object.entries(locales)) {
 						previousLocalizations[origin] = {
-							...previousLocalizations[origin],
+							...previousLocalizations?.[origin],
 							[locale]: {
-								...previousLocalizations[origin]?.[locale],
+								...previousLocalizations?.[origin]?.[locale],
 								...translations,
 							},
 						};
@@ -350,9 +350,9 @@ export function TacoTranslate(
 							setLocalizations((previousLocalizations) => ({
 								...previousLocalizations,
 								[currentOrigin]: {
-									...previousLocalizations[currentOrigin],
+									...previousLocalizations?.[currentOrigin],
 									[locale]: {
-										...previousLocalizations[currentOrigin]?.[locale],
+										...previousLocalizations?.[currentOrigin]?.[locale],
 										...translations,
 									},
 								},
@@ -383,23 +383,26 @@ export function TacoTranslate(
 		() =>
 			origin && locale
 				? {
+						...inputLocalizations,
 						...localizations,
 						[origin]: {
-							...localizations[origin],
+							...inputLocalizations?.[origin],
+							...localizations?.[origin],
 							[locale]: {
-								...localizations[origin]?.[locale],
+								...inputLocalizations?.[origin]?.[locale],
+								...localizations?.[origin]?.[locale],
 								...inputTranslations,
 							},
 						},
 				  }
 				: localizations,
-		[origin, locale, inputTranslations, localizations]
+		[origin, locale, inputLocalizations, localizations, inputTranslations]
 	);
 
 	const translations = useMemo(
 		() =>
 			currentLocale
-				? patchedLocalizations[currentOrigin]?.[currentLocale] ?? {}
+				? patchedLocalizations?.[currentOrigin]?.[currentLocale] ?? {}
 				: {},
 		[patchedLocalizations, currentOrigin, currentLocale]
 	);
