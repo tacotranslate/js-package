@@ -1,7 +1,7 @@
 {
 	"name": "tacotranslate",
 	"description": "Automatically translate your React application to any language",
-	"version": "3.0.6",
+	"version": "3.0.7",
 	"main": "index.js",
 	"types": "index.d.ts",
 	"author": "TacoTranslate <hola@tacotranslate.com>",
