@@ -224,11 +224,8 @@ export function TacoTranslate(
 
 	const [isLoading, setIsLoading] = useState<boolean>();
 	const [error, setError] = useState<Error>();
-	const [currentLocale, setCurrentLocale] = useState(locale);
-
-	if (!locale && parentLocale && currentLocale !== parentLocale) {
-		setCurrentLocale(parentLocale);
-	}
+	const [currentLocale, setCurrentLocale] = useState(locale ?? parentLocale);
+	const localeOrParentLocale = locale ?? parentLocale;
 
 	const currentLanguage: Language | undefined = useMemo(
 		() => locales.find(([localeCode]) => localeCode === currentLocale)?.[1],
@@ -238,10 +235,10 @@ export function TacoTranslate(
 	const [entries, setEntries] = useState<Entry[]>([]);
 	const [currentOrigin, setCurrentOrigin] = useState(() => {
 		if (typeof window === 'undefined') {
-			return origin ?? '*';
+			return origin ?? parentOrigin ?? '*';
 		}
 
-		return origin ?? window.location.host;
+		return origin ?? parentOrigin ?? window.location.host;
 	});
 
 	if (origin) {
@@ -318,7 +315,7 @@ export function TacoTranslate(
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
 			if (entries.length > 0) {
-				if (!isLoading && client && locale) {
+				if (!isLoading && client && localeOrParentLocale) {
 					setIsLoading(true);
 
 					const currentEntryKeys = new Set<string>();
@@ -341,7 +338,7 @@ export function TacoTranslate(
 
 					client
 						.getTranslations({
-							locale,
+							locale: localeOrParentLocale,
 							entries: currentEntries,
 							origin: currentOrigin,
 							throwOnError: true,
@@ -351,14 +348,16 @@ export function TacoTranslate(
 								...previousLocalizations,
 								[currentOrigin]: {
 									...previousLocalizations?.[currentOrigin],
-									[locale]: {
-										...previousLocalizations?.[currentOrigin]?.[locale],
+									[localeOrParentLocale]: {
+										...previousLocalizations?.[currentOrigin]?.[
+											localeOrParentLocale
+										],
 										...translations,
 									},
 								},
 							}));
 
-							setCurrentLocale(locale);
+							setCurrentLocale(localeOrParentLocale);
 							setIsLoading(false);
 						})
 						.catch((error: unknown) => {
@@ -373,38 +372,51 @@ export function TacoTranslate(
 							setIsLoading(false);
 						});
 				}
-			} else if (currentLocale !== locale) {
-				setCurrentLocale(locale);
+			} else if (currentLocale !== localeOrParentLocale) {
+				setCurrentLocale(localeOrParentLocale);
 			}
 		}
-	}, [client, currentOrigin, entries, isLoading, currentLocale, locale]);
+	}, [
+		client,
+		currentOrigin,
+		entries,
+		isLoading,
+		currentLocale,
+		localeOrParentLocale,
+	]);
 
 	const patchedLocalizations = useMemo(
 		() =>
-			origin && locale
+			origin && localeOrParentLocale
 				? {
 						...localizations,
+						...inputLocalizations,
 						[origin]: {
 							...localizations?.[origin],
-							[locale]: {
-								...localizations?.[origin]?.[locale],
+							...inputLocalizations?.[origin],
+							[localeOrParentLocale]: {
+								...localizations?.[origin]?.[localeOrParentLocale],
+								...inputLocalizations?.[origin]?.[localeOrParentLocale],
 								...inputTranslations,
 							},
 						},
 				  }
 				: localizations,
-		[origin, locale, localizations, inputTranslations]
+		[
+			origin,
+			localeOrParentLocale,
+			localizations,
+			inputTranslations,
+			inputLocalizations,
+		]
 	);
 
 	const translations = useMemo(
 		() =>
 			currentLocale
-				? {
-						...patchedLocalizations?.[currentOrigin]?.[currentLocale],
-						...inputLocalizations?.[currentOrigin]?.[currentLocale],
-				  }
+				? patchedLocalizations?.[currentOrigin]?.[currentLocale] ?? {}
 				: {},
-		[patchedLocalizations, inputLocalizations, currentOrigin, currentLocale]
+		[patchedLocalizations, currentOrigin, currentLocale]
 	);
 
 	const value = useMemo(
@@ -420,7 +432,7 @@ export function TacoTranslate(
 			useDangerouslySetInnerHTML,
 			entries,
 			translations,
-			localizations,
+			localizations: patchedLocalizations,
 			createEntry,
 			error,
 		}),
@@ -435,7 +447,7 @@ export function TacoTranslate(
 			useDangerouslySetInnerHTML,
 			entries,
 			translations,
-			localizations,
+			patchedLocalizations,
 			createEntry,
 			error,
 		]

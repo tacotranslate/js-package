@@ -1089,3 +1089,85 @@ test('get updated localization during first render', async () => {
 
 	expect(JSON.stringify(results)).toBe('["1","2","2"]');
 });
+
+test('get updated localization during first render in a child provider', async () => {
+	const results: string[] = [];
+
+	await act(async () => {
+		function Component() {
+			results.push(useTranslation('input'));
+			return null;
+		}
+
+		function Page() {
+			const [localizations, setLocalizations] = useState<Localizations>({
+				bar: {es: {input: '1'}},
+			});
+
+			useEffect(() => {
+				setLocalizations({
+					bar: {es: {input: '2'}},
+				});
+			}, []);
+
+			return (
+				<TacoTranslate
+					client={client}
+					localizations={localizations}
+					origin="foo"
+					locale="es"
+				>
+					<TacoTranslate origin="bar">
+						<Component />
+					</TacoTranslate>
+				</TacoTranslate>
+			);
+		}
+
+		return render(<Page />);
+	});
+
+	expect(JSON.stringify(results)).toBe('["1","2","2","2"]');
+});
+
+test('get updated localization during first render in multiple child providers', async () => {
+	const results: string[] = [];
+
+	await act(async () => {
+		function Component() {
+			results.push(useTranslation('input'));
+			return null;
+		}
+
+		function Page() {
+			const [localizations, setLocalizations] = useState<Localizations>({
+				bar: {es: {input: '1'}},
+			});
+
+			useEffect(() => {
+				setLocalizations({
+					bar: {es: {input: '2'}},
+				});
+			}, []);
+
+			return (
+				<TacoTranslate
+					client={client}
+					localizations={localizations}
+					origin="foo"
+					locale="es"
+				>
+					<TacoTranslate origin="baz">
+						<TacoTranslate origin="bar">
+							<Component />
+						</TacoTranslate>
+					</TacoTranslate>
+				</TacoTranslate>
+			);
+		}
+
+		return render(<Page />);
+	});
+
+	expect(JSON.stringify(results)).toBe('["1","2","2","2","2"]');
+});
