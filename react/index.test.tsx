@@ -924,6 +924,8 @@ test('allow adding new localizations during runtime', async () => {
 				setLocalizations((previousLocalizations) => ({
 					...previousLocalizations,
 					foo: {sv: {input: '3'}},
+					bar: {es: {input: '4'}},
+					baz: {en: {input: '5'}},
 				}));
 			}, []);
 
@@ -952,8 +954,10 @@ test('allow adding new localizations during runtime', async () => {
 		return render(<Page />);
 	});
 
+	expect(results.includes('input')).toBe(true);
 	expect(results.includes('1')).toBe(true);
 	expect(results.includes('2')).toBe(true);
-	expect(results.includes('input')).toBe(true);
 	expect(results.includes('3')).toBe(true);
+	expect(results.includes('4')).toBe(true);
+	expect(results.includes('5')).toBe(true);
 });
