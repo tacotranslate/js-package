@@ -383,28 +383,28 @@ export function TacoTranslate(
 		() =>
 			origin && locale
 				? {
-						...inputLocalizations,
 						...localizations,
 						[origin]: {
-							...inputLocalizations?.[origin],
 							...localizations?.[origin],
 							[locale]: {
-								...inputLocalizations?.[origin]?.[locale],
 								...localizations?.[origin]?.[locale],
 								...inputTranslations,
 							},
 						},
 				  }
 				: localizations,
-		[origin, locale, inputLocalizations, localizations, inputTranslations]
+		[origin, locale, localizations, inputTranslations]
 	);
 
 	const translations = useMemo(
 		() =>
 			currentLocale
-				? patchedLocalizations?.[currentOrigin]?.[currentLocale] ?? {}
+				? {
+						...patchedLocalizations?.[currentOrigin]?.[currentLocale],
+						...inputLocalizations?.[currentOrigin]?.[currentLocale],
+				  }
 				: {},
-		[patchedLocalizations, currentOrigin, currentLocale]
+		[patchedLocalizations, inputLocalizations, currentOrigin, currentLocale]
 	);
 
 	const value = useMemo(

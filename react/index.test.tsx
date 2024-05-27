@@ -1051,3 +1051,41 @@ test('allow adding new localizations during runtime', async () => {
 	expect(results.includes('7')).toBe(true);
 	expect(results.includes('8')).toBe(true);
 });
+
+test.only('get updated localization during first render', async () => {
+	const results: string[] = [];
+
+	await act(async () => {
+		function Component() {
+			results.push(useTranslation('input'));
+			return null;
+		}
+
+		function Page() {
+			const [localizations, setLocalizations] = useState<Localizations>({
+				foo: {es: {input: '1'}},
+			});
+
+			useEffect(() => {
+				setLocalizations({
+					foo: {es: {input: '2'}},
+				});
+			}, []);
+
+			return (
+				<TacoTranslate
+					client={client}
+					localizations={localizations}
+					origin="foo"
+					locale="es"
+				>
+					<Component />
+				</TacoTranslate>
+			);
+		}
+
+		return render(<Page />);
+	});
+
+	expect(JSON.stringify(results)).toBe('["1","2","2"]');
+});
