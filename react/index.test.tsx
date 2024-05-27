@@ -915,19 +915,32 @@ test('allow adding new localizations during runtime', async () => {
 		}
 
 		function Page() {
-			const [localizations, setLocalizations] = useState({
+			const [state, setState] = useState(0);
+			const [localizations, setLocalizations] = useState<Localizations>({
 				bar: {es: {input: '1'}},
 				baz: {en: {input: '2'}},
 			});
 
 			useEffect(() => {
-				setLocalizations((previousLocalizations) => ({
-					...previousLocalizations,
-					foo: {sv: {input: '3'}},
-					bar: {es: {input: '4'}},
-					baz: {en: {input: '5'}},
-				}));
-			}, []);
+				if (state === 0) {
+					setState(1);
+					setLocalizations({
+						foo: {sv: {input: '3'}},
+						bar: {es: {input: '4'}},
+						baz: {en: {input: '5'}},
+					});
+				}
+			}, [state]);
+
+			useEffect(() => {
+				if (state === 1) {
+					setLocalizations({
+						foo: {sv: {input: '6'}},
+						bar: {es: {input: '7'}},
+						baz: {en: {input: '8'}},
+					});
+				}
+			}, [state]);
 
 			return (
 				<TacoTranslate
@@ -960,4 +973,7 @@ test('allow adding new localizations during runtime', async () => {
 	expect(results.includes('3')).toBe(true);
 	expect(results.includes('4')).toBe(true);
 	expect(results.includes('5')).toBe(true);
+	expect(results.includes('6')).toBe(true);
+	expect(results.includes('7')).toBe(true);
+	expect(results.includes('8')).toBe(true);
 });

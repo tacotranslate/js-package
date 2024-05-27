@@ -256,20 +256,22 @@ export function TacoTranslate(
 			(process.env.NODE_ENV === 'development' ||
 				process.env.NODE_ENV === 'test') &&
 			inputLocalizations &&
-			origin &&
-			locale &&
-			!inputLocalizations[origin]?.[locale]
+			currentOrigin &&
+			currentLocale &&
+			!inputLocalizations[currentOrigin]?.[currentLocale]
 		) {
 			console.warn(
-				`<TacoTranslate> Missing initial translations for origin \`${origin}\` in locale \`${locale}\`. Consider pre-fetching them on the server side. See https://tacotranslate.com/documentation/server-side-rendering.`
+				`<TacoTranslate> Missing initial translations for origin \`${currentOrigin}\` in locale \`${currentLocale}\`. Consider pre-fetching them on the server side. See https://tacotranslate.com/documentation/server-side-rendering.`
 			);
 		}
-	}, [inputLocalizations, origin, locale]);
+	}, [inputLocalizations, currentOrigin, currentLocale]);
 
 	const [localizations, setLocalizations] = useState<Localizations>(
 		() =>
 			inputLocalizations ??
-			(locale ? {[currentOrigin]: {[locale]: inputTranslations ?? {}}} : {})
+			(currentLocale
+				? {[currentOrigin]: {[currentLocale]: inputTranslations ?? {}}}
+				: {})
 	);
 
 	useEffect(() => {
