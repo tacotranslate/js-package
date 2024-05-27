@@ -786,6 +786,80 @@ test('allow multiple TacoTranslates, and override locale, but get origin from pa
 	expect(origin).toBe('test');
 });
 
+test('allow multiple TacoTranslates, and let child locale update when parent locale updates', async () => {
+	const results: string[] = [];
+
+	await act(() => {
+		function Component() {
+			const tacoTranslate = useTacoTranslate();
+
+			if (tacoTranslate.locale) {
+				results.push(tacoTranslate.locale);
+			}
+
+			return <Translate string="Hello, world!" />;
+		}
+
+		function Page() {
+			const [locale, setLocale] = useState('en');
+
+			useEffect(() => {
+				setLocale('no');
+			}, []);
+
+			return (
+				<TacoTranslate client={client} origin="test" locale={locale}>
+					<TacoTranslate origin="foo">
+						<Component />
+					</TacoTranslate>
+				</TacoTranslate>
+			);
+		}
+
+		return render(<Page />);
+	});
+
+	expect(results.includes('en')).toBe(true);
+	expect(results.includes('no')).toBe(true);
+});
+
+test('allow multiple TacoTranslates, and let child origin update when parent origin updates', async () => {
+	const results: string[] = [];
+
+	await act(() => {
+		function Component() {
+			const tacoTranslate = useTacoTranslate();
+
+			if (tacoTranslate.origin) {
+				results.push(tacoTranslate.origin);
+			}
+
+			return <Translate string="Hello, world!" />;
+		}
+
+		function Page() {
+			const [origin, setOrigin] = useState('test');
+
+			useEffect(() => {
+				setOrigin('foo');
+			}, []);
+
+			return (
+				<TacoTranslate client={client} origin={origin} locale="en">
+					<TacoTranslate locale="no">
+						<Component />
+					</TacoTranslate>
+				</TacoTranslate>
+			);
+		}
+
+		return render(<Page />);
+	});
+
+	expect(results.includes('test')).toBe(true);
+	expect(results.includes('foo')).toBe(true);
+});
+
 test('get translations from the localization object', async () => {
 	const localizations = {test: {es: {input: 'output'}}};
 	let results: string | undefined;

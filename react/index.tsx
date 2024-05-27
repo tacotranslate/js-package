@@ -213,8 +213,8 @@ export function TacoTranslate(
 
 	const {
 		client = parentClient,
-		origin = parentOrigin,
-		locale = parentLocale,
+		origin,
+		locale,
 		translations: inputTranslations,
 		localizations: inputLocalizations = parentLocalizations,
 		// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -225,6 +225,11 @@ export function TacoTranslate(
 	const [isLoading, setIsLoading] = useState<boolean>();
 	const [error, setError] = useState<Error>();
 	const [currentLocale, setCurrentLocale] = useState(locale);
+
+	if (!locale && parentLocale && currentLocale !== parentLocale) {
+		setCurrentLocale(parentLocale);
+	}
+
 	const currentLanguage: Language | undefined = useMemo(
 		() => locales.find(([localeCode]) => localeCode === currentLocale)?.[1],
 		[currentLocale]
@@ -242,6 +247,10 @@ export function TacoTranslate(
 	if (origin) {
 		if (origin !== currentOrigin) {
 			setCurrentOrigin(origin);
+		}
+	} else if (!origin && parentOrigin) {
+		if (currentOrigin !== parentOrigin) {
+			setCurrentOrigin(parentOrigin);
 		}
 	} else if (typeof window !== 'undefined') {
 		const currentHost = window.location.host;
@@ -398,7 +407,7 @@ export function TacoTranslate(
 	const value = useMemo(
 		() => ({
 			client,
-			origin,
+			origin: currentOrigin,
 			locale: currentLocale,
 			language: currentLanguage,
 			isLoading,
@@ -414,7 +423,7 @@ export function TacoTranslate(
 		}),
 		[
 			client,
-			origin,
+			currentOrigin,
 			currentLocale,
 			currentLanguage,
 			isLoading,
