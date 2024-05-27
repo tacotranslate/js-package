@@ -272,6 +272,26 @@ export function TacoTranslate(
 			(locale ? {[currentOrigin]: {[locale]: inputTranslations ?? {}}} : {})
 	);
 
+	useEffect(() => {
+		if (inputLocalizations) {
+			setLocalizations((previousLocalizations) => {
+				for (const [origin, locales] of Object.entries(inputLocalizations)) {
+					for (const [locale, translations] of Object.entries(locales)) {
+						previousLocalizations[origin] = {
+							...previousLocalizations[origin],
+							[locale]: {
+								...previousLocalizations[origin]?.[locale],
+								...translations,
+							},
+						};
+					}
+				}
+
+				return {...previousLocalizations};
+			});
+		}
+	}, [inputLocalizations]);
+
 	const createEntry = useCallback((inputEntry: Entry) => {
 		const {l, ...entry} = inputEntry;
 		setEntries((previousEntries) => [...previousEntries, entry]);

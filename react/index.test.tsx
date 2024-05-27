@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {render, screen, waitFor} from '@testing-library/react';
 // eslint-disable-next-line import/no-unassigned-import
 import '@testing-library/jest-dom';
@@ -902,5 +902,58 @@ test('get translations from the parent localization object inside multiple child
 
 	expect(results.includes('1')).toBe(true);
 	expect(results.includes('2')).toBe(true);
+	expect(results.includes('3')).toBe(true);
+});
+
+test('allow adding new localizations during runtime', async () => {
+	const results: string[] = [];
+
+	await act(async () => {
+		function Component() {
+			results.push(useTranslation('input'));
+			return <Translate string="Hello, world!" />;
+		}
+
+		function Page() {
+			const [localizations, setLocalizations] = useState({
+				bar: {es: {input: '1'}},
+				baz: {en: {input: '2'}},
+			});
+
+			useEffect(() => {
+				setLocalizations((previousLocalizations) => ({
+					...previousLocalizations,
+					foo: {sv: {input: '3'}},
+				}));
+			}, []);
+
+			return (
+				<TacoTranslate
+					client={client}
+					localizations={localizations}
+					origin="foo"
+					locale="no"
+				>
+					<TacoTranslate origin="baz" locale="en">
+						<Component />
+
+						<TacoTranslate origin="bar" locale="es">
+							<Component />
+						</TacoTranslate>
+					</TacoTranslate>
+
+					<TacoTranslate locale="sv">
+						<Component />
+					</TacoTranslate>
+				</TacoTranslate>
+			);
+		}
+
+		return render(<Page />);
+	});
+	
+	expect(results.includes('1')).toBe(true);
+	expect(results.includes('2')).toBe(true);
+	expect(results.includes('input')).toBe(true);
 	expect(results.includes('3')).toBe(true);
 });
