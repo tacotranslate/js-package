@@ -476,8 +476,8 @@ const createTacoTranslateClient = ({
 			return {};
 		}
 
-		const originsToFetch = origin ? [origin] : origins;
-		const localesToFetch = locale ? [locale] : locales;
+		const originsToFetch = new Set(origin ? [origin] : origins);
+		const localesToFetch = new Set(locale ? [locale] : locales);
 
 		if (!originsToFetch || !localesToFetch) {
 			return {};
