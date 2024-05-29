@@ -292,9 +292,11 @@ async function getTranslations({
 							for (const error of data.errors) {
 								console.error(
 									new Error(
-										`<TacoTranslate> encountered an error when doing a \`getTranslations\` request:${
-											error.code ? ` (${error.code})` : ''
-										} ${error.message}`
+										`<TacoTranslate> encountered an error when doing a \`getTranslations\` request (${JSON.stringify(
+											{locale, origin}
+										)}):${error.code ? ` (${error.code})` : ''} ${
+											error.message
+										}`
 									)
 								);
 							}
@@ -316,7 +318,12 @@ async function getTranslations({
 
 		let hasTimedOut = false;
 		const timeoutInstance = setTimeout(() => {
-			const error = new Error('<TacoTranslate> `getTranslations` timeout.');
+			const error = new Error(
+				`<TacoTranslate> \`getTranslations\` timeout (${JSON.stringify({
+					locale,
+					origin,
+				})}).`
+			);
 
 			if (throwOnError) {
 				reject(error);
