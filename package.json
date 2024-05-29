@@ -12,15 +12,14 @@
 		"i18n",
 		"next",
 		"intl",
-		"localize",
-		"translate",
-		"react.js",
-		"reactjs",
-		"next.js",
-		"nextjs",
+		"ai",
 		"internationalization",
 		"localization",
-		"translation"
+		"translation",
+		"reactjs",
+		"nextjs",
+		"localize",
+		"translate"
 	],
 	"repository": {
 		"type": "git",
