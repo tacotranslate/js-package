@@ -1,12 +1,27 @@
 {
 	"name": "tacotranslate",
-	"description": "Automatically translate your React application to any language",
+	"description": "Automatically translate your React application from and to any language with automatic, AI-powered i18n",
 	"version": "3.0.10",
 	"main": "index.js",
 	"types": "index.d.ts",
 	"author": "TacoTranslate <hola@tacotranslate.com>",
 	"license": "MIT",
 	"homepage": "https://tacotranslate.com",
+	"keywords": [
+		"react",
+		"i18n",
+		"next",
+		"intl",
+		"localize",
+		"translate",
+		"react.js",
+		"reactjs",
+		"next.js",
+		"nextjs",
+		"internationalization",
+		"localization",
+		"translation"
+	],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/tacotranslate/js-package.git"
