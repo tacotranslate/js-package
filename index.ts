@@ -346,6 +346,8 @@ async function getTranslations({
 			})
 			.catch((error) => {
 				if (!hasTimedOut) {
+					clearTimeout(timeoutInstance);
+
 					if (throwOnError) {
 						reject(error);
 					} else {
