@@ -67,7 +67,7 @@ export const locales = [
 	['en', 'English'],
 	['et', 'Estonian'],
 	['fa', 'Farsi (Persian)', 'Farsi'],
-	['tl', 'Filipino, Tagalog', 'Tagalog'],
+	['tl', 'Filipino (Tagalog)', 'Filipino'],
 	['fi', 'Finnish'],
 	['fr', 'French'],
 	['fr-ca', 'French (Canada)', 'French'],
