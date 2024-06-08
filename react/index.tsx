@@ -61,6 +61,8 @@ export const useTacoTranslate = () => useContext(TacoTranslateContext);
 export type TranslateOptions = {
 	readonly id?: string;
 	readonly variables?: TemplateVariables;
+	readonly origin?: Origin;
+	readonly locale?: Origin;
 };
 
 export type TranslateComponentProperties = HTMLAttributes<HTMLSpanElement> &
@@ -75,8 +77,15 @@ export function useTranslation(
 	inputString: string,
 	options?: TranslateOptions
 ) {
-	const {id, variables} = options ?? {};
-	const {client, translations, locale, createEntry} = useTacoTranslate();
+	const {
+		id,
+		variables,
+		origin: originOption,
+		locale: localeOption,
+	} = options ?? {};
+
+	const {client, localizations, translations, origin, locale, createEntry} =
+		useTacoTranslate();
 
 	if (
 		process.env.NODE_ENV === 'development' ||
@@ -128,13 +137,19 @@ export function useTranslation(
 	}, [variables, inputString]);
 
 	const entry = useMemo(
-		() => ({i: id, s: string, l: locale}),
-		[id, string, locale]
+		() => ({i: id, s: string, o: originOption, l: localeOption}),
+		[id, string, originOption, localeOption]
 	);
 
+	const key = useMemo(() => getEntryKey(entry, client), [entry, client]);
+	const selectedOrigin = originOption ?? origin;
+	const selectedLocale = localeOption ?? locale;
 	const translation = useMemo(
-		() => translations?.[getEntryKey(entry, client)],
-		[translations, entry, client]
+		() =>
+			localizations && selectedOrigin && selectedLocale
+				? localizations?.[selectedOrigin]?.[selectedLocale]?.[key]
+				: translations?.[key],
+		[localizations, selectedOrigin, selectedLocale, key, translations]
 	);
 
 	const output = useMemo(() => {
@@ -160,6 +175,8 @@ export function Translate({
 	id,
 	string,
 	variables,
+	origin,
+	locale,
 	as = 'span',
 	useDangerouslySetInnerHTML: componentUseDangerouslySetInnerHtml,
 	...parameters
@@ -171,7 +188,7 @@ export function Translate({
 			? contextUseDangerouslySetInnerHtml ?? false
 			: componentUseDangerouslySetInnerHtml ?? false;
 
-	const output = useTranslation(string, {id, variables});
+	const output = useTranslation(string, {id, variables, origin, locale});
 	const sanitized = useMemo(
 		() => (useDangerouslySetInnerHtml ? sanitize(output) : output),
 		[useDangerouslySetInnerHtml, output]
@@ -197,6 +214,37 @@ export const useLanguage = () => {
 	const {language} = useTacoTranslate();
 	return language;
 };
+
+type AnyObject = Record<string, unknown>;
+
+function isObject(object: any): object is AnyObject {
+	return Boolean(
+		object && typeof object === 'object' && !Array.isArray(object)
+	);
+}
+
+export function merge<Target extends AnyObject, Source extends AnyObject>(
+	target: Target,
+	source: Source
+): Target & Source {
+	for (const key in source) {
+		if (isObject(source[key])) {
+			if (!target[key]) {
+				(target as AnyObject)[key] = {};
+			}
+
+			if (isObject(target[key])) {
+				merge(target[key] as AnyObject, source[key] as AnyObject);
+			} else {
+				(target as AnyObject)[key] = source[key];
+			}
+		} else {
+			(target as AnyObject)[key] = source[key];
+		}
+	}
+
+	return target as Target & Source;
+}
 
 export function TacoTranslate(
 	properties: TranslationContextProperties & {
@@ -299,44 +347,86 @@ export function TacoTranslate(
 				if (!isLoading && client && localeOrParentLocale) {
 					setIsLoading(true);
 
-					const currentEntryKeys = new Set<string>();
-					const currentEntries: Entry[] = [];
+					const entryGroups = [
+						{
+							origin: currentOrigin,
+							locale: localeOrParentLocale,
+							entries: [] as Entry[],
+							keys: new Set<string>(),
+						},
+					];
 
 					for (const entry of entries) {
 						const entryKey = getEntryKey(entry);
+						const entryOrigin = entry.o ?? currentOrigin;
+						const entryLocale = entry.l ?? localeOrParentLocale;
 
-						if (!currentEntryKeys.has(entryKey)) {
-							currentEntryKeys.add(entryKey);
-							currentEntries.push(entry);
+						let entryGroup = entryGroups.find(
+							(group) =>
+								group.origin === entryOrigin && group.locale === entryLocale
+						);
+
+						if (!entryGroup) {
+							const length = entryGroups.push({
+								origin: entryOrigin,
+								locale: entryLocale,
+								entries: [],
+								keys: new Set(),
+							});
+
+							entryGroup = entryGroups[length - 1];
+						}
+
+						if (!entryGroup.keys.has(entryKey)) {
+							entryGroup.keys.add(entryKey);
+							entryGroup.entries.push({i: entry.i, s: entry.s});
 						}
 					}
 
 					setEntries((previousEntries) =>
 						previousEntries.filter(
-							(entry) => !currentEntryKeys.has(getEntryKey(entry))
+							(entry) =>
+								!entryGroups.some(
+									(group) =>
+										(entry.o ?? currentOrigin) === group.origin &&
+										(entry.l ?? localeOrParentLocale) === group.locale &&
+										group.keys.has(getEntryKey(entry))
+								)
 						)
 					);
 
-					client
-						.getTranslations({
-							locale: localeOrParentLocale,
-							entries: currentEntries,
-							origin: currentOrigin,
-							throwOnError: true,
-						})
-						.then((translations) => {
-							setLocalizations((previousLocalizations) => ({
-								...previousLocalizations,
-								[currentOrigin]: {
-									...previousLocalizations?.[currentOrigin],
-									[localeOrParentLocale]: {
-										...previousLocalizations?.[currentOrigin]?.[
-											localeOrParentLocale
-										],
-										...translations,
-									},
-								},
-							}));
+					const promises: Array<Promise<void>> = [];
+					const results: Localizations = {};
+
+					for (const group of entryGroups) {
+						promises.push(
+							client
+								.getTranslations({
+									origin: group.origin,
+									locale: group.locale,
+									entries: group.entries,
+									throwOnError: true,
+								})
+								.then((response) => {
+									merge(results, {
+										[group.origin]: {
+											[group.locale]: response,
+										},
+									});
+								})
+						);
+					}
+
+					Promise.all(promises)
+						.then(() => {
+							setLocalizations((previousLocalizations) => {
+								const updatedLocalizations = merge(
+									merge({}, previousLocalizations),
+									results
+								);
+
+								return updatedLocalizations;
+							});
 
 							setCurrentLocale(localeOrParentLocale);
 							setIsLoading(false);
@@ -366,35 +456,33 @@ export function TacoTranslate(
 		localeOrParentLocale,
 	]);
 
-	const patchedLocalizations = useMemo(
-		() =>
-			originOrParentOrigin && localeOrParentLocale
-				? {
-						...localizations,
-						...inputLocalizations,
-						[originOrParentOrigin]: {
-							...localizations?.[originOrParentOrigin],
-							...inputLocalizations?.[originOrParentOrigin],
-							[localeOrParentLocale]: {
-								...localizations?.[originOrParentOrigin]?.[
-									localeOrParentLocale
-								],
-								...inputLocalizations?.[originOrParentOrigin]?.[
-									localeOrParentLocale
-								],
-								...inputTranslations,
-							},
-						},
-				  }
-				: localizations,
-		[
-			originOrParentOrigin,
-			localeOrParentLocale,
-			localizations,
-			inputTranslations,
-			inputLocalizations,
-		]
-	);
+	const patchedLocalizations = useMemo(() => {
+		if (originOrParentOrigin && localeOrParentLocale) {
+			let result = merge({}, localizations);
+
+			if (inputLocalizations) {
+				result = merge(result, inputLocalizations);
+			}
+
+			if (inputTranslations) {
+				result = merge(result, {
+					[originOrParentOrigin]: {
+						[localeOrParentLocale]: inputTranslations,
+					},
+				});
+			}
+
+			return result;
+		}
+
+		return localizations;
+	}, [
+		originOrParentOrigin,
+		localeOrParentLocale,
+		localizations,
+		inputTranslations,
+		inputLocalizations,
+	]);
 
 	const translations = useMemo(
 		() =>

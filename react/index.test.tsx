@@ -12,7 +12,13 @@ import {
 	type ClientGetLocalizationsParameters,
 	type Localizations,
 } from '..';
-import {TacoTranslate, useTacoTranslate, useTranslation, Translate} from '.';
+import {
+	TacoTranslate,
+	useTacoTranslate,
+	useTranslation,
+	Translate,
+	merge,
+} from '.';
 
 const translations: Translations = {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -76,6 +82,19 @@ const createErrorClient = ({
 });
 
 const errorClient = createErrorClient({projectLocale: 'en'});
+
+test('merge two objects', () => {
+	expect(merge({foo: '1'}, {bar: '2'})).toStrictEqual({foo: '1', bar: '2'});
+});
+
+test('deep merge two objects', () => {
+	expect(
+		merge(
+			{foo: {no: '1'}, bar: {no: {test: '2'}}},
+			{foo: {en: '2'}, bar: {no: {test: '3'}}}
+		)
+	).toStrictEqual({foo: {no: '1', en: '2'}, bar: {no: {test: '3'}}});
+});
 
 test('renders the context', () => {
 	render(
@@ -1164,4 +1183,124 @@ test('get updated localization during first render in multiple child providers',
 	});
 
 	expect(JSON.stringify(results)).toBe('["1","2"]');
+});
+
+test('allow overriding origin on the hook level', async () => {
+	const localizations = {
+		foo: {en: {input: '1'}},
+		bar: {en: {input: '2'}},
+	};
+
+	const results: string[] = [];
+
+	await act(() => {
+		function Component() {
+			results.push(useTranslation('input', {origin: 'bar'}));
+			return <Translate string="Hello, world!" />;
+		}
+
+		return render(
+			<TacoTranslate
+				client={client}
+				localizations={localizations}
+				origin="foo"
+				locale="en"
+			>
+				<Component />
+			</TacoTranslate>
+		);
+	});
+
+	expect(results.includes('1')).toBe(false);
+	expect(results.includes('2')).toBe(true);
+});
+
+test('allow overriding origin on the component level', async () => {
+	const localizations = {
+		foo: {en: {input: '1'}},
+		bar: {en: {input: '2'}},
+	};
+
+	await act(() => {
+		function Component() {
+			return (
+				<div role="text">
+					<Translate string="input" origin="bar" />
+				</div>
+			);
+		}
+
+		return render(
+			<TacoTranslate
+				client={client}
+				localizations={localizations}
+				origin="foo"
+				locale="en"
+			>
+				<Component />
+			</TacoTranslate>
+		);
+	});
+
+	await waitFor(() => screen.getByRole('text'));
+	expect(screen.getByRole('text').textContent).toBe('2');
+});
+
+test('allow overriding locale on the hook level', async () => {
+	const localizations = {
+		foo: {en: {input: '1'}, no: {input: '2'}},
+	};
+
+	const results: string[] = [];
+
+	await act(() => {
+		function Component() {
+			results.push(useTranslation('input', {locale: 'no'}));
+			return <Translate string="Hello, world!" />;
+		}
+
+		return render(
+			<TacoTranslate
+				client={client}
+				localizations={localizations}
+				origin="foo"
+				locale="en"
+			>
+				<Component />
+			</TacoTranslate>
+		);
+	});
+
+	expect(results.includes('1')).toBe(false);
+	expect(results.includes('2')).toBe(true);
+});
+
+test('allow overriding locale on the component level', async () => {
+	const localizations = {
+		foo: {en: {input: '1'}, no: {input: '2'}},
+	};
+
+	await act(() => {
+		function Component() {
+			return (
+				<div role="text">
+					<Translate string="input" locale="no" />
+				</div>
+			);
+		}
+
+		return render(
+			<TacoTranslate
+				client={client}
+				localizations={localizations}
+				origin="foo"
+				locale="en"
+			>
+				<Component />
+			</TacoTranslate>
+		);
+	});
+
+	await waitFor(() => screen.getByRole('text'));
+	expect(screen.getByRole('text').textContent).toBe('2');
 });

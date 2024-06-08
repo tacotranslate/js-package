@@ -1,5 +1,5 @@
 export type TacoTranslateError = Error & {code?: string; type?: string};
-export type Entry = {i?: string; s: string; l?: Locale};
+export type Entry = {i?: string; s: string; o?: Origin; l?: Locale};
 export type Translations = Record<string, string>;
 
 export type VerboseEntry = {id?: string; string: string};
