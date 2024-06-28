@@ -94,15 +94,6 @@ export function useTranslation(
 	) {
 		if (typeof inputString !== 'string') {
 			throw new TypeError('<TacoTranslate> `string` must be a string.');
-		} else if (inputString.length > 1500) {
-			throw new TypeError(
-				`<TacoTranslate> \`string\` is too long at ${
-					inputString.length
-				}. Max length is 1500 characters. Please split the string across multiple <TacoTranslate> components/functions: \`${inputString.slice(
-					0,
-					100
-				)}...\``
-			);
 		}
 
 		if (id) {
@@ -132,6 +123,21 @@ export function useTranslation(
 
 		return cleanString(output);
 	}, [variables, inputString]);
+
+	if (
+		(process.env.NODE_ENV === 'development' ||
+			process.env.NODE_ENV === 'test') &&
+		string.length > 1500
+	) {
+		throw new TypeError(
+			`<TacoTranslate> \`string\` is too long at ${
+				string.length
+			}. Max length is 1500 characters. Please split the string across multiple <TacoTranslate> components/functions: \`${string.slice(
+				0,
+				100
+			)}...\``
+		);
+	}
 
 	const entry = useMemo(
 		() => ({i: id, s: string, o: originOption, l: localeOption}),
