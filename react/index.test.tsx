@@ -279,6 +279,37 @@ test('string translations should be replaced', async () => {
 	expect(screen.getByRole('text').textContent).toBe(translations[textContent]);
 });
 
+test('strings should be cleaned before rendered', async () => {
+	const textContent = `
+		<p>Hello,      {{name}}!
+	
+</p>		`;
+
+	const name = 'Pedro';
+
+	await act(() => {
+		function Component() {
+			return (
+				<div role="text">
+					<Translate string={textContent} variables={{name}} />
+				</div>
+			);
+		}
+
+		return render(
+			<TacoTranslate locale="no">
+				<Component />
+			</TacoTranslate>
+		);
+	});
+
+	await waitFor(() => screen.getByRole('text'));
+
+	expect(screen.getByRole('text').innerHTML).toBe(
+		`<span><p>Hello, ${name}! </p></span>`
+	);
+});
+
 test('string translations with variables should be replaced', async () => {
 	const textContent = 'Hello, {{name}}!';
 	const name = 'Pedro';

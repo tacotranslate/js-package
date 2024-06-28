@@ -15,6 +15,9 @@ export const getEntryKey = (entry: Entry, client?: TacoTranslateClient) =>
 		? `${entry.i}:${entry.s}`
 		: entry.s;
 
+export const cleanString = (string: string) =>
+	string.trim().replace(/\s+/g, ' ');
+
 export const patchDefaultString = (string: string) =>
 	string.replace(/\[{3}.*?]{3}/g, (match) => match.slice(3, -3));
 
@@ -259,6 +262,16 @@ async function getTranslations({
 				const attemptedUrl = `${url}&s=${encodeURIComponent(
 					JSON.stringify([...includedEntries, entry])
 				)}`;
+
+				if (
+					(process.env.NODE_ENV === 'development' ||
+						process.env.NODE_ENV === 'test') &&
+					entry.s.includes('  ')
+				) {
+					console.warn(
+						`<TacoTranslate> Detected a \`string\` with multiple spaces. This may lead to unintenional side-effects in the translation. Consider using \`cleanString()\` first: \`${entry.s}\``
+					);
+				}
 
 				if (attemptedUrl.length < maxUrlLength) {
 					includedEntries.push(entry);

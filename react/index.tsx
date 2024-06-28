@@ -23,6 +23,7 @@ import {
 	patchDefaultString,
 	isRightToLeftLocaleCode,
 	template,
+	cleanString,
 	type TemplateVariables,
 	type TacoTranslateClient,
 	type Origin,
@@ -104,12 +105,6 @@ export function useTranslation(
 			);
 		}
 
-		if (inputString.includes('  ')) {
-			console.warn(
-				`<TacoTranslate> Detected a \`string\` with multiple spaces. This may lead to unintenional side-effects in the translation: \`${inputString}\``
-			);
-		}
-
 		if (id) {
 			if (typeof id !== 'string') {
 				throw new TypeError('<TacoTranslate> `id` must be a string.');
@@ -126,14 +121,16 @@ export function useTranslation(
 	}
 
 	const string = useMemo(() => {
+		let output = inputString;
+
 		if (variables) {
-			return inputString.replace(/{{\s*[\w.]+\s*}}/g, (match) => {
+			output = inputString.replace(/{{\s*[\w.]+\s*}}/g, (match) => {
 				const identifier = match.slice(2, -2);
 				return `[[[{{${identifier}}}]]]`;
 			});
 		}
 
-		return inputString;
+		return cleanString(output);
 	}, [variables, inputString]);
 
 	const entry = useMemo(
