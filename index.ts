@@ -263,11 +263,7 @@ async function getTranslations({
 					JSON.stringify([...includedEntries, entry])
 				)}`;
 
-				if (
-					(process.env.NODE_ENV === 'development' ||
-						process.env.NODE_ENV === 'test') &&
-					entry.s.includes('  ')
-				) {
+				if (process.env.NODE_ENV === 'development' && entry.s.includes('  ')) {
 					console.warn(
 						`<TacoTranslate> Detected a \`string\` with multiple spaces. This may lead to unintenional side-effects in the translation. Consider using \`cleanString()\` first: \`${entry.s}\``
 					);
