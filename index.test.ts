@@ -1,4 +1,5 @@
-import {
+import http from 'node:http';
+import createTacoTranslateClient, {
 	type ClientGetLocalizationsParameters,
 	type ClientGetTranslationsParameters,
 	type CreateTacoTranslateClientParameters,
@@ -92,4 +93,64 @@ test('get missing translation from translateEntries with variables', async () =>
 	const t = await translateEntries(client, {origin: '*', locale: 'es'}, [text]);
 
 	expect(t(text, {name: 'Pablo'})).toEqual('missing Pablo');
+});
+
+test('equal requests should be batched', async () => {
+	const requests: Array<string | undefined> = [];
+	const instance = http.createServer((request, response) => {
+		requests.push(request.url);
+		response.writeHead(200, {'content-type': 'application/json'});
+		response.end(JSON.stringify({success: true, translations}));
+	});
+
+	const port: number = await new Promise((resolve, reject) => {
+		const server = instance.listen(0, () => {
+			const address = server.address();
+
+			if (address && typeof address === 'object') {
+				resolve(address.port);
+			}
+
+			reject(new Error('Missing port'));
+		});
+	});
+
+	const client = createTacoTranslateClient({
+		apiUrl: `http://localhost:${port}`,
+		apiKey: 'test',
+	});
+
+	const locale = 'en';
+	const origin = 'test';
+	const promises: Array<Promise<Translations>> = [
+		client.getTranslations({locale: 'no', origin, entries: [{s: 'Hello!'}]}),
+		client.getTranslations({locale, origin: 'foo', entries: [{s: 'Hello!'}]}),
+	];
+
+	for (let iteration = 0; iteration < 25; iteration += 1) {
+		promises.push(
+			client.getTranslations({locale, origin, entries: [{s: 'Hello!'}]})
+		);
+	}
+
+	await Promise.all(promises);
+	expect(requests.length).toBe(3);
+
+	expect(
+		requests.includes(
+			'/api/v1/t?a=test&l=no&o=test&s=%5B%7B%22s%22%3A%22Hello!%22%7D%5D'
+		)
+	).toBe(true);
+
+	expect(
+		requests.includes(
+			'/api/v1/t?a=test&l=en&o=foo&s=%5B%7B%22s%22%3A%22Hello!%22%7D%5D'
+		)
+	).toBe(true);
+
+	expect(
+		requests.includes(
+			'/api/v1/t?a=test&l=en&o=test&s=%5B%7B%22s%22%3A%22Hello!%22%7D%5D'
+		)
+	).toBe(true);
 });

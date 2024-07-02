@@ -231,6 +231,8 @@ type GetTranslationsResponse =
 			errors: TacoTranslateError[];
 	  };
 
+const getTranslationsQueue: Record<string, Promise<Translations>> = {};
+
 async function getTranslations({
 	apiUrl = defaultApiUrl,
 	apiKey,
@@ -292,10 +294,17 @@ async function getTranslations({
 			}
 		}
 
-		requests.push(
-			fetch(url)
+		if (url in getTranslationsQueue) {
+			requests.push(getTranslationsQueue[url]);
+		} else {
+			const promise = fetch(url)
 				.then(async (response) => response.json())
 				.then((data: GetTranslationsResponse) => {
+					if (url in getTranslationsQueue) {
+						// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+						delete getTranslationsQueue[url];
+					}
+
 					if (data.success) {
 						if (process.env.NODE_ENV === 'development' && data.errors) {
 							for (const error of data.errors) {
@@ -322,8 +331,11 @@ async function getTranslations({
 					error.code = data.error.code;
 					error.type = data.error.type;
 					throw error;
-				})
-		);
+				});
+
+			getTranslationsQueue[url] = promise;
+			requests.push(promise);
+		}
 
 		let hasTimedOut = false;
 		const timeoutInstance = setTimeout(() => {

@@ -41,6 +41,7 @@
 		"prepublishOnly": "npm run build && npm run test && npm run format:check && npm run typescript:check && npm run lint"
 	},
 	"dependencies": {
+		"isomorphic-fetch": "^3.0.0",
 		"sanitize-html": "^2.13.0"
 	},
 	"peerDependencies": {
