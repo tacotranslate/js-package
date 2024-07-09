@@ -1,5 +1,5 @@
+import http from 'node:http';
 import React, {useEffect, useState} from 'react';
-import http from 'http';
 import {render, screen, waitFor} from '@testing-library/react';
 // eslint-disable-next-line import/no-unassigned-import
 import '@testing-library/jest-dom';
