@@ -331,8 +331,7 @@ export function TacoTranslate(
 	);
 
 	const [entries, setEntries] = useState<Entry[]>([]);
-	const createEntry = useCallback((inputEntry: Entry) => {
-		const {l, ...entry} = inputEntry;
+	const createEntry = useCallback((entry: Entry) => {
 		setEntries((previousEntries) => [...previousEntries, entry]);
 	}, []);
 

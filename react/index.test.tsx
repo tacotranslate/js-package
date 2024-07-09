@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
+import http from 'http';
 import {render, screen, waitFor} from '@testing-library/react';
 // eslint-disable-next-line import/no-unassigned-import
 import '@testing-library/jest-dom';
 import {act} from 'react-dom/test-utils';
-import {
+import createTacoTranslateClient, {
 	type CreateTacoTranslateClientParameters,
 	type Translations,
 	localeCodes,
@@ -1246,6 +1247,60 @@ test('allow overriding origin on the hook level', async () => {
 	expect(results.includes('2')).toBe(true);
 });
 
+test('allow overriding origin on the hook level, and fetch translations for the origin', async () => {
+	const requests: Array<string | undefined> = [];
+	const instance = http.createServer((request, response) => {
+		requests.push(request.url);
+		response.writeHead(200, {'content-type': 'application/json'});
+		response.end(JSON.stringify({success: true, translations}));
+	});
+
+	const port: number = await new Promise((resolve, reject) => {
+		const server = instance.listen(0, () => {
+			const address = server.address();
+
+			if (address && typeof address === 'object') {
+				resolve(address.port);
+			}
+
+			reject(new Error('Missing port'));
+		});
+	});
+
+	const client = createTacoTranslateClient({
+		apiUrl: `http://localhost:${port}`,
+		apiKey: 'test',
+	});
+
+	const results: string[] = [];
+
+	await act(async () => {
+		function Component() {
+			results.push(useTranslation('input', {origin: 'bar'}));
+			return <Translate string="Hello, world!" />;
+		}
+
+		return render(
+			<TacoTranslate client={client} origin="foo" locale="en">
+				<Component />
+			</TacoTranslate>
+		);
+	});
+
+	await act(async () => {
+		return new Promise((resolve) => {
+			const interval = setInterval(() => {
+				if (requests.length > 0) {
+					resolve();
+					clearInterval(interval);
+				}
+			}, 200);
+		});
+	});
+
+	expect(requests.some((request) => request?.includes('&o=bar'))).toBe(true);
+});
+
 test('allow overriding origin on the component level', async () => {
 	const localizations = {
 		foo: {en: {input: '1'}},
@@ -1304,6 +1359,60 @@ test('allow overriding locale on the hook level', async () => {
 
 	expect(results.includes('1')).toBe(false);
 	expect(results.includes('2')).toBe(true);
+});
+
+test('allow overriding locale on the hook level, and fetch translations for the locale', async () => {
+	const requests: Array<string | undefined> = [];
+	const instance = http.createServer((request, response) => {
+		requests.push(request.url);
+		response.writeHead(200, {'content-type': 'application/json'});
+		response.end(JSON.stringify({success: true, translations}));
+	});
+
+	const port: number = await new Promise((resolve, reject) => {
+		const server = instance.listen(0, () => {
+			const address = server.address();
+
+			if (address && typeof address === 'object') {
+				resolve(address.port);
+			}
+
+			reject(new Error('Missing port'));
+		});
+	});
+
+	const client = createTacoTranslateClient({
+		apiUrl: `http://localhost:${port}`,
+		apiKey: 'test',
+	});
+
+	const results: string[] = [];
+
+	await act(async () => {
+		function Component() {
+			results.push(useTranslation('input', {locale: 'no'}));
+			return <Translate string="Hello, world!" />;
+		}
+
+		return render(
+			<TacoTranslate client={client} origin="foo" locale="en">
+				<Component />
+			</TacoTranslate>
+		);
+	});
+
+	await act(async () => {
+		return new Promise((resolve) => {
+			const interval = setInterval(() => {
+				if (requests.length > 0) {
+					resolve();
+					clearInterval(interval);
+				}
+			}, 200);
+		});
+	});
+
+	expect(requests.some((request) => request?.includes('&l=no'))).toBe(true);
 });
 
 test('allow overriding locale on the component level', async () => {
