@@ -10,9 +10,7 @@ export async function generateStaticParams() {
 	return locales.map((locale) => ({locale}));
 }
 
-type Parameters = Promise<{
-	locale: string;
-}>;
+type Parameters = Promise<{locale: string}>;
 
 export async function generateMetadata({params}: {params: Parameters}) {
 	const {locale} = await params;
