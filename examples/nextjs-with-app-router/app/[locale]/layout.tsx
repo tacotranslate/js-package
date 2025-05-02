@@ -10,15 +10,12 @@ export async function generateStaticParams() {
 	return locales.map((locale) => ({locale}));
 }
 
-type Parameters = {
+type Parameters = Promise<{
 	locale: string;
-};
+}>;
 
-export async function generateMetadata({
-	params: {locale},
-}: {
-	params: Parameters;
-}) {
+export async function generateMetadata({params}: {params: Parameters}) {
+	const {locale} = await params;
 	return customGenerateMetadata(locale);
 }
 
@@ -28,9 +25,10 @@ type RootLayoutParameters = {
 };
 
 export default async function RootLayout({
-	params: {locale},
+	params,
 	children,
 }: RootLayoutParameters) {
+	const {locale} = await params;
 	const origin = process.env.TACOTRANSLATE_ORIGIN;
 	const direction = isRightToLeftLocaleCode(locale) ? 'rtl' : 'ltr';
 	const translations = await tacoTranslate.getTranslations({locale, origin});
