@@ -1,17 +1,6 @@
 import {type NextConfig} from 'next';
 import {type TacoTranslateClient} from '..';
 
-/* eslint-disable no-unused-vars */
-declare global {
-	type ProcessEnv = {
-		TACOTRANSLATE_ENV: string;
-		TACOTRANSLATE_ORIGIN: string;
-		TACOTRANSLATE_PUBLIC_API_KEY: string;
-		TACOTRANSLATE_SECRET_API_KEY: string;
-	};
-}
-/* eslint-enable no-unused-vars */
-
 type WithTacoTranslateOptions = {
 	isProduction?: boolean;
 	client: TacoTranslateClient;
