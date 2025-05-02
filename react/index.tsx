@@ -70,7 +70,7 @@ export type TranslateComponentProperties = HTMLAttributes<HTMLSpanElement> &
 	TranslateOptions & {
 		readonly as?: keyof HTMLElementTagNameMap;
 		readonly string: string;
-		// eslint-disable-next-line react/boolean-prop-naming
+
 		readonly useDangerouslySetInnerHTML?: boolean;
 	};
 
