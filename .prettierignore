@@ -4,7 +4,13 @@ coverage
 node_modules
 index.d.ts
 index.js
-react/index.d.ts
 react/index.js
+react/index.d.ts
+next/index.js
+next/index.d.ts
+next/config.js
+next/config.d.ts
+next/link/index.js
+next/link/index.d.ts
 readme.md
 package-lock.json
