@@ -100,6 +100,7 @@ export const locales = [
 	['mr', 'Marathi'],
 	['mn', 'Mongolian'],
 	['no', 'Norwegian (Bokmål)', 'Norwegian'],
+	['nn', 'Norwegian (Nynorsk)', 'Norwegian'],
 	['ps', 'Pashto'],
 	['pl', 'Polish'],
 	['pt', 'Portuguese (Brazil)', 'Portuguese'],

@@ -122,6 +122,7 @@ TacoTranslate currently supports translation between the following 75 languages:
 | Marathi               | mr          |
 | Mongolian             | mn          |
 | Norwegian (Bokmål)    | no          |
+| Norwegian (Nynorsk)   | nn          |
 | Pashto                | ps          |
 | Polish                | pl          |
 | Portuguese (Brazil)   | pt          |
