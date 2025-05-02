@@ -8,14 +8,14 @@
 	},
 	"dependencies": {
 		"@vercel/og": "^0.6.2",
-		"next": "^14.2.3",
-		"react": "^18.3.1",
-		"react-dom": "^18.3.1",
-		"tacotranslate": "^3.0.1"
+		"next": "^15.3.1",
+		"react": "^18.3.2",
+		"react-dom": "^18.3.2",
+		"tacotranslate": "^3.2.2"
 	},
 	"devDependencies": {
 		"@types/node": "^20.12.12",
 		"@types/react": "^18.3.3",
-		"eslint-config-next": "14.2.3"
+		"eslint-config-next": "15.3.1"
 	}
 }

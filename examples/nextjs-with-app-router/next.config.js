@@ -1,24 +1,19 @@
+const withTacoTranslate = require('tacotranslate/next/config').default;
 const tacoTranslate = require('./utilities/tacotranslate');
 
 module.exports = async () => {
-	const locales = await tacoTranslate.getLocales();
-	const isProduction =
-		process.env.TACOTRANSLATE_ENV === 'production' ||
-		process.env.VERCEL_ENV === 'production' ||
-		(!(process.env.TACOTRANSLATE_ENV || process.env.VERCEL_ENV) &&
-			process.env.NODE_ENV === 'production');
+	const config = await withTacoTranslate(
+		{},
+		{
+			client: tacoTranslate,
+			isProduction:
+				process.env.TACOTRANSLATE_ENV === 'production' ||
+				process.env.VERCEL_ENV === 'production' ||
+				(!(process.env.TACOTRANSLATE_ENV || process.env.VERCEL_ENV) &&
+					process.env.NODE_ENV === 'production'),
+		}
+	);
 
-	const [projectLocale] = locales;
-
-	return {
-		env: {
-			TACOTRANSLATE_ORIGIN: process.env.TACOTRANSLATE_ORIGIN,
-			TACOTRANSLATE_API_KEY: isProduction
-				? process.env.TACOTRANSLATE_PUBLIC_API_KEY
-				: process.env.TACOTRANSLATE_SECRET_API_KEY,
-			TACOTRANSLATE_PROJECT_LOCALE: projectLocale,
-			TACOTRANSLATE_PROJECT_LOCALES: JSON.stringify(locales),
-			TACOTRANSLATE_IS_PRODUCTION: String(isProduction),
-		},
-	};
+	// NOTE: Remove i18n from config when using the app router
+	return {...config, i18n: undefined};
 };
