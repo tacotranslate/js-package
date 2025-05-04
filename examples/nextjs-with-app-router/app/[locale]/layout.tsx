@@ -26,11 +26,13 @@ export default async function RootLayout({
 }) {
 	const {locale} = await params;
 	const origin = process.env.TACOTRANSLATE_ORIGIN;
-	const direction = isRightToLeftLocaleCode(locale) ? 'rtl' : 'ltr';
-	const localizations = await tacoTranslate.getLocalizations({locale, origin});
+	const localizations = await tacoTranslate.getLocalizations({
+		locale,
+		origins: [origin /* , other origins to fetch */],
+	});
 
 	return (
-		<html lang={locale} dir={direction}>
+		<html lang={locale} dir={isRightToLeftLocaleCode(locale) ? 'rtl' : 'ltr'}>
 			<body>
 				<div id="content">
 					<TacoTranslate
