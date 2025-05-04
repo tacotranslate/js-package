@@ -3,12 +3,13 @@ import React from 'react';
 import {type Locale} from 'tacotranslate';
 import {Translate, useTacoTranslate, useTranslation} from 'tacotranslate/react';
 import {type GetStaticPropsContext} from 'next';
+import getTacoTranslateStaticProps from 'tacotranslate/next/get-static-props';
 import LocaleSelector from '../components/locale-selector';
 import Wrapper from '../components/wrapper';
-import customGetStaticProps from '../utilities/get-static-props';
+import tacoTranslate from '../utilities/tacotranslate';
 
 export async function getStaticProps(context: GetStaticPropsContext) {
-	return customGetStaticProps(context);
+	return getTacoTranslateStaticProps(context, {client: tacoTranslate});
 }
 
 const fontFamilyStyles = {fontFamily: 'sans-serif'};

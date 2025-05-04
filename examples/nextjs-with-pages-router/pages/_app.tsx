@@ -5,13 +5,6 @@ import TacoTranslate, {useTacoTranslate} from 'tacotranslate/react';
 import tacoTranslate from '../utilities/tacotranslate';
 import '../global.css';
 
-type PageProperties = {
-	origin: string;
-	locale: Locale;
-	locales: Locale[];
-	localizations: Localizations;
-};
-
 function Page({children}: {children: ReactElement}) {
 	const {isRightToLeft} = useTacoTranslate();
 
@@ -22,7 +15,15 @@ function Page({children}: {children: ReactElement}) {
 	return children;
 }
 
-export default function App({Component, pageProps}: AppProps<PageProperties>) {
+export default function App({
+	Component,
+	pageProps,
+}: AppProps<{
+	origin: string;
+	locale: Locale;
+	locales: Locale[];
+	localizations: Localizations;
+}>) {
 	const {origin, locale, localizations} = pageProps;
 
 	return (
