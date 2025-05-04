@@ -1,5 +1,5 @@
 import {type GetServerSidePropsContext} from 'next';
-import {type TacoTranslateClient, type Origin} from "..";
+import {type TacoTranslateClient, type Origin} from '..';
 
 export default async function getTacoTranslateServerSideProps<Type>(
 	{
