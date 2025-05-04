@@ -12,6 +12,7 @@ import createTacoTranslateClient, {
 	type Entry,
 	type ClientGetLocalizationsParameters,
 	type Localizations,
+	type Origin,
 } from '..';
 import {
 	TacoTranslate,
@@ -43,6 +44,8 @@ const createClient = ({
 	CreateTacoTranslateClientParameters,
 	'projectLocale' | 'isEnabled'
 >) => ({
+	origins: [] as Origin[],
+	entries: [] as Entry[],
 	getTranslations: async ({locale}: ClientGetTranslationsParameters) =>
 		isEnabled && locale !== projectLocale ? getTranslations() : {},
 	getLocalizations: async ({locale}: ClientGetLocalizationsParameters) =>
@@ -59,6 +62,8 @@ const createErrorClient = ({
 	CreateTacoTranslateClientParameters,
 	'projectLocale' | 'isEnabled'
 >) => ({
+	origins: [] as Origin[],
+	entries: [] as Entry[],
 	async getTranslations({locale}: ClientGetTranslationsParameters) {
 		if (isEnabled && locale !== projectLocale) {
 			throw new Error('Some error');
