@@ -479,6 +479,8 @@ const createTacoTranslateClient = ({
 	projectLocale,
 	isEnabled = true,
 }: CreateTacoTranslateClientParameters) => ({
+	origins: [] as Origin[],
+	entries: [] as Entry[],
 	getTranslations: async ({
 		locale,
 		entries,
