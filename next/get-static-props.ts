@@ -1,5 +1,5 @@
 import {type GetStaticPropsContext} from 'next';
-import {type TacoTranslateClient, type Origin} from '../';
+import {type TacoTranslateClient, type Origin} from '..';
 
 export default async function getTacoTranslateStaticProps<Type>(
 	{
@@ -26,7 +26,7 @@ export default async function getTacoTranslateStaticProps<Type>(
 			locales,
 			localizations,
 			origin,
-			...(staticProps?.props ?? {}),
+			...staticProps?.props,
 		},
 	};
 }
