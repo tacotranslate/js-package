@@ -7,6 +7,7 @@
 		"./next/index.ts",
 		"./next/config.ts",
 		"./next/get-static-props.ts",
+		"./next/get-server-side-props.ts",
 		"./next/link/index.tsx"
 	]
 }

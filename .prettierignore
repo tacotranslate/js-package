@@ -12,6 +12,8 @@ next/config.js
 next/config.d.ts
 next/get-static-props.js
 next/get-static-props.d.ts
+next/get-server-side-props.ts
+next/get-server-side-props.d.ts
 next/link/index.js
 next/link/index.d.ts
 readme.md
