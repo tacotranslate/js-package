@@ -115,6 +115,8 @@ test('missing translations should be fetched', async () => {
 
 	await act(async () => {
 		const createClient = () => ({
+			origins: [] as Origin[],
+			entries: [] as Entry[],
 			async getTranslations({entries}: ClientGetTranslationsParameters) {
 				if (entries) {
 					fetchedEntries.push(...entries);
@@ -158,6 +160,8 @@ test('present translations should not be fetched', async () => {
 
 	await act(async () => {
 		const createClient = () => ({
+			origins: [] as Origin[],
+			entries: [] as Entry[],
 			async getTranslations({entries}: ClientGetTranslationsParameters) {
 				if (entries) {
 					fetchedEntries.push(...entries);
@@ -202,6 +206,8 @@ test('get translations using a custom translation key', async () => {
 
 	await act(async () => {
 		const createClient = () => ({
+			origins: [] as Origin[],
+			entries: [] as Entry[],
 			async getTranslations({entries}: ClientGetTranslationsParameters) {
 				if (entries) {
 					fetchedEntries.push(...entries);
