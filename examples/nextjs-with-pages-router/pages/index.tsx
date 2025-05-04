@@ -7,18 +7,17 @@ import getTacoTranslateStaticProps from 'tacotranslate/next/get-static-props';
 import LocaleSelector from '../components/locale-selector';
 import Wrapper from '../components/wrapper';
 import tacoTranslate from '../utilities/tacotranslate';
+import Body from '../components/body';
 
 export async function getStaticProps(context: GetStaticPropsContext) {
 	return getTacoTranslateStaticProps(context, {client: tacoTranslate});
 }
 
-const fontFamilyStyles = {fontFamily: 'sans-serif'};
-
-type PageProperties = {
+export default function Page({
+	locales: supportedLocales,
+}: {
 	readonly locales: Locale[];
-};
-
-export default function Page({locales: supportedLocales}: PageProperties) {
+}) {
 	const {locale, language} = useTacoTranslate();
 	const opengraphImageUrl = `/api/opengraph?locale=${locale ?? ''}`;
 
@@ -59,28 +58,18 @@ export default function Page({locales: supportedLocales}: PageProperties) {
 
 			<LocaleSelector initialLocale={locale} options={supportedLocales} />
 
-			<h1 style={fontFamilyStyles}>
+			<h1>
 				<Translate string="Example of Next.js with [[[Pages Router]]] and TacoTranslate" />
 			</h1>
 
-			<h2 style={fontFamilyStyles}>
+			<h2>
 				<Translate
 					string="Current language: {{variable}}"
 					variables={{variable: language ?? ''}}
 				/>
 			</h2>
 
-			<p
-				style={{
-					...fontFamilyStyles,
-					fontSize: 18,
-					lineHeight: 1.7,
-				}}
-			>
-				<Translate
-					string={`TacoTranslate is a service that automatically translates your React application to any language. Say [[[<span lang="es">adiós</span>]]] to JSON files, and <a href="https://tacotranslate.com">set up your free TacoTranslate account</a> today!<br><br>Out of the box, you’ll be able to translate into <strong>one language for free</strong>.<br><a href="https://tacotranslate.com">Sign up now, [[[<span lang="es">amigo</span>]]]!</a><br><br><strong>Oh, and did you know</strong> that if you share this page you’ll see an OpenGraph image translated into the current language, too!`}
-				/>
-			</p>
+			<Body />
 		</Wrapper>
 	);
 }
