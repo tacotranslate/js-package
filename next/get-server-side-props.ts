@@ -14,7 +14,7 @@ export default async function getTacoTranslateServerSideProps<Type>(
 	const origin = process.env.TACOTRANSLATE_ORIGIN;
 	const localizations = await options.client.getLocalizations({
 		locale,
-		origins: [origin, ...(options.origins ?? [])],
+		origins: [...options.client.origins, origin, ...(options.origins ?? [])],
 	});
 
 	return {
