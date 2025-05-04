@@ -13,6 +13,7 @@ react/index.tsx
 react/index.test.tsx
 next/index.ts
 next/config.ts
+next/get-static-props.ts
 next/link/index.tsx
 tsconfig.json
 tsconfig.build.json

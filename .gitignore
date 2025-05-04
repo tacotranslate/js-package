@@ -8,3 +8,5 @@ react/index.js
 react/index.d.ts
 next/config.js
 next/config.d.ts
+next/get-static-props.js
+next/get-static-props.d.ts

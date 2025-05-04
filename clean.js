@@ -12,7 +12,9 @@ for (const file of config.include) {
 
 	promises.push(
 		fs.unlink(typeFile).catch((error) => {
-			console.error(error);
+			if (error.code !== 'ENOENT') {
+				console.error(error);
+			}
 		})
 	);
 }

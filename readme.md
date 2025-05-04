@@ -68,7 +68,7 @@ If you’re using Jest, you might get an error stating `ReferenceError: TextEnco
 
 ### Supported languages
 
-TacoTranslate currently supports translation between the following 75 languages:
+TacoTranslate currently supports translation between the following 76 languages:
 
 | Language              | Locale code |
 | --------------------- | ----------- |

@@ -5,7 +5,7 @@ To learn how to implement TacoTranslate into your own application, please refer 
 ## Features
 
 - Uses the Next.js Pages Router
-- Automatic cutting-edge AI powered translation to 75 languages
+- Automatic cutting-edge AI powered translation to 76 languages
 - Server side rendered pages and translations
 - Locale selector with automatic client-side translation fetching
 - Dynamic OpenGraph image per page with automatic translations
