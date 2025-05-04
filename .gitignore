@@ -10,3 +10,5 @@ next/config.js
 next/config.d.ts
 next/get-static-props.js
 next/get-static-props.d.ts
+next/get-server-side-props.js
+next/get-server-side-props.d.ts
