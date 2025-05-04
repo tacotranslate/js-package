@@ -10,6 +10,8 @@ next/index.js
 next/index.d.ts
 next/config.js
 next/config.d.ts
+next/get-static-props.js
+next/get-static-props.d.ts
 next/link/index.js
 next/link/index.d.ts
 readme.md
