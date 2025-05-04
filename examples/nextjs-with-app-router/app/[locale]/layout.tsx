@@ -1,8 +1,8 @@
 import React, {type ReactNode} from 'react';
 import {isRightToLeftLocaleCode} from 'tacotranslate';
 import './global.css';
+import TacoTranslate from './tacotranslate';
 import tacoTranslate from '@/utilities/tacotranslate';
-import TacoTranslate from '@/components/tacotranslate';
 import {customGenerateMetadata} from '@/utilities/generate-metadata';
 
 export async function generateStaticParams() {
@@ -17,30 +17,30 @@ export async function generateMetadata({params}: {params: Parameters}) {
 	return customGenerateMetadata(locale);
 }
 
-type RootLayoutParameters = {
-	readonly params: Parameters;
-	readonly children: ReactNode;
-};
-
 export default async function RootLayout({
 	params,
 	children,
-}: RootLayoutParameters) {
+}: {
+	readonly params: Parameters;
+	readonly children: ReactNode;
+}) {
 	const {locale} = await params;
 	const origin = process.env.TACOTRANSLATE_ORIGIN;
 	const direction = isRightToLeftLocaleCode(locale) ? 'rtl' : 'ltr';
-	const translations = await tacoTranslate.getTranslations({locale, origin});
+	const localizations = await tacoTranslate.getLocalizations({locale, origin});
 
 	return (
 		<html lang={locale} dir={direction}>
 			<body>
-				<TacoTranslate
-					locale={locale}
-					origin={origin}
-					translations={translations}
-				>
-					<div id="content">{children}</div>
-				</TacoTranslate>
+				<div id="content">
+					<TacoTranslate
+						locale={locale}
+						origin={origin}
+						localizations={localizations}
+					>
+						{children}
+					</TacoTranslate>
+				</div>
 			</body>
 		</html>
 	);

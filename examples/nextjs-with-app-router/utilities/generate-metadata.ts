@@ -41,7 +41,7 @@ export async function customGenerateMetadata(
 			locale,
 			images: [
 				{
-					url: `/api/opengraph?locale=${locale}`,
+					url: `/opengraph?locale=${locale}`,
 					width: 1200,
 					height: 600,
 				},

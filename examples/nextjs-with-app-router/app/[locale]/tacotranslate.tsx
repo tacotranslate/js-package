@@ -10,7 +10,7 @@ import tacoTranslate from '@/utilities/tacotranslate';
 export default function TacoTranslate({
 	locale,
 	origin,
-	translations,
+	localizations,
 	children,
 }: TranslationContextProperties & {
 	readonly children: ReactNode;
@@ -20,7 +20,7 @@ export default function TacoTranslate({
 			client={tacoTranslate}
 			locale={locale}
 			origin={origin}
-			translations={translations}
+			localizations={localizations}
 		>
 			{children}
 		</ImportedTacoTranslate>

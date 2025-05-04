@@ -5,10 +5,6 @@ import {Translate, useTacoTranslate} from 'tacotranslate/react';
 import Link from 'tacotranslate/next/link';
 import LocaleSelector from '@/components/locale-selector';
 
-const fontFamilyStyles = {
-	fontFamily: 'sans-serif',
-};
-
 export default function Page() {
 	const {locale = '', language} = useTacoTranslate();
 	const opengraphImageUrl = `/api/opengraph?locale=${locale}`;
@@ -36,11 +32,11 @@ export default function Page() {
 				</Link>
 			</div>
 
-			<h1 style={fontFamilyStyles}>
+			<h1>
 				<Translate string="Example of Next.js with App Router and TacoTranslate" />
 			</h1>
 
-			<h2 style={fontFamilyStyles}>
+			<h2>
 				<Translate
 					string="Current language: {{variable}}"
 					variables={{variable: language ?? ''}}
@@ -49,7 +45,6 @@ export default function Page() {
 
 			<p
 				style={{
-					...fontFamilyStyles,
 					fontSize: 18,
 					lineHeight: 1.7,
 				}}
