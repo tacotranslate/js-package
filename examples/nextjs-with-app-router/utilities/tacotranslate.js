@@ -1,6 +1,6 @@
 const {default: createTacoTranslateClient} = require('tacotranslate');
 
-const tacoTranslate = createTacoTranslateClient({
+const tacoTranslateClient = createTacoTranslateClient({
 	apiKey:
 		process.env.TACOTRANSLATE_SECRET_API_KEY ??
 		process.env.TACOTRANSLATE_PUBLIC_API_KEY ??
@@ -14,4 +14,4 @@ const tacoTranslate = createTacoTranslateClient({
 			: undefined,
 });
 
-module.exports = tacoTranslate;
+module.exports = tacoTranslateClient;

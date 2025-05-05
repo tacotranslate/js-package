@@ -1,9 +1,9 @@
 import React from 'react';
 import TacoTranslate, {Translate} from 'tacotranslate/react';
-import tacoTranslate from '../utilities/tacotranslate';
+import tacoTranslateClient from '../utilities/tacotranslate';
 
 const origin = 'body';
-tacoTranslate.origins.push(origin);
+tacoTranslateClient.origins.push(origin);
 
 export default function Body() {
 	return (

@@ -6,7 +6,7 @@ import {
 	translateEntries,
 } from 'tacotranslate';
 import {type NextRequest} from 'next/server';
-import tacoTranslate from '@/utilities/tacotranslate';
+import tacoTranslateClient from '@/utilities/tacotranslate';
 
 export const runtime = 'edge';
 
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
 	});
 
 	const translations = await translateEntries(
-		tacoTranslate,
+		tacoTranslateClient,
 		{origin: 'opengraph', locale},
 		[title, description]
 	);

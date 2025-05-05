@@ -2,7 +2,7 @@ import React, {type ReactElement, useEffect} from 'react';
 import {type AppProps} from 'next/app';
 import {type Localizations, type Locale} from 'tacotranslate';
 import TacoTranslate, {useTacoTranslate} from 'tacotranslate/react';
-import tacoTranslate from '../utilities/tacotranslate';
+import tacoTranslateClient from '../utilities/tacotranslate';
 import '../global.css';
 
 function Page({children}: {children: ReactElement}) {
@@ -28,7 +28,7 @@ export default function App({
 
 	return (
 		<TacoTranslate
-			client={tacoTranslate}
+			client={tacoTranslateClient}
 			origin={origin}
 			locale={locale}
 			localizations={localizations}

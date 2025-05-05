@@ -6,7 +6,7 @@ import {
 	isRightToLeftLocaleCode,
 	translateEntries,
 } from 'tacotranslate';
-import tacoTranslate from '../../utilities/tacotranslate';
+import tacoTranslateClient from '../../utilities/tacotranslate';
 
 export const config = {
 	runtime: 'edge',
@@ -33,7 +33,7 @@ export default async function handler(request: NextRequest) {
 	});
 
 	const translations = await translateEntries(
-		tacoTranslate,
+		tacoTranslateClient,
 		{origin: 'opengraph', locale},
 		[title, description]
 	);

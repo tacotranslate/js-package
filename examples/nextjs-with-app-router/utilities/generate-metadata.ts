@@ -1,5 +1,5 @@
 import {type Locale, createEntry, translateEntries} from 'tacotranslate';
-import tacoTranslate from './tacotranslate';
+import tacoTranslateClient from './tacotranslate';
 
 type GenerateMetadataOptions = {
 	title?: string;
@@ -27,7 +27,7 @@ export async function customGenerateMetadata(
 	});
 
 	const translations = await translateEntries(
-		tacoTranslate,
+		tacoTranslateClient,
 		{origin: process.env.TACOTRANSLATE_ORIGIN, locale},
 		[title, description]
 	);

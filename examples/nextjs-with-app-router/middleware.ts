@@ -1,6 +1,6 @@
 import {type NextRequest} from 'next/server';
 import {middleware as tacoTranslateMiddleware} from 'tacotranslate/next';
-import tacoTranslate from '@/utilities/tacotranslate';
+import tacoTranslateClient from '@/utilities/tacotranslate';
 
 export const config = {
 	matcher: [
@@ -9,5 +9,5 @@ export const config = {
 };
 
 export async function middleware(request: NextRequest) {
-	return tacoTranslateMiddleware(tacoTranslate, request);
+	return tacoTranslateMiddleware(tacoTranslateClient, request);
 }

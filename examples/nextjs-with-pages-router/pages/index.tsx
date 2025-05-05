@@ -6,11 +6,11 @@ import {type GetStaticPropsContext} from 'next';
 import getTacoTranslateStaticProps from 'tacotranslate/next/get-static-props';
 import LocaleSelector from '../components/locale-selector';
 import Wrapper from '../components/wrapper';
-import tacoTranslate from '../utilities/tacotranslate';
+import tacoTranslateClient from '../utilities/tacotranslate';
 import Body from '../components/body';
 
 export async function getStaticProps(context: GetStaticPropsContext) {
-	return getTacoTranslateStaticProps(context, {client: tacoTranslate});
+	return getTacoTranslateStaticProps(context, {client: tacoTranslateClient});
 }
 
 export default function Page({

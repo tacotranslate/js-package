@@ -1,11 +1,11 @@
 const withTacoTranslate = require('tacotranslate/next/config').default;
-const tacoTranslate = require('./utilities/tacotranslate');
+const tacoTranslateClient = require('./utilities/tacotranslate');
 
 module.exports = async () => {
 	const config = await withTacoTranslate(
 		{},
 		{
-			client: tacoTranslate,
+			client: tacoTranslateClient,
 			isProduction:
 				process.env.TACOTRANSLATE_ENV === 'production' ||
 				process.env.VERCEL_ENV === 'production' ||

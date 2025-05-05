@@ -2,11 +2,11 @@ import React, {type ReactNode} from 'react';
 import {isRightToLeftLocaleCode} from 'tacotranslate';
 import './global.css';
 import TacoTranslate from './tacotranslate';
-import tacoTranslate from '@/utilities/tacotranslate';
+import tacoTranslateClient from '@/utilities/tacotranslate';
 import {customGenerateMetadata} from '@/utilities/generate-metadata';
 
 export async function generateStaticParams() {
-	const locales = await tacoTranslate.getLocales();
+	const locales = await tacoTranslateClient.getLocales();
 	return locales.map((locale) => ({locale}));
 }
 
@@ -26,7 +26,7 @@ export default async function RootLayout({
 }) {
 	const {locale} = await params;
 	const origin = process.env.TACOTRANSLATE_ORIGIN;
-	const localizations = await tacoTranslate.getLocalizations({
+	const localizations = await tacoTranslateClient.getLocalizations({
 		locale,
 		origins: [origin /* , other origins to fetch */],
 	});

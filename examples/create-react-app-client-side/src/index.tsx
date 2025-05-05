@@ -4,7 +4,7 @@ import createTacoTranslateClient from 'tacotranslate';
 import TacoTranslate from 'tacotranslate/react';
 import Page from './pages';
 
-const tacoTranslate = createTacoTranslateClient({
+const tacoTranslateClient = createTacoTranslateClient({
 	apiKey:
 		process.env.REACT_APP_TACOTRANSLATE_SECRET_API_KEY ??
 		process.env.REACT_APP_TACOTRANSLATE_PUBLIC_API_KEY ??
@@ -27,7 +27,7 @@ function App() {
 	const [supportedLocales, setSupportedLocales] = useState([locale]);
 
 	useEffect(() => {
-		void tacoTranslate.getLocales().then((locales) => {
+		void tacoTranslateClient.getLocales().then((locales) => {
 			setSupportedLocales(locales);
 			setIsLoading(false);
 		});
@@ -35,7 +35,7 @@ function App() {
 
 	return (
 		<TacoTranslate
-			client={tacoTranslate}
+			client={tacoTranslateClient}
 			locale={locale}
 			origin={process.env.REACT_APP_TACOTRANSLATE_ORIGIN}
 		>
