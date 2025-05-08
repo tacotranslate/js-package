@@ -19,7 +19,12 @@ export default function Page() {
 					alt=""
 					width={1200}
 					height={600}
-					style={{width: '100%', height: 'auto', border: 0}}
+					style={{
+						width: '100%',
+						height: 'auto',
+						border: 0,
+						aspectRatio: '1200 / 600',
+					}}
 				/>
 			</a>
 

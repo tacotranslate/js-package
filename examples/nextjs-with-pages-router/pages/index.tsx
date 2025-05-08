@@ -52,6 +52,7 @@ export default function Page({
 						height: 'auto',
 						marginBottom: '2em',
 						border: 0,
+						aspectRatio: '1200 / 600',
 					}}
 				/>
 			</a>
