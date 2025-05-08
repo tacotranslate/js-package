@@ -1,0 +1,36 @@
+import React from 'react';
+import Head from 'next/head';
+import {useRouter} from 'next/router';
+import {type Locale} from '..';
+
+export default function TacoTranslateHead({
+	rootUrl = '',
+	locales,
+	hasTrailingSlash = false,
+}: {
+	readonly rootUrl?: string;
+	readonly locales: Locale[];
+	readonly hasTrailingSlash?: boolean;
+}) {
+	const {asPath} = useRouter();
+	const currentPath = asPath === '/' ? (hasTrailingSlash ? '/' : '') : asPath;
+
+	return (
+		<Head>
+			{locales.map((locale) => (
+				<link
+					key={locale}
+					rel="alternate"
+					hrefLang={locale}
+					href={`${rootUrl}/${locale}${currentPath}`}
+				/>
+			))}
+
+			<link
+				rel="alternate"
+				hrefLang="x-default"
+				href={`${rootUrl}${currentPath}`}
+			/>
+		</Head>
+	);
+}

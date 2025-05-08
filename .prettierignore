@@ -10,13 +10,15 @@ next/index.js
 next/index.d.ts
 next/config.js
 next/config.d.ts
+next/link.js
+next/link.d.ts
+next/head.js
+next/head.d.ts
 next/translate.js
 next/translate.d.ts
 next/get-static-props.js
 next/get-static-props.d.ts
 next/get-server-side-props.js
 next/get-server-side-props.d.ts
-next/link/index.js
-next/link/index.d.ts
 readme.md
 package-lock.json

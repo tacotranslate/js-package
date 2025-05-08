@@ -2,7 +2,7 @@
 
 import NextLink, {type LinkProps} from 'next/link';
 import React, {type ForwardedRef, forwardRef, type ComponentProps} from 'react';
-import {useLocale} from '../../react';
+import {useLocale} from '../react';
 
 function getHref(href: string | LinkProps['href']) {
 	return (typeof href === 'string' ? href : href.pathname) ?? '';
