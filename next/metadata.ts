@@ -77,15 +77,10 @@ export default async function generateTacoTranslateMetadata(
 	Object.assign(result, metadataResult);
 
 	if (options?.canonical) {
-		const currentPath =
-			options?.canonical === '/'
-				? options?.hasTrailingSlash
-					? '/'
-					: ''
-				: options?.canonical;
+		const canonical = options?.canonical;
 
 		result.alternates = {
-			canonical: currentPath,
+			canonical,
 			...metadataResult.alternates,
 		};
 
@@ -94,7 +89,10 @@ export default async function generateTacoTranslateMetadata(
 		let isProjectLocale = true;
 
 		for (const locale of locales) {
-			languages[locale] = isProjectLocale ? currentPath : locale + currentPath;
+			languages[locale] = isProjectLocale
+				? canonical
+				: `/${locale + (canonical === '/' ? '' : canonical)}`;
+
 			isProjectLocale = false;
 		}
 
