@@ -7,7 +7,6 @@ import LocaleSelector from '@/components/locale-selector';
 
 export default function Page() {
 	const {locale = '', language} = useTacoTranslate();
-	const opengraphImageUrl = `/api/opengraph?locale=${locale}`;
 
 	return (
 		<>
@@ -16,7 +15,7 @@ export default function Page() {
 				style={{display: 'inline-block', marginBottom: '2em'}}
 			>
 				<img
-					src={opengraphImageUrl}
+					src={`/opengraph?locale=${locale}`}
 					alt=""
 					width={1200}
 					height={600}
