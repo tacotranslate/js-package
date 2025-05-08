@@ -2,6 +2,7 @@ import React, {type ReactElement, useEffect} from 'react';
 import {type AppProps} from 'next/app';
 import {type Localizations, type Locale} from 'tacotranslate';
 import TacoTranslate, {useTacoTranslate} from 'tacotranslate/react';
+import TacoTranslateHead from 'tacotranslate/next/head';
 import tacoTranslateClient from '../utilities/tacotranslate';
 import '../global.css';
 
@@ -24,7 +25,7 @@ export default function App({
 	locales: Locale[];
 	localizations: Localizations;
 }>) {
-	const {origin, locale, localizations} = pageProps;
+	const {origin, locale, locales, localizations} = pageProps;
 
 	return (
 		<TacoTranslate
@@ -33,6 +34,11 @@ export default function App({
 			locale={locale}
 			localizations={localizations}
 		>
+			<TacoTranslateHead
+				rootUrl="https://nextjs-pages-router-demo.tacotranslate.com"
+				locales={locales}
+			/>
+
 			<Page>
 				<Component {...pageProps} />
 			</Page>
