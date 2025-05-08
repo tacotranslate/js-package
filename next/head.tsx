@@ -19,7 +19,7 @@ export default function TacoTranslateHead({
 
 	return (
 		<Head>
-			{locales.map((locale, index) => (
+			{locales?.map((locale, index) => (
 				<link
 					key={locale}
 					rel="alternate"
