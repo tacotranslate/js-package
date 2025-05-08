@@ -7,10 +7,12 @@ export default function TacoTranslateHead({
 	rootUrl = '',
 	locales,
 	hasTrailingSlash = false,
+	hasCanonical = true,
 }: {
 	readonly rootUrl?: string;
 	readonly locales: Locale[];
 	readonly hasTrailingSlash?: boolean;
+	readonly hasCanonical?: boolean;
 }) {
 	const {asPath} = useRouter();
 	const currentPath = asPath === '/' ? (hasTrailingSlash ? '/' : '') : asPath;
@@ -31,6 +33,10 @@ export default function TacoTranslateHead({
 				hrefLang="x-default"
 				href={`${rootUrl}${currentPath}`}
 			/>
+
+			{hasCanonical ? (
+				<link rel="canonical" href={`${rootUrl}${currentPath}`} />
+			) : null}
 		</Head>
 	);
 }
