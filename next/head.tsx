@@ -19,23 +19,23 @@ export default function TacoTranslateHead({
 
 	return (
 		<Head>
-			{locales.map((locale) => (
+			{locales.map((locale, index) => (
 				<link
 					key={locale}
 					rel="alternate"
 					hrefLang={locale}
-					href={`${rootUrl}/${locale}${currentPath}`}
+					href={
+						index === 0
+							? rootUrl + currentPath
+							: `${rootUrl}/${locale + currentPath}`
+					}
 				/>
 			))}
 
-			<link
-				rel="alternate"
-				hrefLang="x-default"
-				href={`${rootUrl}${currentPath}`}
-			/>
+			<link rel="alternate" hrefLang="x-default" href={rootUrl + currentPath} />
 
 			{hasCanonical ? (
-				<link rel="canonical" href={`${rootUrl}${currentPath}`} />
+				<link rel="canonical" href={rootUrl + currentPath} />
 			) : null}
 		</Head>
 	);
