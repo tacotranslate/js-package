@@ -6,7 +6,7 @@ import {
 	isRightToLeftLocaleCode,
 	translateEntries,
 } from 'tacotranslate';
-import tacoTranslateClient from '../../utilities/tacotranslate';
+import tacoTranslateClient from '../../tacotranslate-client';
 
 export const config = {
 	runtime: 'edge',

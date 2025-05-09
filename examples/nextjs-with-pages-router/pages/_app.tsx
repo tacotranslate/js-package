@@ -3,7 +3,7 @@ import {type AppProps} from 'next/app';
 import {type Localizations, type Locale} from 'tacotranslate';
 import TacoTranslate, {useTacoTranslate} from 'tacotranslate/react';
 import TacoTranslateHead from 'tacotranslate/next/head';
-import tacoTranslateClient from '../utilities/tacotranslate';
+import tacoTranslateClient from '../tacotranslate-client';
 import '../global.css';
 
 function Page({children}: {children: ReactElement}) {

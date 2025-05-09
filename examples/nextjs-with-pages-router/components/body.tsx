@@ -1,6 +1,6 @@
 import React from 'react';
 import TacoTranslate, {Translate} from 'tacotranslate/react';
-import tacoTranslateClient from '../utilities/tacotranslate';
+import tacoTranslateClient from '../tacotranslate-client';
 
 const origin = 'body';
 tacoTranslateClient.origins.push(origin);

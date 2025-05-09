@@ -1,5 +1,5 @@
 const withTacoTranslate = require('tacotranslate/next/config').default;
-const tacoTranslateClient = require('./utilities/tacotranslate');
+const tacoTranslateClient = require('./tacotranslate-client');
 
 module.exports = async () => {
 	const config = {};

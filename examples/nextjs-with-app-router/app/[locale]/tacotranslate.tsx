@@ -5,7 +5,7 @@ import {
 	type TranslationContextProperties,
 	TacoTranslate as ImportedTacoTranslate,
 } from 'tacotranslate/react';
-import tacoTranslateClient from '@/utilities/tacotranslate';
+import tacoTranslateClient from '@/tacotranslate-client';
 
 export default function TacoTranslate({
 	locale,

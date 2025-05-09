@@ -3,7 +3,7 @@ import {isRightToLeftLocaleCode, type Locale} from 'tacotranslate';
 import generateTacoTranslateMetadata from 'tacotranslate/next/metadata';
 import './global.css';
 import TacoTranslate from './tacotranslate';
-import tacoTranslateClient from '@/utilities/tacotranslate';
+import tacoTranslateClient from '@/tacotranslate-client';
 
 export async function generateStaticParams() {
 	const locales = await tacoTranslateClient.getLocales();

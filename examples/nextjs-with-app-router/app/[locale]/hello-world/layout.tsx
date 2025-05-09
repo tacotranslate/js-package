@@ -1,7 +1,7 @@
 import {type Locale} from 'next/dist/compiled/@vercel/og/satori';
 import {type ReactNode} from 'react';
 import generateTacoTranslateMetadata from 'tacotranslate/next/metadata';
-import tacoTranslateClient from '@/utilities/tacotranslate';
+import tacoTranslateClient from '@/tacotranslate-client';
 
 export async function generateMetadata({
 	params,

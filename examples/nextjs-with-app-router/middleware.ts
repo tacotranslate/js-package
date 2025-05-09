@@ -1,6 +1,6 @@
 import {type NextRequest} from 'next/server';
 import {middleware as tacoTranslateMiddleware} from 'tacotranslate/next';
-import tacoTranslateClient from '@/utilities/tacotranslate';
+import tacoTranslateClient from '@/tacotranslate-client';
 
 export const config = {
 	matcher: [

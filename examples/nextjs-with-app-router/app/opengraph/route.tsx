@@ -6,7 +6,7 @@ import {
 	translateEntries,
 } from 'tacotranslate';
 import {type NextRequest} from 'next/server';
-import tacoTranslateClient from '@/utilities/tacotranslate';
+import tacoTranslateClient from '@/tacotranslate-client';
 
 export const runtime = 'edge';
 
