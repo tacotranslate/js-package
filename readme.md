@@ -2,7 +2,7 @@
 
 ![https://npmjs.com/package/tacotranslate](https://img.shields.io/npm/v/tacotranslate) ![https://github.com/tacotranslate/js-package](https://img.shields.io/github/actions/workflow/status/tacotranslate/js-package/tests.yml)
 
-Take your React application to new markets automatically with AI-powered and contextually aware translations and i18n. [Visit TacoTranslate.com](https://tacotranslate.com) for more information, and to create an account for free!
+Instant i18n for React & Next.js. Ship 76 languages in minutes with AI-powered and contextually aware translations. [Visit TacoTranslate.com](https://tacotranslate.com) for more information, and to create an account for free!
 
 The only production dependenies are React and [sanitize-html](https://www.npmjs.com/package/sanitize-html) – a module that prevents against XSS attacks within your strings.
 
