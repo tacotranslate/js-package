@@ -19,7 +19,6 @@ import {
 	type Localizations,
 	type Translations,
 	getEntryKey,
-	locales,
 	patchDefaultString,
 	isRightToLeftLocaleCode,
 	template,
@@ -27,6 +26,7 @@ import {
 	type TemplateVariables,
 	type TacoTranslateClient,
 	type Origin,
+	localeToLanguage,
 } from '..';
 
 export type TranslationContextProperties = {
@@ -279,7 +279,7 @@ export function TacoTranslate(
 	const [currentLocale, setCurrentLocale] = useState(localeOrParentLocale);
 
 	const currentLanguage: Language | undefined = useMemo(
-		() => locales.find(([localeCode]) => localeCode === currentLocale)?.[1],
+		() => (currentLocale ? localeToLanguage(currentLocale) : undefined),
 		[currentLocale]
 	);
 

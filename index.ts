@@ -128,70 +128,71 @@ export const locales = [
 	['cy', 'Welsh'],
 ];
 
+export type Locale = (typeof locales)[number][0];
+export type Language = (typeof locales)[number][1];
+
 export const localeCodes = locales.map(([code]) => code);
 export const languages = locales.map(([, language]) => language);
 export const rightToLeftLocaleCodes = ['ar', 'he', 'ps', 'fa', 'ur'];
-
-export type Locale = (typeof locales)[number][0];
-export type Language = (typeof locales)[number][1];
 
 export function isRightToLeftLocaleCode(locale: Locale) {
 	return rightToLeftLocaleCodes.includes(locale);
 }
 
 const localeToCountryCodeMap = {
-	'af': 'za',
-	'am': 'et',
-	'ar': 'sa',
-	'bn': 'bd',
-	'bs': 'ba',
-	'ca': 'es',
-	'cs': 'cz',
-	'cy': 'gb',
-	'da': 'dk',
-	'el': 'gr',
-	'en': 'us',
-	'es-mx': 'mx',
-	'et': 'ee',
-	'fa': 'ir',
-	'fa-af': 'af',
-	'fr-ca': 'ca',
-	'ga': 'ie',
-	'gu': 'in',
-	'ha': 'ng',
-	'he': 'il',
-	'hi': 'in',
-	'hy': 'am',
-	'ja': 'jp',
-	'ka': 'ge',
-	'kk': 'kz',
-	'kn': 'in',
-	'ko': 'kr',
-	'lt': 'lt',
-	'ml': 'in',
-	'mr': 'in',
-	'ms': 'my',
-	'pa': 'in',
-	'ps': 'af',
-	'pt': 'br',
-	'pt-pt': 'pt',
-	'si': 'lk',
-	'sl': 'si',
-	'sq': 'al',
-	'sr': 'rs',
-	'sv': 'se',
-	'sw': 'ke',
-	'ta': 'in',
-	'te': 'in',
-	'th': 'th',
-	'tr': 'tr',
-	'tl': 'ph',
-	'uk': 'ua',
-	'ur': 'pk',
-	'uz': 'uz',
-	'vi': 'vn',
-	'zh': 'cn',
-	'zh-tw': 'tw',
+	'af': 'za', // Afrikaans -> South Africa
+	'am': 'et', // Amharic -> Ethiopia
+	'ar': 'sa', // Arabic -> Saudi Arabia
+	'bn': 'bd', // Bengali -> Bangladesh
+	'bs': 'ba', // Bosnian -> Bosnia and Herzegovina
+	'ca': 'es', // Catalan -> Spain
+	'cs': 'cz', // Czech -> Czech Republic
+	'cy': 'gb', // Welsh -> United Kingdom
+	'da': 'dk', // Danish -> Denmark
+	'el': 'gr', // Greek -> Greece
+	'en': 'us', // English -> United States
+	'es-mx': 'mx', // Spanish (Mexico) -> Mexico
+	'et': 'ee', // Estonian -> Estonia
+	'fa': 'ir', // Farsi (Persian) -> Iran
+	'fa-af': 'af', // Dari -> Afghanistan
+	'fr-ca': 'ca', // French (Canada) -> Canada
+	'ga': 'ie', // Irish -> Ireland
+	'gu': 'in', // Gujarati -> India
+	'ha': 'ng', // Hausa -> Nigeria
+	'he': 'il', // Hebrew -> Israel
+	'hi': 'in', // Hindi -> India
+	'hy': 'am', // Armenian -> Armenia
+	'ja': 'jp', // Japanese -> Japan
+	'ka': 'ge', // Georgian -> Georgia
+	'kk': 'kz', // Kazakh -> Kazakhstan
+	'kn': 'in', // Kannada -> India
+	'ko': 'kr', // Korean -> Korea
+	'lt': 'lt', // Lithuanian -> Lithuania
+	'ml': 'in', // Malayalam -> India
+	'mr': 'in', // Marathi -> India
+	'ms': 'my', // Malay -> Malaysia
+	'nn': 'no', // Norwegian (Nynorsk) -> Norway
+	'pa': 'in', // Punjabi -> India
+	'ps': 'af', // Pashto -> Afghanistan
+	'pt': 'br', // Portuguese (Brazil) -> Brazil
+	'pt-pt': 'pt', // Portuguese (Portugal) -> Portugal
+	'si': 'lk', // Sinhala -> Sri Lanka
+	'sl': 'si', // Slovenian -> Slovenia
+	'sq': 'al', // Albanian -> Albania
+	'sr': 'rs', // Serbian -> Serbia
+	'sv': 'se', // Swedish -> Sweden
+	'sw': 'ke', // Swahili -> Kenya
+	'ta': 'in', // Tamil -> India
+	'te': 'in', // Telugu -> India
+	'th': 'th', // Thai -> Thailand
+	'tr': 'tr', // Turkish -> Turkey
+	'tl': 'ph', // Filipino (Tagalog) -> Philippines
+	'uk': 'ua', // Ukrainian -> Ukraine
+	'ur': 'pk', // Urdu -> Pakistan
+	'uz': 'uz', // Uzbek -> Uzbekistan
+	'vi': 'vn', // Vietnamese -> Vietnam
+	'zh': 'cn', // Chinese (Simplified) -> China
+	'zh-tw': 'tw', // Chinese (Traditional) -> Taiwan
 };
 
 export function localeToCountryCode(locale: Locale) {
@@ -199,6 +200,46 @@ export function localeToCountryCode(locale: Locale) {
 		localeToCountryCodeMap[locale as keyof typeof localeToCountryCodeMap] ??
 		locale
 	);
+}
+
+export type LocaleData = {
+	locale: Locale;
+	baseLanguage: string;
+	language: Language;
+	variant?: string;
+	countryCode: string;
+	isLeftToRight: boolean;
+};
+
+export function getLocaleLanguageVariant(locale: Locale) {
+	const data = locales.find(([code]) => code === locale);
+
+	if (data) {
+		return /\(([^)]+)\)/.exec(data[1])?.[1];
+	}
+}
+
+export function getLocaleData(locale: Locale) {
+	const data = locales.find(([code]) => code === locale);
+
+	if (data) {
+		return {
+			locale,
+			baseLanguage: data[2] ?? data[1],
+			language: data[1],
+			variant: getLocaleLanguageVariant(locale),
+			countryCode: localeToCountryCode(locale),
+			isLeftToRight: !isRightToLeftLocaleCode(locale),
+		};
+	}
+}
+
+export function localeToLanguage(locale: Locale): Language | undefined {
+	return getLocaleData(locale)?.language;
+}
+
+export function localeToBaseLanguage(locale: Locale): string | undefined {
+	return getLocaleData(locale)?.baseLanguage;
 }
 
 export type Origin = string;
@@ -244,7 +285,7 @@ async function getTranslations({
 	throwOnError = false,
 }: GetTranslationsParameters): Promise<Translations> {
 	return new Promise((resolve, reject) => {
-		const requests = [];
+		const requests: Array<Promise<Translations>> = [];
 		let url = `${apiUrl}/api/v1/t?a=${apiKey}&l=${locale}`;
 
 		if (origin) {
@@ -407,6 +448,10 @@ async function getLocales({
 }: GetLocalesParameters): Promise<Locale[]> {
 	return new Promise((resolve, reject) => {
 		const url = `${apiUrl}/api/v1/l?a=${apiKey}`;
+		const fallback = process.env.TACOTRANSLATE_DEFAULT_LOCALE
+			? [process.env.TACOTRANSLATE_DEFAULT_LOCALE]
+			: [];
+
 		let hasTimedOut = false;
 		const timeoutInstance = setTimeout(() => {
 			const error = new Error('<TacoTranslate> `getLocales` timeout.');
@@ -415,7 +460,7 @@ async function getLocales({
 				reject(error);
 			} else {
 				console.error(error);
-				resolve([process.env.TACOTRANSLATE_DEFAULT_LOCALE]);
+				resolve(fallback);
 			}
 
 			hasTimedOut = true;
@@ -444,7 +489,7 @@ async function getLocales({
 						reject(error);
 					} else {
 						console.error(error);
-						resolve([process.env.TACOTRANSLATE_DEFAULT_LOCALE]);
+						resolve(fallback);
 					}
 				}
 			});
