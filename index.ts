@@ -554,10 +554,10 @@ const createTacoTranslateClient = ({
 			return {};
 		}
 
-		const originsToFetch = new Set(origin ? [origin] : origins);
-		const localesToFetch = new Set(locale ? [locale] : locales);
+		const originsToFetch = new Set(origin ? [origin] : origins ?? []);
+		const localesToFetch = new Set(locale ? [locale] : locales ?? []);
 
-		if (!originsToFetch || !localesToFetch) {
+		if (originsToFetch.size === 0 || localesToFetch.size === 0) {
 			return {};
 		}
 
