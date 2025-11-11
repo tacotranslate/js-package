@@ -63,7 +63,7 @@ export type TranslateOptions = {
 	readonly id?: string;
 	readonly variables?: TemplateVariables;
 	readonly origin?: Origin;
-	readonly locale?: Origin;
+	readonly locale?: Locale;
 };
 
 export type TranslateComponentProperties = HTMLAttributes<HTMLSpanElement> &
@@ -358,7 +358,7 @@ export function TacoTranslate(
 					];
 
 					for (const entry of entries) {
-						const entryKey = getEntryKey(entry);
+						const entryKey = getEntryKey(entry, client);
 						const entryOrigin = entry.o ?? currentOrigin;
 						const entryLocale = entry.l ?? localeOrParentLocale;
 
@@ -391,7 +391,7 @@ export function TacoTranslate(
 									(group) =>
 										(entry.o ?? currentOrigin) === group.origin &&
 										(entry.l ?? localeOrParentLocale) === group.locale &&
-										group.keys.has(getEntryKey(entry))
+										group.keys.has(getEntryKey(entry, client))
 								)
 						)
 					);

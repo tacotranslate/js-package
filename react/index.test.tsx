@@ -155,6 +155,49 @@ test('missing translations should be fetched', async () => {
 	);
 });
 
+test('dedupes entries using custom translation key', async () => {
+	const fetchedEntries: Entry[] = [];
+
+	await act(async () => {
+		const createClient = () => ({
+			origins: [] as Origin[],
+			entries: [] as Entry[],
+			async getTranslations({entries}: ClientGetTranslationsParameters) {
+				if (entries) {
+					fetchedEntries.push(...entries);
+				}
+
+				return {};
+			},
+			async getLocalizations() {
+				return {};
+			},
+			getTranslationKey: () => 'shared',
+			getLocales: async () => localeCodes,
+		});
+
+		const client = createClient();
+
+		function Component() {
+			return (
+				<div role="text">
+					<Translate string="Hello!" />
+					<Translate string="Another string." />
+				</div>
+			);
+		}
+
+		return render(
+			<TacoTranslate client={client} locale="no">
+				<Component />
+			</TacoTranslate>
+		);
+	});
+
+	await waitFor(() => screen.getByRole('text'));
+	expect(JSON.stringify(fetchedEntries)).toBe('[{"s":"Hello!"}]');
+});
+
 test('present translations should not be fetched', async () => {
 	const fetchedEntries: Entry[] = [];
 
