@@ -27,6 +27,7 @@ import {
 	type TacoTranslateClient,
 	type Origin,
 	localeToLanguage,
+	localeToBaseLanguage,
 } from '..';
 
 export type TranslationContextProperties = {
@@ -39,8 +40,9 @@ export type TranslationContextProperties = {
 };
 
 export type TacoTranslateContextProperties = TranslationContextProperties & {
-	language?: Language;
 	isLoading?: boolean;
+	language?: Language;
+	baseLanguage?: string;
 	isLeftToRight?: boolean;
 	isRightToLeft?: boolean;
 	entries: Entry[];
@@ -218,6 +220,11 @@ export const useLanguage = () => {
 	return language;
 };
 
+export const useBaseLanguage = () => {
+	const {baseLanguage} = useTacoTranslate();
+	return baseLanguage;
+};
+
 type AnyObject = Record<string, unknown>;
 
 function isObject(object: any): object is AnyObject {
@@ -278,8 +285,13 @@ export function TacoTranslate(
 	const localeOrParentLocale = locale ?? parentLocale;
 	const [currentLocale, setCurrentLocale] = useState(localeOrParentLocale);
 
-	const currentLanguage: Language | undefined = useMemo(
+	const currentLanguage = useMemo(
 		() => (currentLocale ? localeToLanguage(currentLocale) : undefined),
+		[currentLocale]
+	);
+
+	const currentBaseLanguage = useMemo(
+		() => (currentLocale ? localeToBaseLanguage(currentLocale) : undefined),
 		[currentLocale]
 	);
 
@@ -499,6 +511,7 @@ export function TacoTranslate(
 			origin: currentOrigin,
 			locale: currentLocale,
 			language: currentLanguage,
+			baseLanguage: currentBaseLanguage,
 			isLoading,
 			isLeftToRight,
 			isRightToLeft,
@@ -515,6 +528,7 @@ export function TacoTranslate(
 			currentOrigin,
 			currentLocale,
 			currentLanguage,
+			currentBaseLanguage,
 			isLoading,
 			isLeftToRight,
 			isRightToLeft,
