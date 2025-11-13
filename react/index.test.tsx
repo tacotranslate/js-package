@@ -51,6 +51,7 @@ const createClient = ({
 	getLocalizations: async ({locale}: ClientGetLocalizationsParameters) =>
 		isEnabled && locale !== projectLocale ? getLocalizations() : {},
 	getLocales: async () => localeCodes,
+	getOrigins: async () => [],
 });
 
 const client = createClient({projectLocale: 'en'});
@@ -79,6 +80,13 @@ const createErrorClient = ({
 		return {};
 	},
 	async getLocales() {
+		if (isEnabled) {
+			throw new Error('Some error');
+		}
+
+		return [];
+	},
+	async getOrigins() {
 		if (isEnabled) {
 			throw new Error('Some error');
 		}
@@ -128,6 +136,7 @@ test('missing translations should be fetched', async () => {
 				return {};
 			},
 			getLocales: async () => localeCodes,
+			getOrigins: async () => [],
 		});
 
 		const client = createClient();
@@ -174,6 +183,7 @@ test('dedupes entries using custom translation key', async () => {
 			},
 			getTranslationKey: () => 'shared',
 			getLocales: async () => localeCodes,
+			getOrigins: async () => [],
 		});
 
 		const client = createClient();
@@ -216,6 +226,7 @@ test('present translations should not be fetched', async () => {
 				return {};
 			},
 			getLocales: async () => localeCodes,
+			getOrigins: async () => [],
 		});
 
 		const client = createClient();
@@ -263,6 +274,7 @@ test('get translations using a custom translation key', async () => {
 			},
 			getTranslationKey: (entry: Entry) => entry.i ?? 'hello',
 			getLocales: async () => localeCodes,
+			getOrigins: async () => [],
 		});
 
 		const client = createClient();

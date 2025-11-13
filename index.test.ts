@@ -43,6 +43,7 @@ const createClient = ({
 	getLocalizations: async ({locale}: ClientGetLocalizationsParameters) =>
 		isEnabled && locale !== projectLocale ? getLocalizations() : {},
 	getLocales: async () => localeCodes,
+	getOrigins: async () => [],
 });
 
 test('template strings should be replaced', () => {
