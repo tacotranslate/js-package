@@ -261,10 +261,7 @@ export type GetTranslationsParameters = {
 };
 
 type GetTranslationsResponse =
-	| {
-			success: false;
-			error: TacoTranslateError;
-	  }
+	| {success: false; error: TacoTranslateError}
 	| {
 			success: true;
 			inputLocale: Locale;
@@ -431,14 +428,8 @@ export type GetLocalesParameters = {
 };
 
 type GetLocalesResponse =
-	| {
-			success: false;
-			error: TacoTranslateError;
-	  }
-	| {
-			success: true;
-			locales: Locale[];
-	  };
+	| {success: false; error: TacoTranslateError}
+	| {success: true; locales: Locale[]};
 
 async function getLocales({
 	apiUrl = defaultApiUrl,
@@ -474,6 +465,74 @@ async function getLocales({
 
 					if (data.success) {
 						resolve(data.locales);
+						return;
+					}
+
+					const error: TacoTranslateError = new Error(data.error.message);
+					error.code = data.error.code;
+					error.type = data.error.type;
+					reject(error);
+				}
+			})
+			.catch((error) => {
+				if (!hasTimedOut) {
+					if (throwOnError) {
+						reject(error);
+					} else {
+						console.error(error);
+						resolve(fallback);
+					}
+				}
+			});
+	});
+}
+
+export type GetOriginsParameters = {
+	apiUrl: string;
+	apiKey: string;
+	timeout?: number;
+	/** @default false */
+	throwOnError?: boolean;
+};
+
+type GetOriginsResponse =
+	| {success: false; error: TacoTranslateError}
+	| {success: true; origins: Origin[]};
+
+async function getOrigins({
+	apiUrl = defaultApiUrl,
+	apiKey,
+	timeout = 2000,
+	throwOnError = false,
+}: GetOriginsParameters): Promise<Origin[]> {
+	return new Promise((resolve, reject) => {
+		const url = `${apiUrl}/api/v1/o?a=${apiKey}`;
+		const fallback = process.env.TACOTRANSLATE_DEFAULT_LOCALE
+			? [process.env.TACOTRANSLATE_DEFAULT_LOCALE]
+			: [];
+
+		let hasTimedOut = false;
+		const timeoutInstance = setTimeout(() => {
+			const error = new Error('<TacoTranslate> `getOrigins` timeout.');
+
+			if (throwOnError) {
+				reject(error);
+			} else {
+				console.error(error);
+				resolve(fallback);
+			}
+
+			hasTimedOut = true;
+		}, timeout);
+
+		fetch(url)
+			.then(async (response) => response.json())
+			.then((data: GetOriginsResponse) => {
+				if (!hasTimedOut) {
+					clearTimeout(timeoutInstance);
+
+					if (data.success) {
+						resolve(data.origins);
 						return;
 					}
 
@@ -596,6 +655,8 @@ const createTacoTranslateClient = ({
 			: process.env.TACOTRANSLATE_DEFAULT_LOCALE
 			? [process.env.TACOTRANSLATE_DEFAULT_LOCALE]
 			: [],
+	getOrigins: async (options?: Pick<GetOriginsParameters, 'throwOnError'>) =>
+		isEnabled ? getOrigins({...options, apiUrl, apiKey}) : [],
 });
 
 export default createTacoTranslateClient;
