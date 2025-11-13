@@ -12,6 +12,7 @@ import createTacoTranslateClient, {
 	type Entry,
 	type ClientGetLocalizationsParameters,
 	type Localizations,
+	type Locale,
 	type Origin,
 } from '..';
 import {
@@ -975,6 +976,112 @@ test('allow multiple TacoTranslates, and let child origin update when parent ori
 
 	expect(results.includes('test')).toBe(true);
 	expect(results.includes('foo')).toBe(true);
+});
+
+test('refetch missing translations when locale changes', async () => {
+	const calls: ClientGetTranslationsParameters[] = [];
+	let updateLocale: ((locale: Locale) => void) | undefined;
+
+	await act(async () => {
+		const client = {
+			origins: [] as Origin[],
+			entries: [] as Entry[],
+			async getTranslations(parameters: ClientGetTranslationsParameters) {
+				calls.push(parameters);
+				return {};
+			},
+			async getLocalizations() {
+				return {};
+			},
+			getLocales: async () => localeCodes,
+			getOrigins: async () => [],
+		};
+
+		function Component() {
+			return <Translate string="Hello!" />;
+		}
+
+		function Page() {
+			const [locale, setLocale] = useState<Locale>('en');
+
+			updateLocale = setLocale;
+
+			return (
+				<TacoTranslate client={client} locale={locale}>
+					<Component />
+				</TacoTranslate>
+			);
+		}
+
+		return render(<Page />);
+	});
+
+	await waitFor(() => {
+		expect(calls.some((call) => call.locale === 'en')).toBe(true);
+	});
+
+	expect(updateLocale).toBeDefined();
+
+	await act(async () => {
+		updateLocale?.('no');
+	});
+
+	await waitFor(() => {
+		expect(calls.some((call) => call.locale === 'no')).toBe(true);
+	});
+});
+
+test('refetch missing translations when origin changes', async () => {
+	const calls: ClientGetTranslationsParameters[] = [];
+	let updateOrigin: ((origin: Origin) => void) | undefined;
+
+	await act(async () => {
+		const client = {
+			origins: [] as Origin[],
+			entries: [] as Entry[],
+			async getTranslations(parameters: ClientGetTranslationsParameters) {
+				calls.push(parameters);
+				return {};
+			},
+			async getLocalizations() {
+				return {};
+			},
+			getLocales: async () => localeCodes,
+			getOrigins: async () => [],
+		};
+
+		function Component() {
+			return <Translate string="Hello!" />;
+		}
+
+		function Page() {
+			const [origin, setOrigin] = useState<Origin>('foo');
+
+			updateOrigin = setOrigin;
+
+			return (
+				<TacoTranslate client={client} locale="en" origin={origin}>
+					<Component />
+				</TacoTranslate>
+			);
+		}
+
+		return render(<Page />);
+	});
+
+	await waitFor(() => {
+		expect(calls.some((call) => call.origin === 'foo')).toBe(true);
+	});
+
+	expect(updateOrigin).toBeDefined();
+
+	await act(async () => {
+		updateOrigin?.('bar');
+	});
+
+	await waitFor(() => {
+		expect(calls.some((call) => call.origin === 'bar')).toBe(true);
+	});
 });
 
 test('get translations from the localization object', async () => {

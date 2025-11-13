@@ -168,10 +168,10 @@ export function useTranslation(
 	}, [translation, string, variables]);
 
 	useEffect(() => {
-		if (!translation && createEntry) {
+		if (!translation && createEntry && selectedOrigin && selectedLocale) {
 			createEntry(entry);
 		}
-	}, [translation, createEntry, entry]);
+	}, [translation, createEntry, entry, selectedOrigin, selectedLocale]);
 
 	return output;
 }
@@ -193,7 +193,12 @@ export function Translate({
 			? contextUseDangerouslySetInnerHtml ?? false
 			: componentUseDangerouslySetInnerHtml ?? false;
 
-	const output = useTranslation(string, {id, variables, origin, locale});
+	const identifier = useMemo(
+		() => ({id, variables, origin, locale}),
+		[id, variables, origin, locale]
+	);
+
+	const output = useTranslation(string, identifier);
 	const sanitized = useMemo(
 		() => (useDangerouslySetInnerHtml ? sanitize(output) : output),
 		[useDangerouslySetInnerHtml, output]
